@@ -1,9 +1,5 @@
-import { useHelper } from "@react-three/drei";
-import { useRef } from "react";
-import { DirectionalLightHelper } from "three";
-
 export default function Light() {
-  const directionalLightRef = useRef<any>(null);
+  // const directionalLightRef = useRef<any>(null);
 
   // Use the helper with the ref
   // useHelper(directionalLightRef, DirectionalLightHelper, 2);

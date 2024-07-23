@@ -14,7 +14,7 @@ const speed = 15;
 let prevPos = [0, 0, 0];
 
 export function usePlayer(player: IPlayer) {
-  const { id: playerId, name, position, keyEvt } = player;
+  const { id: playerId, position, keyEvt } = player;
   const { camera, scene } = useThree();
   const pivot = useMemo(() => new Object3D(), []);
   const me = useRecoilValue(MeAtom);
@@ -23,7 +23,7 @@ export function usePlayer(player: IPlayer) {
   // 공의 position
   const spherePositionRef = useRef<Triplet>();
   // 유저 이름
-  const nicknameRef = useRef(null);
+  const nicknameRef = useRef<any>(null);
   const setPlayerOutsideTutorial = useSetRecoilState(PlayerOutsideTutorialAtom);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const isLayingEgg = useRef(false);
@@ -49,7 +49,7 @@ export function usePlayer(player: IPlayer) {
   const clone = useMemo(() => SkeletonUtils.clone(scene2), []);
   // clone 한 정보로 그래프 접근
   const objectMap = useGraph(clone);
-  const nodes = objectMap.nodes;
+  const nodes: any = objectMap.nodes;
   const { actions } = useAnimations(animations, cylinderRef);
 
   const [animation, setAnimation] = useState(

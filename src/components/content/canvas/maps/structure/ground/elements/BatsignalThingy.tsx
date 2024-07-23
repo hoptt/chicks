@@ -3,22 +3,24 @@ https://poly.pizza/m/1XHM3E7rzsT
 Bat signal Thingy by Clorama Dorvilias [CC-BY] via Poly Pizza
 */
 
+import { PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
 import { SpotLight, useGLTF } from "@react-three/drei";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion-3d";
+import { useEffect, useMemo, useRef } from "react";
+import { useRecoilValue } from "recoil";
 import { DoubleSide, Object3D } from "three";
 import { mergeBufferGeometries } from "three-stdlib";
-import { motion } from "framer-motion-3d";
-import { useRecoilValue } from "recoil";
-import { PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
 
 export function BatsignalThingy() {
   const playerOutsideTutorial = useRecoilValue(PlayerOutsideTutorialAtom);
-  const { nodes, materials } = useGLTF("/models/BatsignalThingy.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/BatsignalThingy.glb"
+  );
   const object = useMemo(() => new Object3D(), []);
   const object2 = useMemo(() => new Object3D(), []);
-  const spotLightRef1 = useRef();
-  const spotLightRef2 = useRef();
-  const mergedGeometry = useRef();
+  const spotLightRef1 = useRef<any>();
+  const spotLightRef2 = useRef<any>();
+  const mergedGeometry = useRef<any>();
 
   useEffect(() => {
     if (!spotLightRef1.current || !spotLightRef2.current) return;

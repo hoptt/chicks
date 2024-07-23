@@ -3,13 +3,15 @@ https://poly.pizza/m/ZSQ65S4lEu
 Public Domain
 */
 
-import { Merged, useGLTF } from "@react-three/drei";
-import { Fragment, useMemo } from "react";
-import { motion } from "framer-motion-3d";
-import { useRecoilValue } from "recoil";
 import { PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
+import { Merged, useGLTF } from "@react-three/drei";
+import { motion } from "framer-motion-3d";
+import { Fragment, useMemo } from "react";
+import { useRecoilValue } from "recoil";
 export function PostLantern() {
-  const { nodes, materials } = useGLTF("/models/PostLantern.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/PostLantern.glb"
+  );
   return (
     <group position={[-6, 2, -1]}>
       <pointLight
@@ -66,7 +68,7 @@ export function LampSquareTable() {
   ];
   return (
     <Merged castShadow receiveShadow meshes={meshes}>
-      {(mesh) => (
+      {(mesh: any) => (
         <>
           {Array.from({ length: 8 }).map((_, idx) => (
             <Fragment key={idx}>

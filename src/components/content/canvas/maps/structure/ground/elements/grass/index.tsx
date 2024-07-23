@@ -9,9 +9,9 @@ https://poly.pizza/m/UGTOzcO3P2
 Public Domain
 */
 
-import { Merged, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Object3D, Vector3 } from "three";
+import { Object3D } from "three";
 import { mergeBufferGeometries } from "three-stdlib";
 
 export function Grass1({
@@ -25,12 +25,13 @@ export function Grass1({
   y: number;
   z: [number, number];
 }) {
-  const { nodes, materials } = useGLTF("/models/Grass1.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Grass1.glb");
   const [startX, endX] = x;
   const [startZ, endZ] = z;
 
-  const mergedGeometry = useRef();
-  const meshRef = useRef();
+  const mergedGeometry = useRef<any>();
+  const meshRef = useRef<any>();
   const [isGeometryReady, setIsGeometryReady] = useState(false);
   const dummy = useMemo(() => new Object3D(), []);
 
@@ -93,11 +94,12 @@ export function Grass2({
   y: number;
   z: [number, number];
 }) {
-  const { nodes, materials } = useGLTF("/models/Grass2.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Grass2.glb");
   const [startX, endX] = x;
   const [startZ, endZ] = z;
-  const mergedGeometry = useRef();
-  const meshRef = useRef();
+  const mergedGeometry = useRef<any>();
+  const meshRef = useRef<any>();
   const [isGeometryReady, setIsGeometryReady] = useState(false);
   const dummy = useMemo(() => new Object3D(), []);
 
@@ -168,11 +170,12 @@ export function Grass3({
   y: number;
   z: [number, number];
 }) {
-  const { nodes, materials } = useGLTF("/models/Grass3.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Grass3.glb");
   const [startX, endX] = x;
   const [startZ, endZ] = z;
-  const mergedGeometry = useRef();
-  const meshRef = useRef();
+  const mergedGeometry = useRef<any>();
+  const meshRef = useRef<any>();
   const [isGeometryReady, setIsGeometryReady] = useState(false);
   const dummy = useMemo(() => new Object3D(), []);
 
@@ -259,11 +262,12 @@ export function Grass4({
   y: number;
   z: [number, number];
 }) {
-  const { nodes, materials } = useGLTF("/models/Grass4.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Grass4.glb");
   const [startX, endX] = x;
   const [startZ, endZ] = z;
-  const mergedGeometry = useRef();
-  const meshRef = useRef();
+  const mergedGeometry = useRef<any>();
+  const meshRef = useRef<any>();
   const [isGeometryReady, setIsGeometryReady] = useState(false);
   const dummy = useMemo(() => new Object3D(), []);
 

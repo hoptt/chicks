@@ -1,10 +1,7 @@
-import { useCompoundBody, useCylinder } from "@react-three/cannon";
-import { SmallBridge } from "./SmallBridge";
+import { useCompoundBody } from "@react-three/cannon";
 import { Bridge2 } from "./Bridge2";
 export default function Bridge() {
-  // 실린더 지오메트리를 생성하고 회전시킵니다.
-
-  const [ref] = useCompoundBody(() => ({
+  useCompoundBody(() => ({
     type: "Static",
     mass: 0,
     shapes: [

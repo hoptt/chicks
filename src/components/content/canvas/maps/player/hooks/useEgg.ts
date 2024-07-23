@@ -1,5 +1,5 @@
 import { useGLTF } from "@react-three/drei";
-import { useFrame, useGraph } from "@react-three/fiber";
+import { useGraph } from "@react-three/fiber";
 import gsap from "gsap";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SkeletonUtils } from "three-stdlib";
@@ -8,13 +8,13 @@ export function useEgg(
   eggPosition: [number, number, number],
   position: [number, number, number]
 ) {
-  const eggRef = useRef();
+  const eggRef = useRef<any>();
   const memoizedPosition = useMemo(() => position, []);
   const { scene, materials } = useGLTF("/models/Egg.glb");
   const [isAnimationOver, setIsAnimationOver] = useState(false);
   const clone = useMemo(() => SkeletonUtils.clone(scene), []);
   const objectMap = useGraph(clone);
-  const eggnodes = objectMap.nodes;
+  const eggnodes: any = objectMap.nodes;
 
   /* 달걀 굴러가는 애니메이션 */
   useEffect(() => {

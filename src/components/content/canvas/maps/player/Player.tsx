@@ -21,7 +21,7 @@ export default function Player({ player }: { player: IPlayer }) {
         )}
       </group>
 
-      <group ref={cylinderRef}>
+      <group ref={cylinderRef as any}>
         <group position={memoizedPosition} rotation-y={Math.PI / 4}>
           <group name="Root_Scene">
             <group name="RootNode">

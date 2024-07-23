@@ -6,7 +6,9 @@ import { useBox } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 
 export function Charizard() {
-  const { nodes, materials } = useGLTF("/models/Charizard.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Charizard.glb"
+  );
   const [ref] = useBox(() => ({
     mass: 1,
     position: [-4.2, 3.8, 3.7],
@@ -14,7 +16,7 @@ export function Charizard() {
     rotation: [0, -Math.PI / 2, 0],
   }));
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <group scale={0.5} position={[0, -0.1, 0]}>
         <mesh
           geometry={nodes.group434900071.geometry}

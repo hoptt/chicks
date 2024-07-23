@@ -6,14 +6,15 @@ export default function Table({
 }: {
   position: [number, number, number];
 }) {
-  const { nodes, materials } = useGLTF("/models/Table.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Table.glb");
   const [ref] = useBox(() => ({
     type: "Static",
     args: [1.3, 0.8, 3],
     position,
   }));
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <group
         rotation={[-Math.PI / 2, 0, 0]}
         scale={100}

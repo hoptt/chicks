@@ -41,7 +41,7 @@ export function Dandelions({ count, x, y, z }: Props) {
   return (
     <group>
       <Merged castShadow meshes={meshes}>
-        {(mesh) => {
+        {(mesh: any) => {
           return (
             <>
               {Array.from({ length: count }).map((_, idx) => (
@@ -69,10 +69,12 @@ Desert marigold by Poly by Google [CC-BY] via Poly Pizza
 
 export function Marigold() {
   const count = 800;
-  const { nodes, materials } = useGLTF("/models/Marigold.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Marigold.glb"
+  );
 
-  const mergedGeometry = useRef();
-  const meshRef = useRef();
+  const mergedGeometry = useRef<any>();
+  const meshRef = useRef<any>();
   const [isGeometryReady, setIsGeometryReady] = useState(false);
   const dummy = useMemo(() => new Object3D(), []);
 

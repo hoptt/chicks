@@ -31,7 +31,7 @@ export default function Lobby() {
       />
       <NextBtn
         className={!tempNickname ? "disabled" : "valid"}
-        onClick={(e) => {
+        onClick={() => {
           if (!tempNickname) return;
           socket.emit("initialize", {
             tempName: tempNickname,

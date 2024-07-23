@@ -6,7 +6,9 @@ Public Domain
 import { useGLTF } from "@react-three/drei";
 
 export function SmallBridge() {
-  const { nodes, materials } = useGLTF("/models/SmallBridge.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/SmallBridge.glb"
+  );
   return (
     <group>
       <mesh

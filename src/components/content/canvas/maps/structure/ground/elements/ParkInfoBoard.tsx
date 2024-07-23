@@ -7,7 +7,9 @@ import { useGLTF } from "@react-three/drei";
 import { useEffect } from "react";
 
 export function ParkInfoBoard() {
-  const { nodes, materials } = useGLTF("/models/ParkInfoBoard.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/ParkInfoBoard.glb"
+  );
 
   useEffect(() => {
     materials.wood_shade1.color.set("#6a4929");

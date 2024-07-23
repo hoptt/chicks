@@ -29,7 +29,7 @@ export function Wall({
   }));
 
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <mesh receiveShadow castShadow={castShadow}>
         <boxGeometry args={args} />
         <meshStandardMaterial color={color} />
@@ -63,7 +63,7 @@ export function WallTexture({
   const vintageWoodTexture = useTexture(`/textures/floor/${map}.jpg`);
 
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <mesh receiveShadow castShadow={castShadow}>
         <boxGeometry args={args} />
         <meshStandardMaterial map={vintageWoodTexture} color={color} />
@@ -106,7 +106,10 @@ export function WallWithHole({
     depth,
   });
 
-  const args = useMemo(() => CannonUtils.toConvexPolyhedronProps(geometry), []);
+  const args: any = useMemo(
+    () => CannonUtils.toConvexPolyhedronProps(geometry),
+    []
+  );
 
   const [ref, _] = useConvexPolyhedron(() => ({
     type: "Static",
@@ -117,7 +120,7 @@ export function WallWithHole({
   }));
 
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <mesh geometry={geometry} receiveShadow castShadow={castShadow}>
         <meshStandardMaterial color={color} />
       </mesh>
@@ -133,7 +136,9 @@ Public domain
 import { useGLTF } from "@react-three/drei";
 
 export function ShojiWall() {
-  const { nodes, materials } = useGLTF("/models/ShojiWall.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/ShojiWall.glb"
+  );
   const meshes = useMemo(
     () => ({
       Wall_Shojia: nodes.Wall_Shoji_1,
@@ -149,7 +154,7 @@ export function ShojiWall() {
   return (
     <group>
       <Merged receiveShadow meshes={meshes}>
-        {(mesh) => {
+        {(mesh: any) => {
           return (
             <>
               <group

@@ -6,8 +6,13 @@ import { useBox } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 
 export function BookShelf() {
-  const { nodes, materials } = useGLTF("/models/Bookshelf.glb");
-  const { nodes: nodes2, materials: materials2 } = useGLTF("/models/Books.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Bookshelf.glb"
+  );
+  const {
+    nodes: nodes2,
+    materials: materials2,
+  }: { nodes: any; materials: any } = useGLTF("/models/Books.glb");
   const [ref] = useBox(() => ({
     mass: 1,
     position: [-4.25, 2, 4],
@@ -15,7 +20,7 @@ export function BookShelf() {
     args: [1.8, 3.9, 0.7],
   }));
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <mesh
         geometry={nodes.Bookshelf.geometry}
         material={materials.Material}

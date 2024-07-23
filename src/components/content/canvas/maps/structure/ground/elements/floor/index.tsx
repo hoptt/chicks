@@ -1,11 +1,10 @@
 import { useBox, usePlane } from "@react-three/cannon";
-import { SpotLight, useGLTF, useTexture } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
-import { DoubleSide, Object3D, RepeatWrapping } from "three";
+import { Object3D, RepeatWrapping } from "three";
+import { Bush } from "../Bush";
 import { Dandelions, Marigold } from "../flower";
 import { Grass1, Grass2, Grass3, Grass4 } from "../grass";
-import { Bush } from "../Bush";
-import * as THREE from "three";
 export function FloorVintage() {
   const vintageWoodTexture = useTexture("/textures/floor/VintageWood.jpg");
 
@@ -59,7 +58,7 @@ export function FloorGround() {
   GreenTexture.repeat.y = 50;
   return (
     <>
-      <group ref={ref}>
+      <group ref={ref as any}>
         <mesh castShadow receiveShadow>
           <planeGeometry args={[width, height]} />
           <meshStandardMaterial map={GreenTexture} />
@@ -119,7 +118,7 @@ export function Floor2nd() {
 
   return (
     <>
-      <group ref={ref}>
+      <group ref={ref as any}>
         <mesh castShadow receiveShadow position-z={-14.5}>
           <boxGeometry args={[width, height, 30]} />
           <meshStandardMaterial map={GreenTexture} />
@@ -170,7 +169,7 @@ export function FloorWhiteStone() {
 
   return (
     <>
-      <group ref={ref}>
+      <group ref={ref as any}>
         <mesh castShadow receiveShadow position-z={-14.5}>
           <boxGeometry args={[width, height, 30]} />
           <meshStandardMaterial map={StoneTexture} color={"#868786"} />
@@ -192,9 +191,11 @@ type Props = {
   z2: number;
 };
 export function FloorStoneWalkway({ count, height, y, z, z2 }: Props) {
-  const { nodes, materials } = useGLTF("/models/StoneWalkway.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/StoneWalkway.glb"
+  );
 
-  const meshRef = useRef();
+  const meshRef = useRef<any>();
   const dummy = useMemo(() => new Object3D(), []);
 
   // (2)

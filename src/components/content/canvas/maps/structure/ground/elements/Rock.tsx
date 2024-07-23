@@ -6,7 +6,8 @@ Rock by Pixel [CC-BY] via Poly Pizza
 import { useGLTF } from "@react-three/drei";
 
 export function Rock() {
-  const { nodes, materials } = useGLTF("/models/Rock.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Rock.glb");
   return (
     <group>
       <mesh

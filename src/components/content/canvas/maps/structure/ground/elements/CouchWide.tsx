@@ -1,7 +1,9 @@
 import { useGLTF } from "@react-three/drei";
 
 export function CouchWide() {
-  const { nodes, materials } = useGLTF("/models/CouchWide.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/CouchWide.glb"
+  );
   return (
     <group scale={2.5} rotation={[0, Math.PI, 0]} position={[-3, 0.5, -4]}>
       <mesh geometry={nodes["Node-Mesh"].geometry} material={materials.mat23} />

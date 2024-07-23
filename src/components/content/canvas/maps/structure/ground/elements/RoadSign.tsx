@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useGLTF } from "@react-three/drei";
 import { useCylinder } from "@react-three/cannon";
+import { useGLTF } from "@react-three/drei";
+import { useEffect, useState } from "react";
 
 export function RoadSign({ position }: { position: [number, number, number] }) {
-  const { nodes, materials } = useGLTF("/models/road_sign.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/road_sign.glb"
+  );
   const [active, setActive] = useState(false);
 
   const [ref] = useCylinder(() => ({
@@ -12,7 +14,7 @@ export function RoadSign({ position }: { position: [number, number, number] }) {
     onCollide: handleCollision,
     position,
   }));
-  const handleCollision = (e) => {
+  const handleCollision = () => {
     setActive(true);
   };
 
@@ -29,7 +31,7 @@ export function RoadSign({ position }: { position: [number, number, number] }) {
   }, [active]);
 
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <mesh
         castShadow
         scale={0.2}

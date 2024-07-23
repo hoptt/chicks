@@ -5,8 +5,7 @@ Lily pad by Poly by Google [CC-BY] via Poly Pizza
 
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { motion } from "framer-motion-3d";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Vector3 } from "three";
 export function Lilypad() {
   const x = -5,
@@ -14,8 +13,10 @@ export function Lilypad() {
     y = 0.55,
     width = 3,
     height = 3;
-  const { nodes, materials } = useGLTF("/models/Lilypad.glb");
-  const ref = useRef();
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Lilypad.glb"
+  );
+  const ref = useRef<any>();
   const startX = width / 2 + x;
   const endX = -width + startX;
 

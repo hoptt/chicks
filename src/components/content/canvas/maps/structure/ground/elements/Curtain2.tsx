@@ -6,7 +6,9 @@ import { useGLTF } from "@react-three/drei";
 import { Vector3 } from "three";
 
 export function Curtain2() {
-  const { nodes, materials } = useGLTF("/models/Curtains2.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Curtains2.glb"
+  );
   const scale = new Vector3(0.2, 0.1, 0.15);
   return (
     <group scale={scale} position={[-4.8, 6.5, 0.1]}>

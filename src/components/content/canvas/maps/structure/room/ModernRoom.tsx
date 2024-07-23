@@ -1,12 +1,3 @@
-import { Books } from "../ground/elements/Books";
-import { BookShelf } from "../ground/elements/BookShelf";
-import { CouchWide } from "../ground/elements/CouchWide";
-import { Curtain2 } from "../ground/elements/Curtain2";
-import { FloorVintage } from "../ground/elements/floor";
-import { RubberDuck } from "../ground/elements/RubberDuck";
-import { Wall, WallTexture, WallWithHole } from "../ground/elements/wall";
-import { WindowLarge } from "../ground/elements/WindowLarge";
-
 export default function ModernRoom() {
   return (
     <group>

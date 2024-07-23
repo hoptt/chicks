@@ -1,6 +1,6 @@
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Vector3 } from "three";
 import { SkeletonUtils } from "three-stdlib";
 
@@ -10,7 +10,7 @@ export function useChild(
   type: string,
   idx: number
 ) {
-  const childRef = useRef(null);
+  const childRef = useRef<any>(null);
 
   const prevData = useRef<Vector3>();
   const isCheckPos = useRef(false);
@@ -25,7 +25,7 @@ export function useChild(
   const { scene, materials, animations } = useGLTF(`/models/${type}.glb`);
   const clone = useMemo(() => SkeletonUtils.clone(scene), []);
   const objectMap = useGraph(clone);
-  const childnodes = objectMap.nodes;
+  const childnodes: any = objectMap.nodes;
   const [animation, setAnimation] = useState(
     "AnimalArmature|AnimalArmature|AnimalArmature|Idle"
   );

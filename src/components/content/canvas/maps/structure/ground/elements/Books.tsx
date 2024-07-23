@@ -2,11 +2,11 @@
 public domain
 */
 
-import { useBox } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 
 export function Books() {
-  const { nodes, materials } = useGLTF("/models/Books.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Books.glb");
 
   return (
     <group>

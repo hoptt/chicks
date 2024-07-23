@@ -2,7 +2,9 @@ import { useBox } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 
 export function WindowLarge() {
-  const { nodes, materials } = useGLTF("/models/WindowLarge.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/WindowLarge.glb"
+  );
 
   const [ref, _] = useBox(() => ({
     type: "Static",
@@ -11,7 +13,7 @@ export function WindowLarge() {
     args: [4, 4, 0.2],
   }));
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <group position-y={-1.5} rotation={[-Math.PI / 2, 0, 0]} scale={200}>
         <mesh
           castShadow

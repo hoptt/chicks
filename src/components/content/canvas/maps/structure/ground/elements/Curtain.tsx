@@ -2,7 +2,9 @@ import { useGLTF } from "@react-three/drei";
 import { Vector3 } from "three";
 
 export function Curtain() {
-  const { nodes, materials } = useGLTF("/models/Curtains.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/Curtains.glb"
+  );
   const scale = new Vector3(0.043, 0.035, 0.01);
   return (
     <group scale={scale} position={[-4.3, 2.7, 0.3]} rotation-y={[Math.PI / 2]}>

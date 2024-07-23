@@ -13,13 +13,13 @@ import {
   FloorWhiteStone,
 } from "./elements/floor";
 import { LampSquareTable, PostLantern } from "./elements/lantern";
+import { Lilypad } from "./elements/Lilypad";
 import { ParkInfoBoard } from "./elements/ParkInfoBoard";
-import Stair from "./elements/Stair";
-import { ShojiWall, TransparentWalls } from "./elements/wall";
 import { Ponds } from "./elements/Ponds";
 import { Rock } from "./elements/Rock";
-import { Lilypad } from "./elements/Lilypad";
 import { RubberDuck } from "./elements/RubberDuck";
+import Stair from "./elements/Stair";
+import { ShojiWall, TransparentWalls } from "./elements/wall";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);

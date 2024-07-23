@@ -2,7 +2,9 @@ import { useCompoundBody } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 
 export default function Stair() {
-  const { nodes, materials } = useGLTF("/models/StoneWalkway.glb");
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/StoneWalkway.glb"
+  );
   useCompoundBody(() => ({
     type: "Static",
     shapes: [

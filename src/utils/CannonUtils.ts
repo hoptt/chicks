@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 
 class CannonUtils {
-  static toTrimeshProps(geometry) {
+  static toTrimeshProps(geometry: any) {
     let vertices;
     if (geometry.index === null) {
       vertices = geometry.attributes.position.array;
@@ -13,7 +13,7 @@ class CannonUtils {
     return [vertices, indices];
   }
 
-  static toConvexPolyhedronProps(geometry) {
+  static toConvexPolyhedronProps(geometry: any) {
     const position = geometry.attributes.position;
     const normal = geometry.attributes.normal;
     const vertices = [];
@@ -39,9 +39,9 @@ class CannonUtils {
       faces.push(face);
     }
 
-    const verticesMap = {};
+    const verticesMap: any = {};
     const points = [];
-    const changes = [];
+    const changes: any = [];
     for (let i = 0, il = vertices.length; i < il; i++) {
       const v = vertices[i];
       const key =
@@ -88,12 +88,12 @@ class CannonUtils {
     return [points.map((v) => [v.x, v.y, v.z]), cannonFaces];
   }
 
-  static offsetCenterOfMass(body, centreOfMass) {
-    body.shapeOffsets.forEach(function (offset) {
+  static offsetCenterOfMass(body: any, centreOfMass: any) {
+    body.shapeOffsets.forEach(function (offset: any) {
       centreOfMass.vadd(offset, centreOfMass);
     });
     centreOfMass.scale(1 / body.shapes.length, centreOfMass);
-    body.shapeOffsets.forEach(function (offset) {
+    body.shapeOffsets.forEach(function (offset: any) {
       offset.vsub(centreOfMass, offset);
     });
     const worldCenterOfMass = new CANNON.Vec3();

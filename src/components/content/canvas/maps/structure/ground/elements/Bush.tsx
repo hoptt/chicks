@@ -4,10 +4,11 @@ Bush by Jarlan Perez [CC-BY] via Poly Pizza
 */
 
 import { Merged, useGLTF } from "@react-three/drei";
-import { Fragment, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export function Bush() {
-  const { nodes, materials } = useGLTF("/models/Bush.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Bush.glb");
 
   const meshes = useMemo(
     () => ({
@@ -25,7 +26,7 @@ export function Bush() {
   return (
     <>
       <Merged castShadow meshes={meshes}>
-        {(mesh) => {
+        {(mesh: any) => {
           return (
             <>
               <group scale={20} position={[1, 0, 13]} rotation-y={-Math.PI / 2}>

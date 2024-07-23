@@ -1,4 +1,3 @@
-import React from "react";
 import { useFakeChicks } from "./hooks/useFakeChicks";
 type Props = {
   positionZ: number;

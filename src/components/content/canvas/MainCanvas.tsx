@@ -1,9 +1,8 @@
+import DrawCallCounter from "@/components/DrawCallCounter";
+import { Physics } from "@react-three/cannon";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
-import { Box, OrbitControls, Stats } from "@react-three/drei";
 import GroundElements from "./maps/structure/ground";
-import { Debug, Physics } from "@react-three/cannon";
-import DrawCallCounter from "@/components/DrawCallCounter";
 
 export default function MainCanvas() {
   const aspectRatio = window.innerWidth / window.innerHeight;

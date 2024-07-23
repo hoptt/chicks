@@ -1,3 +1,14 @@
+import { Water } from "three-stdlib";
+import { Object3DNode } from "@react-three/fiber";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      water: Object3DNode<Water, typeof Water>;
+    }
+  }
+}
+
 export interface IPlayer {
   id: string;
   position: [number, number, number];

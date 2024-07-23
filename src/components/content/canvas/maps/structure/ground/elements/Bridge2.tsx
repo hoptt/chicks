@@ -6,7 +6,8 @@ Bridge by Pixel [CC-BY] via Poly Pizza
 import { useGLTF } from "@react-three/drei";
 
 export function Bridge2() {
-  const { nodes, materials } = useGLTF("/models/Bridge.glb");
+  const { nodes, materials }: { nodes: any; materials: any } =
+    useGLTF("/models/Bridge.glb");
   return (
     <group name="Root_Scene">
       <group name="RootNode">

@@ -2,15 +2,15 @@
 public domain
 */
 
-import { useBox, useSphere } from "@react-three/cannon";
+import { useSphere } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion-3d";
 
 export function RubberDuck() {
-  const { nodes, materials } = useGLTF("/models/RubberDuck.glb");
-  const [ref, api] = useSphere(() => ({
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/RubberDuck.glb"
+  );
+  const [ref, _] = useSphere(() => ({
     type: "Dynamic",
     mass: 1,
     position: [-4, 0.5, -16],
@@ -60,7 +60,7 @@ export function RubberDuck() {
   // }, []);
 
   return (
-    <group ref={ref}>
+    <group ref={ref as any}>
       <motion.mesh
         geometry={nodes.Rubber_duck.geometry}
         material={materials.Material}

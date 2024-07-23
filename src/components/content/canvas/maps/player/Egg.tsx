@@ -14,7 +14,6 @@ export default function Egg({
   const { memoizedPosition, isAnimationOver, eggRef, eggnodes, materials } =
     useEgg(eggPosition, position);
 
-  console.log(memoizedPosition);
   return (
     <>
       <group

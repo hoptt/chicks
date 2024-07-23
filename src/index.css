@@ -1,0 +1,17 @@
+#root {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle, rgb(34, 44, 52) 0%, rgb(0, 0, 0) 100%);
+  background-blend-mode: screen;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}

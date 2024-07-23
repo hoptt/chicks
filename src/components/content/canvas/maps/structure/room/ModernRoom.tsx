@@ -11,7 +11,7 @@ export default function ModernRoom() {
   return (
     <group>
       {/* right */}
-      <Wall
+      {/* <Wall
         rotation={[-Math.PI / 2, 0, 0]}
         args={[10.07, 0.2, 7]}
         position={[-0.065, 3.5, -5]}
@@ -25,10 +25,10 @@ export default function ModernRoom() {
         position={[0, 1, -4.8]}
         color="#e4e4e4"
         castShadow={false}
-      />
+      /> */}
 
       {/* left */}
-      <WallWithHole
+      {/* <WallWithHole
         rotation={[0, -Math.PI / 2, 0]}
         position={[-4.9, 2, 0]}
         color={"#5aa0a0"}
@@ -39,27 +39,27 @@ export default function ModernRoom() {
         args={[0.2, 10, 2]}
         color="#d2d2d2"
         position={[-4.8, 1, 0]}
-      />
+      /> */}
       {/* 선반 */}
-      <Wall
+      {/* <Wall
         args={[0.5, 0.1, 4.5]}
         position={[-4.7, 3, 0]}
         color="rgb(137,136,134)"
-      />
+      /> */}
 
       {/* <Charizard /> */}
       {/* <Books /> */}
-      <BookShelf />
+      {/* <BookShelf />
 
-      <RubberDuck />
+      <RubberDuck /> */}
 
       {/* <Curtain /> */}
-      <Curtain2 />
-      <WindowLarge />
+      {/* <Curtain2 />
+      <WindowLarge /> */}
       {/* <WindowBlinds /> */}
-      <FloorVintage />
+      {/* <FloorVintage />
 
-      <CouchWide />
+      <CouchWide /> */}
     </group>
   );
 }

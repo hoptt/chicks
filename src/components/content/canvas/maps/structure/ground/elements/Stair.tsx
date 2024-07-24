@@ -7,9 +7,11 @@ export default function Stair() {
   );
   useCompoundBody(() => ({
     type: "Static",
+
     shapes: [
       {
         type: "Box",
+
         position: [0, 0.25, -11],
         args: [3.75, 1.5, 1],
       },

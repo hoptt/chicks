@@ -3,7 +3,7 @@ import { useGLTF, useTexture } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import { Object3D, RepeatWrapping } from "three";
 import { Bush } from "../Bush";
-import { Dandelions, Marigold } from "../flower";
+import { Dandelions } from "../flower";
 import { Grass1, Grass2, Grass3, Grass4 } from "../grass";
 export function FloorVintage() {
   const vintageWoodTexture = useTexture("/textures/floor/VintageWood.jpg");
@@ -77,7 +77,7 @@ export function FloorGround() {
           position={[0, 0, 0]}
           rotation-x={Math.PI / 2}
         />
-        <Marigold />
+        {/* <Marigold /> */}
       </group>
     </>
   );

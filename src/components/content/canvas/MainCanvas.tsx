@@ -1,5 +1,5 @@
 import DrawCallCounter from "@/components/DrawCallCounter";
-import { Physics } from "@react-three/cannon";
+import { Debug, Physics } from "@react-three/cannon";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
 import GroundElements from "./maps/structure/ground";
@@ -23,12 +23,12 @@ export default function MainCanvas() {
       {/* <OrbitControls /> */}
       <Light />
       <Physics broadphase="SAP" allowSleep gravity={[0, -9, 0]}>
-        {/* <Debug> */}
-        {/* <Box args={[1, 1, 1]} castShadow>
+        <Debug>
+          {/* <Box args={[1, 1, 1]} castShadow>
             <meshStandardMaterial color="hotpink" />
           </Box> */}
-        <GroundElements />
-        {/* </Debug> */}
+          <GroundElements />
+        </Debug>
       </Physics>
       <DrawCallCounter />
     </Canvas>

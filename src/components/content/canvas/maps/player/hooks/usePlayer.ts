@@ -1,41 +1,42 @@
 import { socket } from "@/sockets/clientSocket";
-import { MeAtom, PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
+import { MeAtom } from "@/store/PlayersAtom";
 import { IPlayer } from "@/types";
 import LayingEggsUtils from "@/utils/LayingEggsUtils";
-import { Triplet, useCylinder, useSphere } from "@react-three/cannon";
+import { Triplet, useBox } from "@react-three/cannon";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { Object3D, Vector3 } from "three";
 import { SkeletonUtils } from "three-stdlib";
 
-const speed = 15;
-let prevPos = [0, 0, 0];
-
 export function usePlayer(player: IPlayer) {
-  const { id: playerId, position, keyEvt } = player;
+  const { id: playerId, keyEvt } = player;
   const { camera, scene } = useThree();
   const pivot = useMemo(() => new Object3D(), []);
   const me = useRecoilValue(MeAtom);
   // 모델의 rotation
   const cylinderRotationRef = useRef<Triplet>();
   // 공의 position
-  const spherePositionRef = useRef<Triplet>();
+  const cylinderPositionRef = useRef<any>();
   // 유저 이름
   const nicknameRef = useRef<any>(null);
-  const setPlayerOutsideTutorial = useSetRecoilState(PlayerOutsideTutorialAtom);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const isLayingEgg = useRef(false);
+  const isStartMove = useRef(false);
+  const isStartMove2 = useRef(false);
 
   const worldPosition = useMemo(() => new Vector3(), []);
 
-  const memoizedPosition = useMemo(() => new Vector3(0, -1.1, 0), []);
-  const [cylinderRef, cylindersphereApi] = useCylinder(() => ({
-    type: "Kinematic",
-    mass: 1,
-    position: [0, 0.5, 0],
-    args: [0.3, 0.3, 0.5, 32],
+  const memoizedPosition = useMemo(() => new Vector3(0, -0.5, 0), []);
+
+  const [cylinderRef, cylinderApi] = useBox(() => ({
+    type: "Dynamic",
+    mass: 10,
+    position: [player.position[0], 1, player.position[2]],
+    linearDamping: 0.98,
+    angularDamping: 0.98,
+    args: [0.75, 1, 0.75],
   }));
 
   const {
@@ -56,22 +57,6 @@ export function usePlayer(player: IPlayer) {
     "AnimalArmature|AnimalArmature|AnimalArmature|Idle"
   );
 
-  const [_, sphereApi] = useSphere(
-    () => ({
-      type: "Dynamic",
-      position: [0, 0.5, 0],
-      mass: 1,
-      args: [0.3],
-      linearDamping: 0.98, // 감속 속성 추가
-      angularDamping: 0.98,
-
-      onCollide: () => {
-        console.log("Player collided");
-      },
-    }),
-    useRef(null)
-  );
-
   /* 시점 고정을 위한 임의의 카메라 생성 */
   useEffect(() => {
     if (me?.id !== playerId) return;
@@ -81,7 +66,7 @@ export function usePlayer(player: IPlayer) {
     scene.add(pivot);
   }, []);
 
-  /* 임의로 생성한 카메라가 cylinder 를 따라다니도록 */
+  // /* 임의로 생성한 카메라가 cylinder 를 따라다니도록 */
   const makeFollowCam = () => {
     const cylinderPosition = worldPosition.setFromMatrixPosition(
       cylinderRef.current!.matrixWorld
@@ -111,9 +96,9 @@ export function usePlayer(player: IPlayer) {
           );
 
           const eggPosition = [
-            spherePositionRef.current?.[0]! + x,
-            spherePositionRef.current?.[1]! - 0.3,
-            spherePositionRef.current?.[2]! + z,
+            cylinderPositionRef.current?.x! + x,
+            cylinderPositionRef.current?.y! - 0.3,
+            cylinderPositionRef.current?.z! + z,
           ];
 
           const times = Date.now();
@@ -153,6 +138,17 @@ export function usePlayer(player: IPlayer) {
         value: [e.key],
         isPress: false,
       });
+
+      /* 키 */
+      if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)) {
+        isStartMove.current = true;
+
+        socket.emit("move", [
+          cylinderPositionRef.current!.x,
+          cylinderPositionRef.current!.y,
+          cylinderPositionRef.current!.z,
+        ]);
+      }
     };
 
     window.addEventListener("keydown", keyDownPressHandler);
@@ -164,30 +160,15 @@ export function usePlayer(player: IPlayer) {
     };
   }, []);
 
-  // 공과 실린더의 위치를 동기화 및 서버에 위치 전송 및 특정 위치에 도달했는지
+  let x = 0,
+    z = 0;
+
   useEffect(() => {
-    const unsubscribe = sphereApi.position.subscribe((a) => {
-      cylindersphereApi.position.set(a[0], a[1] + 0.8, a[2]);
-      sphereApi.applyForce([0, -10, 0], [0, 0, 0]);
-      spherePositionRef.current = [a[0], a[1], a[2]];
-
-      /* 본인일 경우에만 key 이벤트로 움직이는 데이터 socket 으로 보내기 */
-      if (me?.id !== playerId) return;
-
-      const pov = [
-        Number(a[0].toFixed(5)),
-        Number(a[1].toFixed(5)),
-        Number(a[2].toFixed(5)),
-      ];
-      if (JSON.stringify(pov) !== JSON.stringify(prevPos)) {
-        prevPos = pov;
-        socket.emit("move", spherePositionRef.current);
-      }
-
-      /* 튜토리얼 벗어났을 시*/
-      if (spherePositionRef.current[2] < -2) {
-        setPlayerOutsideTutorial(true);
-      }
+    const unsubscribe = cylinderApi.position.subscribe((a) => {
+      const x = parseFloat((Math.floor(a[0] * 100) / 100).toFixed(2));
+      const y = parseFloat((Math.floor(a[1] * 100) / 100).toFixed(2));
+      const z = parseFloat((Math.floor(a[2] * 100) / 100).toFixed(2));
+      cylinderPositionRef.current = new Vector3(x, y, z);
     });
 
     return unsubscribe;
@@ -195,7 +176,7 @@ export function usePlayer(player: IPlayer) {
 
   // cylinder 의 rotation
   useEffect(() => {
-    const unsubscribe = cylindersphereApi.rotation.subscribe((a) => {
+    const unsubscribe = cylinderApi.rotation.subscribe((a) => {
       cylinderRotationRef.current = a;
     });
 
@@ -204,23 +185,58 @@ export function usePlayer(player: IPlayer) {
 
   // 애니메이션 변경
   useEffect(() => {
-    actions[animation]?.reset().fadeIn(1).play();
+    actions[animation]?.reset().fadeIn(0.1).play();
     return () => {
-      actions[animation]?.fadeOut(1);
+      actions[animation]?.fadeOut(0.1);
     };
   }, [actions, animation]);
 
   // 점프
   useEffect(() => {
     if (keyEvt.Control) {
-      sphereApi.applyImpulse([0, 10, 0], [0, 0, 0]);
+      cylinderApi.applyImpulse([0, 30, 0], [0, 0, 0]);
     }
   }, [keyEvt.Control]);
 
-  // 공 방향키 이동, 애니메이션 및 사용자 동기화
   useFrame(() => {
-    /* 각 사용자들의 position 계속 동기화 */
-    sphereApi.position.set(position[0], position[1], position[2]);
+    /**
+     * [ 방향으로 이동 제어 ]
+     * 눌린 화살표 방향키로 +- 100 만큼 이동한 좌표를 서버로 보내고
+     * 클라이언트에서는 해당 +- 100 좌표로 이동하도록 함
+     * 이러면 매번 서버로 요청을 보내서 이동한 거리를 적용시키는것이 아닌
+     * 서버에 이동시킬 좌표를 보내고, 클라이언트측에서 해당 좌표로 이동하는 방식 (서버 과부화 방지)
+     * 화살표 방향키를 때면 현재 좌표를 서버에 보내서 멈추게함
+     *
+     * [거리계산]
+     * distance 를 계산할 때 y축은 점프거리도 있으므로 제외하고
+     * x,z 만 계산하여 이동하도록 함
+     */
+    if (cylinderPositionRef.current) {
+      const currentPosXZ = new Vector3(
+        cylinderPositionRef.current?.x,
+        0,
+        cylinderPositionRef.current?.z
+      );
+
+      const playerPosXZ = new Vector3(
+        player.position[0],
+        0,
+        player.position[2]
+      );
+      const distance = currentPosXZ
+        .clone()
+        .sub(playerPosXZ)
+        .normalize()
+        .multiplyScalar(0.05);
+
+      currentPosXZ.sub(distance);
+
+      cylinderApi.position.set(
+        currentPosXZ.x,
+        cylinderPositionRef.current.y,
+        currentPosXZ.z
+      );
+    }
 
     /* 알 */
     player.chick
@@ -236,11 +252,11 @@ export function usePlayer(player: IPlayer) {
     makeFollowCam();
 
     /* 유저 이름 */
-    if (nicknameRef.current && spherePositionRef.current) {
+    if (nicknameRef.current && cylinderPositionRef.current) {
       nicknameRef.current.position.set(
-        spherePositionRef.current[0],
-        spherePositionRef.current[1] + 1.5,
-        spherePositionRef.current[2]
+        cylinderPositionRef.current.x,
+        cylinderPositionRef.current.y + 1.5,
+        cylinderPositionRef.current.z
       );
       nicknameRef.current.lookAt(1000, 1000, 1000);
     }
@@ -260,51 +276,215 @@ export function usePlayer(player: IPlayer) {
     }
 
     if (keyEvt.ArrowUp && keyEvt.ArrowLeft) {
-      sphereApi.applyForce([-speed - 5, 0, 0], [0, 0, 0]);
+      cylinderApi.rotation.set(0, Math.PI + Math.PI / 4, 0);
+      if (me?.id !== playerId) return;
+      isStartMove.current = true;
 
-      cylindersphereApi.rotation.set(0, Math.PI + Math.PI / 4, 0);
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+      );
+
+      if (player.position[0] + 1 > cylinderPositionRef.current!.x) {
+        isStartMove2.current = false;
+      }
+
+      if (!isStartMove2.current) {
+        isStartMove2.current = true;
+        socket.emit("move", [
+          x,
+          cylinderPositionRef.current!.y,
+          cylinderPositionRef.current!.z,
+        ]);
+      }
+
       return;
     }
     if (keyEvt.ArrowDown && keyEvt.ArrowLeft) {
-      sphereApi.applyForce([0, 0, speed + 5], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, -Math.PI / 4, 0);
+      cylinderApi.rotation.set(0, -Math.PI / 4, 0);
+      if (me?.id !== playerId) return;
+      isStartMove.current = true;
+
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+      );
+
+      if (player.position[2] - 1 < cylinderPositionRef.current!.z) {
+        isStartMove2.current = false;
+      }
+
+      if (!isStartMove2.current) {
+        isStartMove2.current = true;
+        socket.emit("move", [
+          cylinderPositionRef.current!.x,
+          cylinderPositionRef.current!.y,
+          z,
+        ]);
+      }
+
       return;
     }
     if (keyEvt.ArrowDown && keyEvt.ArrowRight) {
-      sphereApi.applyForce([speed + 5, 0, 0], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, Math.PI / 4, 0);
+      cylinderApi.rotation.set(0, Math.PI / 4, 0);
+      if (me?.id !== playerId) return;
+      isStartMove.current = true;
+
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+      );
+
+      if (player.position[0] - 1 < cylinderPositionRef.current!.x) {
+        isStartMove2.current = false;
+      }
+
+      if (!isStartMove2.current) {
+        isStartMove2.current = true;
+        socket.emit("move", [
+          x,
+          cylinderPositionRef.current!.y,
+          cylinderPositionRef.current!.z,
+        ]);
+      }
+
       return;
     }
     if (keyEvt.ArrowUp && keyEvt.ArrowRight) {
-      sphereApi.applyForce([0, 0, -speed - 5], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, -(Math.PI + Math.PI / 4), 0);
+      cylinderApi.rotation.set(0, -(Math.PI + Math.PI / 4), 0);
+      if (me?.id !== playerId) return;
+      isStartMove.current = true;
+
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+      );
+
+      if (player.position[2] + 1 > cylinderPositionRef.current!.z) {
+        isStartMove2.current = false;
+      }
+
+      if (!isStartMove2.current) {
+        isStartMove2.current = true;
+        socket.emit("move", [
+          cylinderPositionRef.current!.x,
+          cylinderPositionRef.current!.y,
+          z,
+        ]);
+      }
+
       return;
     }
     if (keyEvt.ArrowUp) {
-      sphereApi.applyForce([-speed, 0, -speed], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, Math.PI, 0);
+      cylinderApi.rotation.set(0, Math.PI, 0);
+      if (me?.id !== playerId) return;
+      isStartMove2.current = false;
+
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+      );
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+      );
+
+      if (
+        player.position[0] + 1 > cylinderPositionRef.current!.x &&
+        player.position[2] + 1 > cylinderPositionRef.current!.z
+      ) {
+        isStartMove.current = false;
+      }
+
+      if (!isStartMove.current) {
+        isStartMove.current = true;
+        socket.emit("move", [x, cylinderPositionRef.current!.y, z]);
+      }
+
       return;
     }
 
     if (keyEvt.ArrowDown) {
-      sphereApi.applyForce([speed, 0, speed], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, 0, 0);
+      cylinderApi.rotation.set(0, 0, 0);
+      if (me?.id !== playerId) return;
+      isStartMove2.current = false;
+
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+      );
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+      );
+
+      if (
+        player.position[0] - 1 < cylinderPositionRef.current!.x &&
+        player.position[2] - 1 < cylinderPositionRef.current!.z
+      ) {
+        isStartMove.current = false;
+      }
+
+      if (!isStartMove.current) {
+        isStartMove.current = true;
+        socket.emit("move", [x, cylinderPositionRef.current!.y, z]);
+      }
+
       return;
     }
 
     if (keyEvt.ArrowLeft) {
-      sphereApi.applyForce([-speed, 0, speed], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, -Math.PI / 2, 0);
+      cylinderApi.rotation.set(0, -Math.PI / 2, 0);
+      if (me?.id !== playerId) return;
+      isStartMove2.current = false;
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+      );
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+      );
+
+      if (
+        player.position[0] + 1 > cylinderPositionRef.current!.x &&
+        player.position[2] - 1 < cylinderPositionRef.current!.z
+      ) {
+        isStartMove.current = false;
+      }
+
+      if (!isStartMove.current) {
+        isStartMove.current = true;
+        socket.emit("move", [x, cylinderPositionRef.current!.y, z]);
+      }
+
       return;
     }
 
     if (keyEvt.ArrowRight) {
-      sphereApi.applyForce([speed, 0, -speed], [0, 0, 0]);
-      cylindersphereApi.rotation.set(0, Math.PI / 2, 0);
+      cylinderApi.rotation.set(0, Math.PI / 2, 0);
+      if (me?.id !== playerId) return;
+      isStartMove2.current = false;
+
+      x = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+      );
+      z = parseFloat(
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+      );
+
+      if (
+        player.position[0] - 1 < cylinderPositionRef.current!.x &&
+        player.position[2] + 1 > cylinderPositionRef.current!.z
+      ) {
+        isStartMove.current = false;
+      }
+
+      if (!isStartMove.current) {
+        isStartMove.current = true;
+        socket.emit("move", [x, cylinderPositionRef.current!.y, z]);
+      }
+
       return;
     }
   });
 
-  return { cylinderRef, nicknameRef, nodes, materials, memoizedPosition };
+  return {
+    cylinderRef,
+    nicknameRef,
+    nodes,
+    materials,
+    memoizedPosition,
+  };
 }
 useGLTF.preload("/models/Chicken.glb");

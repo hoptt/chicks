@@ -31,12 +31,17 @@ export function usePlayer(player: IPlayer) {
   const memoizedPosition = useMemo(() => new Vector3(0, -0.5, 0), []);
 
   const [cylinderRef, cylinderApi] = useBox(() => ({
+    userData: { id: playerId },
     type: "Dynamic",
     mass: 10,
     position: [player.position[0], 1, player.position[2]],
     linearDamping: 0.98,
     angularDamping: 0.98,
     args: [0.75, 1, 0.75],
+    allowSleep: false,
+    // 아래 설정이 없으면 일정 시간 멈춘상태에서 cyliderApi.position 으로 포지션을 변경할 시 반영이 안됨.
+    // 계속 물리엔진 영향을 받고있도록 설정한것
+    sleepTimeLimit: Infinity,
   }));
 
   const {
@@ -47,7 +52,7 @@ export function usePlayer(player: IPlayer) {
 
   // 각 플레이어가 독립적인 모델 인스턴스를 가지도록
   // 다른 사용자가 이 모델로 앞으로 가면 다른 모델도 앞으로 가는 버그같은 문제
-  const clone = useMemo(() => SkeletonUtils.clone(scene2), []);
+  const clone = useMemo(() => SkeletonUtils.clone(scene2), [scene2]);
   // clone 한 정보로 그래프 접근
   const objectMap = useGraph(clone);
   const nodes: any = objectMap.nodes;
@@ -77,7 +82,6 @@ export function usePlayer(player: IPlayer) {
   useEffect(() => {
     const keyDownPressHandler = (e: KeyboardEvent) => {
       if (me?.id !== playerId) return;
-
       if (e.key.toUpperCase() === "Z" && !isLayingEgg.current) {
         isLayingEgg.current = true;
         Object.entries(keyEvt).forEach(([key, _]) => {
@@ -142,7 +146,6 @@ export function usePlayer(player: IPlayer) {
       /* 키 */
       if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)) {
         isStartMove.current = true;
-
         socket.emit("move", [
           cylinderPositionRef.current!.x,
           cylinderPositionRef.current!.y,
@@ -165,9 +168,9 @@ export function usePlayer(player: IPlayer) {
 
   useEffect(() => {
     const unsubscribe = cylinderApi.position.subscribe((a) => {
-      const x = parseFloat((Math.floor(a[0] * 100) / 100).toFixed(2));
-      const y = parseFloat((Math.floor(a[1] * 100) / 100).toFixed(2));
-      const z = parseFloat((Math.floor(a[2] * 100) / 100).toFixed(2));
+      const x = parseFloat((Math.floor(a[0] * 1000) / 1000).toFixed(3));
+      const y = parseFloat((Math.floor(a[1] * 1000) / 1000).toFixed(3));
+      const z = parseFloat((Math.floor(a[2] * 1000) / 1000).toFixed(3));
       cylinderPositionRef.current = new Vector3(x, y, z);
     });
 
@@ -194,7 +197,7 @@ export function usePlayer(player: IPlayer) {
   // 점프
   useEffect(() => {
     if (keyEvt.Control) {
-      cylinderApi.applyImpulse([0, 30, 0], [0, 0, 0]);
+      cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
     }
   }, [keyEvt.Control]);
 
@@ -205,7 +208,7 @@ export function usePlayer(player: IPlayer) {
      * 클라이언트에서는 해당 +- 100 좌표로 이동하도록 함
      * 이러면 매번 서버로 요청을 보내서 이동한 거리를 적용시키는것이 아닌
      * 서버에 이동시킬 좌표를 보내고, 클라이언트측에서 해당 좌표로 이동하는 방식 (서버 과부화 방지)
-     * 화살표 방향키를 때면 현재 좌표를 서버에 보내서 멈추게함
+     * 화살표 방향키를 때면 현재 좌표를 서버에 보내서 플레이어 멈추게함
      *
      * [거리계산]
      * distance 를 계산할 때 y축은 점프거리도 있으므로 제외하고
@@ -223,19 +226,22 @@ export function usePlayer(player: IPlayer) {
         0,
         player.position[2]
       );
-      const distance = currentPosXZ
-        .clone()
-        .sub(playerPosXZ)
-        .normalize()
-        .multiplyScalar(0.05);
 
-      currentPosXZ.sub(distance);
+      if (currentPosXZ.distanceTo(playerPosXZ) > 0.05) {
+        const distance = currentPosXZ
+          .clone()
+          .sub(playerPosXZ)
+          .normalize()
+          .multiplyScalar(0.05);
 
-      cylinderApi.position.set(
-        currentPosXZ.x,
-        cylinderPositionRef.current.y,
-        currentPosXZ.z
-      );
+        currentPosXZ.sub(distance);
+
+        cylinderApi.position.set(
+          currentPosXZ.x,
+          cylinderPositionRef.current.y,
+          currentPosXZ.z
+        );
+      }
     }
 
     /* 알 */
@@ -277,11 +283,11 @@ export function usePlayer(player: IPlayer) {
 
     if (keyEvt.ArrowUp && keyEvt.ArrowLeft) {
       cylinderApi.rotation.set(0, Math.PI + Math.PI / 4, 0);
-      if (me?.id !== playerId) return;
       isStartMove.current = true;
+      if (me?.id !== playerId) return;
 
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(3)
       );
 
       if (player.position[0] + 1 > cylinderPositionRef.current!.x) {
@@ -301,11 +307,11 @@ export function usePlayer(player: IPlayer) {
     }
     if (keyEvt.ArrowDown && keyEvt.ArrowLeft) {
       cylinderApi.rotation.set(0, -Math.PI / 4, 0);
-      if (me?.id !== playerId) return;
       isStartMove.current = true;
+      if (me?.id !== playerId) return;
 
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(3)
       );
 
       if (player.position[2] - 1 < cylinderPositionRef.current!.z) {
@@ -325,11 +331,11 @@ export function usePlayer(player: IPlayer) {
     }
     if (keyEvt.ArrowDown && keyEvt.ArrowRight) {
       cylinderApi.rotation.set(0, Math.PI / 4, 0);
-      if (me?.id !== playerId) return;
       isStartMove.current = true;
+      if (me?.id !== playerId) return;
 
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(3)
       );
 
       if (player.position[0] - 1 < cylinderPositionRef.current!.x) {
@@ -349,11 +355,11 @@ export function usePlayer(player: IPlayer) {
     }
     if (keyEvt.ArrowUp && keyEvt.ArrowRight) {
       cylinderApi.rotation.set(0, -(Math.PI + Math.PI / 4), 0);
-      if (me?.id !== playerId) return;
       isStartMove.current = true;
+      if (me?.id !== playerId) return;
 
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(3)
       );
 
       if (player.position[2] + 1 > cylinderPositionRef.current!.z) {
@@ -373,14 +379,14 @@ export function usePlayer(player: IPlayer) {
     }
     if (keyEvt.ArrowUp) {
       cylinderApi.rotation.set(0, Math.PI, 0);
-      if (me?.id !== playerId) return;
       isStartMove2.current = false;
+      if (me?.id !== playerId) return;
 
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(3)
       );
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(3)
       );
 
       if (
@@ -400,14 +406,14 @@ export function usePlayer(player: IPlayer) {
 
     if (keyEvt.ArrowDown) {
       cylinderApi.rotation.set(0, 0, 0);
-      if (me?.id !== playerId) return;
       isStartMove2.current = false;
+      if (me?.id !== playerId) return;
 
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(3)
       );
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(3)
       );
 
       if (
@@ -427,13 +433,13 @@ export function usePlayer(player: IPlayer) {
 
     if (keyEvt.ArrowLeft) {
       cylinderApi.rotation.set(0, -Math.PI / 2, 0);
-      if (me?.id !== playerId) return;
       isStartMove2.current = false;
+      if (me?.id !== playerId) return;
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 - 5).toFixed(3)
       );
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 + 5).toFixed(3)
       );
 
       if (
@@ -453,14 +459,14 @@ export function usePlayer(player: IPlayer) {
 
     if (keyEvt.ArrowRight) {
       cylinderApi.rotation.set(0, Math.PI / 2, 0);
-      if (me?.id !== playerId) return;
       isStartMove2.current = false;
+      if (me?.id !== playerId) return;
 
       x = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.x * 100) / 100 + 5).toFixed(3)
       );
       z = parseFloat(
-        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(2)
+        (Math.floor(cylinderPositionRef.current!.z * 100) / 100 - 5).toFixed(3)
       );
 
       if (

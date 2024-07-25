@@ -1,5 +1,4 @@
 import { PlayersAtom } from "@/store/PlayersAtom";
-import { Fragment } from "react/jsx-runtime";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
@@ -26,9 +25,7 @@ export default function GroundElements() {
   return (
     <>
       {players.map((player) => (
-        <Fragment key={player.id}>
-          <Player player={player} />
-        </Fragment>
+        <Player key={player.id} player={player} />
       ))}
 
       <TransparentWalls />

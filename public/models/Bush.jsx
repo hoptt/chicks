@@ -3,7 +3,6 @@ https://poly.pizza/m/d6STyhH76Qe
 Bush by Jarlan Perez [CC-BY] via Poly Pizza
 */
 
-import React from "react";
 import { useGLTF } from "@react-three/drei";
 
 export function Model(props) {

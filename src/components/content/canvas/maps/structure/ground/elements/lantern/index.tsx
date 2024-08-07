@@ -3,39 +3,83 @@ https://poly.pizza/m/ZSQ65S4lEu
 Public Domain
 */
 
-import { PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
-import { Merged, useGLTF } from "@react-three/drei";
+import { IsInsideLightPortalAtom } from "@/store/InteractionAtom";
+import { Merged, useGLTF, useTexture } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion-3d";
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
+
 export function PostLantern() {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/PostLantern.glb"
   );
+  const spriteRefs = useRef<any>([]);
+  const texture = useTexture(
+    "https://threejs.org/examples/textures/sprites/disc.png"
+  );
+  const [lightDispersion, setLightDispersion] = useState(0);
+
+  // 불빛이 퍼지는 효과
+  useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
+
+    spriteRefs.current.forEach((_: any, index: number) => {
+      const delay = index * 0.5;
+      const scale = 1 + Math.sin(time * 2 + delay) * 0.5;
+      const opacity = 0.1 + Math.sin(time * 2 + delay) * 0.001;
+
+      if (spriteRefs.current[index]) {
+        spriteRefs.current[index].scale.set(scale, scale, scale);
+        spriteRefs.current[index].material.opacity = opacity;
+        setLightDispersion(() => 1 + scale * 2.5);
+      }
+    });
+  });
+
   return (
-    <group position={[-6, 2, -1]}>
-      <pointLight
-        args={["#ffffff", 5, 5, 1.1]}
-        position={[0.9, -0.39, 0]}
-        castShadow
-      />
-      <group position={[0, -2, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <mesh
-          geometry={nodes.post_lantern.geometry}
-          material={materials.HalloweenBits}
-          scale={75}
-          castShadow
-        >
-          <mesh
-            geometry={nodes.post_lantern_lantern.geometry}
-            material={materials.HalloweenBits}
-            position={[0, 0.03, 0.01]}
+    <>
+      <group position={[-6, 2, -1]}>
+        {[...Array(3)].map((_, i) => (
+          <sprite
+            key={i}
+            ref={(el) => (spriteRefs.current[i] = el)}
+            position={[0.75, -0.5, 0]}
           >
-            {/* <meshStandardMaterial /> */}
+            <spriteMaterial
+              attach="material"
+              map={texture}
+              color="yellow"
+              transparent
+              opacity={0.8}
+            />
+          </sprite>
+        ))}
+        <pointLight
+          args={["#ffffff", 5, 5, 1.1]}
+          position={[0.9, -0.5, 0]}
+          intensity={lightDispersion}
+          decay={lightDispersion / 5}
+          castShadow
+        />
+        <group position={[0, -2, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <mesh
+            geometry={nodes.post_lantern.geometry}
+            material={materials.HalloweenBits}
+            scale={75}
+            castShadow
+          >
+            <mesh
+              geometry={nodes.post_lantern_lantern.geometry}
+              material={materials.HalloweenBits}
+              position={[0, 0.03, 0.01]}
+            >
+              {/* <meshStandardMaterial /> */}
+            </mesh>
           </mesh>
-        </mesh>
+        </group>
       </group>
-    </group>
+    </>
   );
 }
 
@@ -47,7 +91,7 @@ Public domain
 */
 
 export function LampSquareTable() {
-  const playerOutsideTutorial = useRecoilValue(PlayerOutsideTutorialAtom);
+  const IsInsideLightPortal = useRecoilValue(IsInsideLightPortalAtom);
   const { nodes, materials } = useGLTF("/models/LampSquareTable.glb");
   const meshes = useMemo(
     () => ({
@@ -76,19 +120,23 @@ export function LampSquareTable() {
                 <motion.group
                   initial={{ scale: -1 }}
                   animate={{
-                    scale: playerOutsideTutorial ? 1 : -1,
+                    scale: IsInsideLightPortal ? 1 : -1,
                     transition: {
                       delay: [0, 1].includes(idx)
-                        ? 0.5
+                        ? 0
                         : [2, 3].includes(idx)
-                        ? 1
+                        ? 0.15
                         : [4, 5].includes(idx)
-                        ? 1.5
-                        : 2,
+                        ? 0.3
+                        : 1,
                     },
                   }}
                 >
-                  <pointLight args={["yellow", 5, 3, 1]} position-y={0.3} />
+                  <pointLight
+                    args={["yellow", 5, 3, 1.5]}
+                    position-z={0.2}
+                    position-y={0.8}
+                  />
                 </motion.group>
 
                 <group scale={2.5}>

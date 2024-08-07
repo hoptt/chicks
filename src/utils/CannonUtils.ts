@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import * as CANNON from "cannon-es";
+import { Vector3 } from "three";
+import { Vec3 } from "cannon-es";
 
 class CannonUtils {
   static toTrimeshProps(geometry: any) {
@@ -18,7 +18,7 @@ class CannonUtils {
     const normal = geometry.attributes.normal;
     const vertices = [];
     for (let i = 0; i < position.count; i++) {
-      vertices.push(new THREE.Vector3().fromBufferAttribute(position, i));
+      vertices.push(new Vector3().fromBufferAttribute(position, i));
     }
     const faces = [];
     for (let i = 0; i < position.count; i += 3) {
@@ -26,9 +26,9 @@ class CannonUtils {
         normal === undefined
           ? []
           : [
-              new THREE.Vector3().fromBufferAttribute(normal, i),
-              new THREE.Vector3().fromBufferAttribute(normal, i + 1),
-              new THREE.Vector3().fromBufferAttribute(normal, i + 2),
+              new Vector3().fromBufferAttribute(normal, i),
+              new Vector3().fromBufferAttribute(normal, i + 1),
+              new Vector3().fromBufferAttribute(normal, i + 2),
             ];
       const face = {
         a: i,
@@ -52,9 +52,7 @@ class CannonUtils {
         Math.round(v.z * 100);
       if (verticesMap[key] === undefined) {
         verticesMap[key] = i;
-        points.push(
-          new CANNON.Vec3(vertices[i].x, vertices[i].y, vertices[i].z)
-        );
+        points.push(new Vec3(vertices[i].x, vertices[i].y, vertices[i].z));
         changes[i] = points.length - 1;
       } else {
         changes[i] = changes[verticesMap[key]];
@@ -96,7 +94,7 @@ class CannonUtils {
     body.shapeOffsets.forEach(function (offset: any) {
       offset.vsub(centreOfMass, offset);
     });
-    const worldCenterOfMass = new CANNON.Vec3();
+    const worldCenterOfMass = new Vec3();
     body.vectorToWorldFrame(centreOfMass, worldCenterOfMass);
     body.position.vadd(worldCenterOfMass, body.position);
   }

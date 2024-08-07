@@ -25,7 +25,7 @@ export const ClientSocketControls = () => {
     console.info("클라이언트- 퇴장함");
   };
   const handlePlayers = (value: IPlayer[]) => {
-    console.info("클라이언트- 플레이어 관련 이벤트");
+    console.info("클라이언트- 플레이어 관련 이벤트", value);
     setPlayers(value);
     const newMe = value.find(
       (player: IPlayer) => player && me && player.id === me.id

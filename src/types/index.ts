@@ -7,7 +7,15 @@ declare global {
       water: Object3DNode<Water, typeof Water>;
     }
   }
+  interface Window {
+    turnstile: any;
+  }
 }
+
+type Chat = {
+  id: string;
+  message: string;
+};
 
 export interface IPlayer {
   id: string;
@@ -20,7 +28,9 @@ export interface IPlayer {
     ArrowRight: boolean;
     Control: boolean;
     Z: boolean;
+    Enter: boolean;
   };
+  chat: Chat[];
   chick: IChick[];
 }
 
@@ -31,4 +41,30 @@ export interface IChick {
   birthTime: number;
   crackTime: number;
   position: [number, number, number];
+}
+
+export interface InteractionCriclePortal {
+  name: string;
+  box: {
+    max: { x: number; y: number; z: number };
+    min: { x: number; y: number; z: number };
+  };
+  isMatrixUpdated: boolean;
+  position: [number, number, number];
+}
+
+export interface ILike {
+  id: string;
+  userIp: string;
+  createdAt: string;
+  user: IUser;
+}
+
+export interface IUser {
+  id: string;
+  ip: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  like: ILike;
 }

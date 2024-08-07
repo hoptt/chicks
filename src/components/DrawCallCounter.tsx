@@ -12,14 +12,7 @@ export default function DrawCallCounter() {
     // gl.info.reset();
   });
   return (
-    <Html
-      style={{
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        transform: "translate(-50%,-50%)",
-      }}
-    >
+    <Html>
       <div
         style={{
           position: "absolute",

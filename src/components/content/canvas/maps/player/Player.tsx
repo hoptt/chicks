@@ -1,24 +1,63 @@
 import { IPlayer } from "@/types";
+import { Html } from "@react-three/drei";
 import { Fragment } from "react/jsx-runtime";
-import { usePlayer } from "./hooks/usePlayer";
-import Egg from "./Egg";
-import { Html, Text } from "@react-three/drei";
 import styled, { keyframes } from "styled-components";
+import Chatting from "./Chatting";
 import Child from "./Child";
+import Egg from "./Egg";
+import { usePlayer } from "./hooks/usePlayer";
 
 export default function Player({ player }: { player: IPlayer }) {
-  const { nicknameRef, cylinderRef, nodes, materials, memoizedPosition } =
-    usePlayer(player);
+  const {
+    isPlayerMe,
+    chatRef,
+    chat,
+    chatMessage,
+    nicknameRef,
+    cylinderRef,
+    nodes,
+    materials,
+    memoizedPosition,
+    cylinderPositionRef,
+  } = usePlayer(player);
 
   return (
     <>
       <group ref={nicknameRef}>
-        <Text fontSize={0.25}>{player.name}</Text>
+        <Html>
+          <div
+            style={{
+              transform: "translateX(-50%)",
+              fontSize: ".85rem",
+              whiteSpace: "pre",
+              fontWeight: "bold",
+              background: "#8e6300",
+              padding: ".15rem .35rem",
+              borderRadius: ".25rem",
+              lineHeight: "17px",
+              color: "white",
+            }}
+          >
+            {player.name}
+          </div>
+        </Html>
+
         {player.keyEvt.Z && (
           <Html style={{ transform: "translate(-15px,-17px)" }}>
             <LayingAnimation />
           </Html>
         )}
+      </group>
+
+      <group ref={chatRef}>
+        <Html>
+          <Chatting
+            chat={chat}
+            chatMessage={chatMessage}
+            isPlayerMe={isPlayerMe}
+            keyEvt={player.keyEvt}
+          />
+        </Html>
       </group>
 
       <group ref={cylinderRef as any}>
@@ -49,7 +88,11 @@ export default function Player({ player }: { player: IPlayer }) {
       {player.chick.map((chi, idx) => (
         <Fragment key={chi.id}>
           {!chi.isEgg ? (
-            <Child info={chi} position={player.position} idx={idx} />
+            <Child
+              info={chi}
+              idx={idx}
+              cylinderPosition={cylinderPositionRef.current}
+            />
           ) : (
             <Egg info={chi} position={player.position} />
           )}

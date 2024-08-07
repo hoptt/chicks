@@ -2,25 +2,137 @@
 https://poly.pizza/m/KUjDbhPG3K
 Park Info Board by J-Toastie [CC-BY] via Poly Pizza
 */
+import Guestbook from "@/components/content/html/Guestbook";
+import {
+  InteractionCriclePortalBoundingBoxAtom,
+  IsInsideGuestbookAtom,
+} from "@/store/InteractionAtom";
+import { Html, useCursor, useGLTF } from "@react-three/drei";
+import { useEffect, useRef, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Vector3 } from "three";
 
-import { useGLTF } from "@react-three/drei";
-import { useEffect } from "react";
-
+const position: [number, number, number] = [-4.5, 1.7, -4.5];
 export function ParkInfoBoard() {
+  const groupRef = useRef<any>();
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/ParkInfoBoard.glb"
   );
+  const IsInsideGuestbook = useRecoilValue(IsInsideGuestbookAtom);
+  const setInteractionCriclePortalBoundingBox = useSetRecoilState(
+    InteractionCriclePortalBoundingBoxAtom
+  );
+
+  // 방명록 portal
+  const portalRef = useRef<HTMLDivElement | null>(null);
+
+  const [isHover, setIsHover] = useState(false);
+  const [isOpenGuestbook, setIsOpenGuestbook] = useState(false);
+
+  useCursor(isHover);
+
+  useEffect(() => {
+    // 포털 DOM 노드 생성
+    portalRef.current = document.createElement("div");
+    portalRef.current.id = "guestbook";
+    portalRef.current.style.position = "absolute";
+    portalRef.current.style.top = "0";
+    portalRef.current.style.left = "0";
+    portalRef.current.style.width = "100%";
+    portalRef.current.style.height = "100%";
+    document.body.appendChild(portalRef.current);
+
+    return () => {
+      // 컴포넌트 언마운트 시 포털 DOM 노드 제거
+      if (portalRef.current) {
+        document.body.removeChild(portalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     materials.wood_shade1.color.set("#6a4929");
     materials.wood_shade2.color.set("#7b5d3e");
+
+    if (!groupRef.current) return;
+
+    const mesh = groupRef.current.children[0];
+    const geometry = mesh.geometry;
+
+    if (geometry.boundingBox) {
+      const boundingBox = geometry.boundingBox.clone();
+      mesh.updateMatrixWorld(true);
+      boundingBox.applyMatrix4(mesh.matrixWorld);
+
+      const center = new Vector3();
+      boundingBox.getCenter(center);
+
+      const scaledMin = new Vector3().lerpVectors(center, boundingBox.min, 1);
+      const scaledMax = new Vector3().lerpVectors(center, boundingBox.max, 1);
+
+      setInteractionCriclePortalBoundingBox((prev) => [
+        ...prev,
+        {
+          name: "ParkInfoBoard",
+          box: {
+            max: scaledMax,
+            min: scaledMin,
+          },
+          position,
+          isMatrixUpdated: true,
+        },
+      ]);
+    }
   }, []);
+
+  useEffect(() => {
+    if (!IsInsideGuestbook) {
+      setIsHover(false);
+      setIsOpenGuestbook(false);
+    }
+  }, [IsInsideGuestbook]);
+
   return (
     <group
-      position={[-4.5, 1.7, -4.5]}
+      ref={groupRef}
+      position={position}
       rotation={[-Math.PI / 2, 0, Math.PI / 4]}
       scale={[150, 100, 100]}
+      onClick={(e) => {
+        if (!IsInsideGuestbook) return;
+        e.stopPropagation();
+        setIsOpenGuestbook(true);
+      }}
+      onPointerEnter={() => {
+        if (!IsInsideGuestbook) return;
+        setIsHover(true);
+      }}
+      onPointerOut={() => {
+        if (!IsInsideGuestbook) return;
+        setIsHover(false);
+      }}
     >
+      {IsInsideGuestbook && (
+        <Html
+          style={{ cursor: "pointer", pointerEvents: "none", width: "25px" }}
+        >
+          <img
+            alt="클릭"
+            src="/images/mouse_click.webp"
+            style={{ transform: "translate(-50%,-10px)" }}
+          />
+        </Html>
+      )}
+      {isOpenGuestbook && (
+        <Html
+          wrapperClass="wrapper__initial"
+          className="sub__initial"
+          transform={false}
+          portal={{ current: portalRef.current as HTMLElement }}
+        >
+          <Guestbook />
+        </Html>
+      )}
       <mesh
         geometry={nodes.ParkInfoBoard_1.geometry}
         material={materials.wood_shade1}

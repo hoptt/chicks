@@ -5,9 +5,9 @@ import { Vector3 } from "three";
 import { SkeletonUtils } from "three-stdlib";
 
 export function useChild(
-  position: [number, number, number],
   eggPosition: [number, number, number],
   type: string,
+  cylinderPosition: Vector3,
   idx: number
 ) {
   const childRef = useRef<any>(null);
@@ -16,7 +16,11 @@ export function useChild(
   const isCheckPos = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const henPosition = new Vector3(position[0], position[1] - 0.25, position[2]);
+  const henPosition = new Vector3(
+    cylinderPosition.x,
+    cylinderPosition.y - 0.5,
+    cylinderPosition.z
+  );
 
   const memoizedEggPosition = useMemo(
     () => new Vector3(eggPosition[0], eggPosition[1], eggPosition[2]),
@@ -42,6 +46,7 @@ export function useChild(
 
   useFrame(() => {
     if (!childRef.current) return;
+
     /**
      * 3초마다 부모의 위치 저장
      * 부모의 위치 변화 감지하여 3초동안 변하지 않을시 다른 동작 애니메이션
@@ -70,18 +75,18 @@ export function useChild(
       }
 
       /* 좀 더 매끄러운 정지를 위해 */
-      if (childRef.current.position.distanceTo(henPosition) < 0.975 + idx) {
-        /* 한자리에 계속 머물고 있다면 */
-        if (prevData.current && henPosition.equals(prevData.current)) {
-          setAnimation(
-            `AnimalArmature|AnimalArmature|AnimalArmature|${
-              type === "Raccoon" ? "Headbutt" : "Idle_Peck"
-            }`
-          );
-        } else {
-          setAnimation("AnimalArmature|AnimalArmature|AnimalArmature|Idle");
-        }
+      // if (childRef.current.position.distanceTo(henPosition) < 0.975 + idx) {
+      /* 한자리에 계속 머물고 있다면 */
+      if (prevData.current && henPosition.equals(prevData.current)) {
+        setAnimation(
+          `AnimalArmature|AnimalArmature|AnimalArmature|${
+            type === "Raccoon" ? "Headbutt" : "Idle_Peck"
+          }`
+        );
+      } else {
+        setAnimation("AnimalArmature|AnimalArmature|AnimalArmature|Idle");
       }
+      // }
     }
   });
 

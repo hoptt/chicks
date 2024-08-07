@@ -3,7 +3,6 @@ https://poly.pizza/m/j4KsIuJYnq
 Public Domain
 */
 
-import React from "react";
 import { useGLTF } from "@react-three/drei";
 
 export function Model(props) {

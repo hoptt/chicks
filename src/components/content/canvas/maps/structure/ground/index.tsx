@@ -11,6 +11,7 @@ import {
   FloorStoneWalkway,
   FloorWhiteStone,
 } from "./elements/floor";
+import { CircleInteractionPortal } from "./elements/interactionPortal";
 import { LampSquareTable, PostLantern } from "./elements/lantern";
 import { Lilypad } from "./elements/Lilypad";
 import { ParkInfoBoard } from "./elements/ParkInfoBoard";
@@ -22,18 +23,21 @@ import { ShojiWall, TransparentWalls } from "./elements/wall";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
+
   return (
-    <>
+    <group>
       {players.map((player) => (
         <Player key={player.id} player={player} />
       ))}
-
       <TransparentWalls />
+
+      <CircleInteractionPortal name="lightPortal" position={[0, 0.2, -5]} />
 
       {/* Toutorial */}
       <HowToPlay />
       <FakePlayer />
       <PostLantern />
+
       <ParkInfoBoard />
 
       {/* 1st Floor */}
@@ -58,6 +62,6 @@ export default function GroundElements() {
       {/* 2nd Floor*/}
       <Floor2nd />
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
-    </>
+    </group>
   );
 }

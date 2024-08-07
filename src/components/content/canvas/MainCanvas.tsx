@@ -1,8 +1,9 @@
 import DrawCallCounter from "@/components/DrawCallCounter";
-import { Debug, Physics } from "@react-three/cannon";
+import { isDev } from "@/utils";
+import { Physics } from "@react-three/cannon";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
-import GroundElements from "./maps/structure/ground";
+import RootMap from "./maps/RootMap";
 
 export default function MainCanvas() {
   const aspectRatio = window.innerWidth / window.innerHeight;
@@ -15,20 +16,21 @@ export default function MainCanvas() {
       camera={{
         fov: 45,
         aspect: aspectRatio,
-        near: 0.01,
-        far: 100000,
+        near: 0.1,
+        far: 1000,
         position: [12, 12, 12],
       }}
     >
-      {/* <OrbitControls /> */}
+      {/* <OrbitControls  /> */}
       <Light />
-      <Physics broadphase="SAP" allowSleep gravity={[0, -9, 0]}>
-        <Debug>
-          {/* <Box args={[1, 1, 1]} castShadow>
-            <meshStandardMaterial color="hotpink" />
-          </Box> */}
-          <GroundElements />
-        </Debug>
+      <Physics allowSleep gravity={[0, -9, 0]}>
+        {isDev ? (
+          // <Debug>
+          <RootMap />
+        ) : (
+          // </Debug>
+          <RootMap />
+        )}
       </Physics>
       <DrawCallCounter />
     </Canvas>

@@ -24,7 +24,7 @@ export default function Egg({
       >
         {isEgg && (
           <Html>
-            <Hourglass isAnimationOver={isAnimationOver}>
+            <Hourglass $isAnimationOver={isAnimationOver}>
               <TbClockHour8 />
             </Hourglass>
           </Html>
@@ -57,8 +57,8 @@ const rotate = keyframes`
 }
 `;
 
-const Hourglass = styled.div<{ isAnimationOver: boolean }>`
-  opacity: ${(props) => (props.isAnimationOver ? 1 : 0)};
+const Hourglass = styled.div<{ $isAnimationOver: boolean }>`
+  opacity: ${(props) => (props.$isAnimationOver ? 1 : 0)};
   position: absolute;
   display: flex;
   justify-content: center;

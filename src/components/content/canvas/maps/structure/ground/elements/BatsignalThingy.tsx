@@ -3,7 +3,7 @@ https://poly.pizza/m/1XHM3E7rzsT
 Bat signal Thingy by Clorama Dorvilias [CC-BY] via Poly Pizza
 */
 
-import { PlayerOutsideTutorialAtom } from "@/store/PlayersAtom";
+import { IsInsideLightPortalAtom } from "@/store/InteractionAtom";
 import { SpotLight, useGLTF } from "@react-three/drei";
 import { motion } from "framer-motion-3d";
 import { useEffect, useMemo, useRef } from "react";
@@ -12,7 +12,7 @@ import { DoubleSide, Object3D } from "three";
 import { mergeBufferGeometries } from "three-stdlib";
 
 export function BatsignalThingy() {
-  const playerOutsideTutorial = useRecoilValue(PlayerOutsideTutorialAtom);
+  const IsInsideLightPortal = useRecoilValue(IsInsideLightPortalAtom);
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/BatsignalThingy.glb"
   );
@@ -53,8 +53,8 @@ export function BatsignalThingy() {
       <motion.group
         initial={{ scaleY: -1 }}
         animate={{
-          scaleY: playerOutsideTutorial ? 1 : -1,
-          transition: { delay: 3.5 },
+          scaleY: IsInsideLightPortal ? 1 : -1,
+          transition: { delay: 1.5 },
         }}
       >
         <SpotLight
@@ -89,8 +89,8 @@ export function BatsignalThingy() {
       <motion.group
         initial={{ scaleY: -1 }}
         animate={{
-          scaleY: playerOutsideTutorial ? 1 : -1,
-          transition: { delay: 3.5 },
+          scaleY: IsInsideLightPortal ? 1 : -1,
+          transition: { delay: 1.5 },
         }}
       >
         <SpotLight

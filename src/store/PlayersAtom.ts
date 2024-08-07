@@ -18,9 +18,3 @@ export const PlayersAtom = atom<IPlayer[]>({
   key: "PlayersAtom",
   default: [],
 });
-
-// 튜토리얼 벗어났는지
-export const PlayerOutsideTutorialAtom = atom({
-  key: "PlayerOutsideTutorialAtom",
-  default: false,
-});

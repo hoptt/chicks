@@ -1,19 +1,21 @@
 import { IChick } from "@/types";
 import { useChild } from "./hooks/useChild";
+import { Vector3 } from "three";
+
 type Props = {
   info: IChick;
-  position: [number, number, number];
   idx: number;
+  cylinderPosition: Vector3;
 };
 export default function Child({
   info: { position: eggPosition, type },
-  position,
   idx,
+  cylinderPosition,
 }: Props) {
   const { childRef, childnodes, materials, memoizedEggPosition } = useChild(
-    position,
     eggPosition,
     type,
+    cylinderPosition,
     idx
   );
 

@@ -26,8 +26,7 @@ export function Lilypad() {
   const rdnX = Math.random() * (endX - startX) + startX;
   const rdnZ = Math.random() * (endZ - startZ) + startZ;
   const newPos = useMemo(() => new Vector3(rdnX, y, rdnZ), []);
-  const [baam, setBaam] = useState(() => newPos);
-  //   newPosRef.current = newPos;
+  const [rdmPos, setRdmPos] = useState(() => newPos);
 
   useFrame(() => {
     /* 
@@ -35,18 +34,17 @@ export function Lilypad() {
     해당 방향으로 연못이 이동하고 도착하면 새로운 좌표로 다시 이동
     */
     if (!ref.current) return;
-    if (ref.current.position.distanceTo(baam) > 0.1) {
+    if (ref.current.position.distanceTo(rdmPos) > 0.1) {
       const distance = ref.current.position
         .clone()
-        .sub(baam)
+        .sub(rdmPos)
         .normalize()
         .multiplyScalar(0.0025);
       ref.current.position.sub(distance);
     } else {
       const rdnX = Math.random() * (endX - startX) + startX;
       const rdnZ = Math.random() * (endZ - startZ) + startZ;
-      setBaam(new Vector3(rdnX, y, rdnZ));
-      //   newPosRef.current = new Vector3(rdnX, y, rdnZ);
+      setRdmPos(new Vector3(rdnX, y, rdnZ));
     }
   });
 

@@ -3,7 +3,6 @@ https://poly.pizza/m/10nw136Xjl
 Bridge by Pixel [CC-BY] via Poly Pizza
 */
 
-import React from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 
 export function Model(props) {

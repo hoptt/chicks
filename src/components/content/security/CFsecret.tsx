@@ -4,7 +4,7 @@ export default function CFsecret() {
   useEffect(() => {
     window.turnstile.ready(function () {
       window.turnstile.render("#cfsc", {
-        sitekey: `${import.meta.env.VITE_CF_SITE_KEY}`,
+        sitekey: `${import.meta.env.VITE_CF_SECRET_KEY}`,
         callback: async (token: any) => {
           const response = await fetch(
             `${import.meta.env.VITE_BACKEND_URL}/check-cf`,

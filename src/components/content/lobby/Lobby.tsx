@@ -15,6 +15,7 @@ const maximumPlayers = 6;
 export default function Lobby() {
   const players = useRecoilValue(PlayersAtom);
   const [error, setError] = useState(0);
+  const [cfsc, setCfsc] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [tempNickname, setTempNickname] = useState("");
   const isDuplicate =
@@ -27,6 +28,10 @@ export default function Lobby() {
   useEffect(() => {
     setError(players.length >= maximumPlayers ? 3 : 0);
   }, [players.length]);
+
+  const handleCf = (status: number) => {
+    setCfsc(status === 200 ? true : false);
+  };
 
   const handleEnter = async () => {
     try {
@@ -78,10 +83,10 @@ export default function Lobby() {
         }}
         value={tempNickname}
         onKeyUp={(e) => {
+          if (!cfsc) return setError(4);
           if (!isValidText(tempNickname)) return setError(1);
           if (isDuplicate) return setError(2);
           if (isFull) return setError(3);
-
           setError(0);
           if (e.key === "Enter") {
             handleEnter();
@@ -92,13 +97,14 @@ export default function Lobby() {
         {error === 1 && <>6글자 이하로 입력해주세요</>}
         {error === 2 && <>이미 사용중인 이름이에요</>}
         {error === 3 && <>앗! 인원이 가득 찼어요</>}
+        {error === 4 && <>입장이 제한되었습니다</>}
       </WarningMessage>
-      <CFsecret />
+      <CFsecret handleCf={handleCf} />
       <NextBtn
-        disabled={!isValidText(tempNickname) || isDuplicate || isFull}
+        disabled={!isValidText(tempNickname) || isDuplicate || isFull || !cfsc}
         onClick={handleEnter}
       >
-        {isLoading ? "로딩중" : "입장하기"}
+        {cfsc ? (isLoading ? "로딩중" : "입장하기") : "입장제한"}
       </NextBtn>
     </Container>
   );

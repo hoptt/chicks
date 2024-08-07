@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 
-export default function CFsecret() {
+type Props = {
+  handleCf: (status: number) => void;
+};
+export default function CFsecret({ handleCf }: Props) {
   useEffect(() => {
     window.turnstile.ready(function () {
       window.turnstile.render("#cfsc", {
@@ -17,11 +20,11 @@ export default function CFsecret() {
             }
           );
           const data = await response.json();
-          console.log(`Challenge Success ${token}`);
-          console.log(`Challenge Success dataa ${data}`);
+          console.log(JSON.stringify(data));
+          handleCf(data.status);
         },
       });
     });
   }, []);
-  return <div id="cfsc" className="my-3" />;
+  return <div id="cfsc" className="mb-2" />;
 }

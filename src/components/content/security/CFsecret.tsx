@@ -18,7 +18,7 @@ export default function CFsecret() {
           );
           const data = await response.json();
           console.log(`Challenge Success ${token}`);
-          console.log(`Challenge Success data ${data}`);
+          console.log(`Challenge Success dataa ${data}`);
         },
       });
     });

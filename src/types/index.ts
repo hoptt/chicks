@@ -19,6 +19,7 @@ type Chat = {
 
 export interface IPlayer {
   id: string;
+  ip: string;
   position: [number, number, number];
   name: string;
   keyEvt: {
@@ -67,4 +68,9 @@ export interface IUser {
   createdAt: string;
   updatedAt: string;
   like: ILike;
+}
+
+export interface APIResponse<T> {
+  status: number;
+  data: T;
 }

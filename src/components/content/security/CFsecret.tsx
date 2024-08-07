@@ -9,7 +9,6 @@ export default function CFsecret({ handleCf }: Props) {
       window.turnstile.render("#cfsc", {
         sitekey: `${import.meta.env.VITE_CF_SECRET_KEY}`,
         callback: async (token: any) => {
-          console.log(token);
           const response = await fetch(
             `${import.meta.env.VITE_BACKEND_URL}/check-cf`,
             {
@@ -21,7 +20,6 @@ export default function CFsecret({ handleCf }: Props) {
             }
           );
           const data = await response.json();
-          console.log(JSON.stringify(data));
           handleCf(data.status);
         },
       });

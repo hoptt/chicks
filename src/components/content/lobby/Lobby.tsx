@@ -3,19 +3,19 @@ import {
   CharacterSelectedFinishedAtom,
   PlayersAtom,
 } from "@/store/PlayersAtom";
-import { isValidText } from "@/utils";
+import { isDev, isValidText } from "@/utils";
 import { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { PiUsersFill } from "react-icons/pi";
 import styled from "styled-components";
-import { IUser } from "@/types";
+import { APIResponse, IUser } from "@/types";
 import CFsecret from "../security/CFsecret";
 
 const maximumPlayers = 6;
 export default function Lobby() {
   const players = useRecoilValue(PlayersAtom);
   const [error, setError] = useState(0);
-  const [cfsc, setCfsc] = useState(false);
+  const [cfsc, setCfsc] = useState(isDev ? true : false);
   const [isLoading, setIsLoading] = useState(false);
   const [tempNickname, setTempNickname] = useState("");
   const isDuplicate =
@@ -47,12 +47,18 @@ export default function Lobby() {
         }
       );
 
-      const data: IUser = await response.json();
+      const { data, status }: APIResponse<{ user: IUser; ip: string }> =
+        await response.json();
 
-      socket.emit("initialize", {
-        tempName: data.name,
-      });
-      setCharacterSelectedFinished(true);
+      if (status === 200) {
+        socket.emit("initialize", {
+          tempName: data.user.name,
+          ip: data.ip,
+        });
+        setCharacterSelectedFinished(true);
+      } else {
+        setError(5);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -98,8 +104,10 @@ export default function Lobby() {
         {error === 2 && <>이미 사용중인 이름이에요</>}
         {error === 3 && <>앗! 인원이 가득 찼어요</>}
         {error === 4 && <>입장이 제한되었습니다</>}
+        {error === 5 && <>서버 통신 중 오류가 발생하였습니다</>}
       </WarningMessage>
-      <CFsecret handleCf={handleCf} />
+      {!isDev && <CFsecret handleCf={handleCf} />}
+
       <NextBtn
         disabled={!isValidText(tempNickname) || isDuplicate || isFull || !cfsc}
         onClick={handleEnter}

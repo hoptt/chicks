@@ -7,7 +7,7 @@ export const CharacterSelectedFinishedAtom = atom({
   default: false,
 });
 
-// 내 정보 저장
+// 내 유저 정보 저장
 export const MeAtom = atom<IPlayer | undefined>({
   key: "MeAtom",
   default: undefined,

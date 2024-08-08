@@ -17,6 +17,18 @@ body {
   margin: 0;
   padding: 0;
 }
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(31, 30, 30); /* 스크롤바 색상 */
+  border-radius: 10px; /* 스크롤바 둥근 테두리 */
+}
+::-webkit-scrollbar-track {
+  background: rgba(165, 144, 148, 0.1); /*스크롤바 뒷 배경 색상*/
+}
 
 body.pointer {
   cursor: pointer;

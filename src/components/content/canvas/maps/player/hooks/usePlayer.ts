@@ -112,6 +112,7 @@ export function usePlayer(player: IPlayer) {
 
   useEffect(() => {
     const keyDownPressHandler = (e: KeyboardEvent) => {
+      e.stopPropagation();
       // 허용되는 키
       if (!ALLOW_KEYS.includes(e.key.toUpperCase() as keyof typeof keyEvt))
         return;
@@ -212,6 +213,7 @@ export function usePlayer(player: IPlayer) {
         });
     };
     const keyUpPressHandler = (e: KeyboardEvent) => {
+      e.stopPropagation();
       // 허용되는 키
       if (!ALLOW_KEYS.includes(e.key.toUpperCase() as keyof typeof keyEvt))
         return;

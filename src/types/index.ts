@@ -19,7 +19,7 @@ type Chat = {
 
 export interface IPlayer {
   id: string;
-  ip: string;
+  uid: string;
   position: [number, number, number];
   name: string;
   keyEvt: {
@@ -56,14 +56,14 @@ export interface InteractionCriclePortal {
 
 export interface ILike {
   id: string;
-  userIp: string;
+  uid: string;
   createdAt: string;
   user: IUser;
 }
 
 export interface IUser {
   id: string;
-  ip: string;
+  uid: string;
   name: string;
   createdAt: string;
   updatedAt: string;
@@ -73,4 +73,13 @@ export interface IUser {
 export interface APIResponse<T> {
   status: number;
   data: T;
+}
+
+export interface IGuestbook {
+  id: number;
+  content: string;
+  uid: string;
+  createdAt: string;
+  updatedAt: string;
+  use: string;
 }

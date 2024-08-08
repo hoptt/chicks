@@ -2,11 +2,12 @@
 https://poly.pizza/m/KUjDbhPG3K
 Park Info Board by J-Toastie [CC-BY] via Poly Pizza
 */
-import Guestbook from "@/components/content/html/Guestbook";
+import Guestbook from "@/components/content/html/guestbook";
 import {
   InteractionCriclePortalBoundingBoxAtom,
   IsInsideGuestbookAtom,
 } from "@/store/InteractionAtom";
+import { MeAtom } from "@/store/PlayersAtom";
 import { Html, useCursor, useGLTF } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -18,6 +19,7 @@ export function ParkInfoBoard() {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/ParkInfoBoard.glb"
   );
+  const me = useRecoilValue(MeAtom);
   const IsInsideGuestbook = useRecoilValue(IsInsideGuestbookAtom);
   const setInteractionCriclePortalBoundingBox = useSetRecoilState(
     InteractionCriclePortalBoundingBoxAtom
@@ -31,11 +33,15 @@ export function ParkInfoBoard() {
 
   useCursor(isHover);
 
+  const handleCloseGuestbook = () => {
+    setIsOpenGuestbook(false);
+  };
+
   useEffect(() => {
     // 포털 DOM 노드 생성
     portalRef.current = document.createElement("div");
     portalRef.current.id = "guestbook";
-    portalRef.current.style.position = "absolute";
+    portalRef.current.style.position = "fixed";
     portalRef.current.style.top = "0";
     portalRef.current.style.left = "0";
     portalRef.current.style.width = "100%";
@@ -92,6 +98,11 @@ export function ParkInfoBoard() {
     }
   }, [IsInsideGuestbook]);
 
+  useEffect(() => {
+    if (portalRef.current)
+      portalRef.current!.style.zIndex = isOpenGuestbook ? "1" : "-1";
+  }, [isOpenGuestbook]);
+
   return (
     <group
       ref={groupRef}
@@ -101,6 +112,7 @@ export function ParkInfoBoard() {
       onClick={(e) => {
         if (!IsInsideGuestbook) return;
         e.stopPropagation();
+
         setIsOpenGuestbook(true);
       }}
       onPointerEnter={() => {
@@ -130,7 +142,7 @@ export function ParkInfoBoard() {
           transform={false}
           portal={{ current: portalRef.current as HTMLElement }}
         >
-          <Guestbook />
+          <Guestbook closeModal={handleCloseGuestbook} player={me!} />
         </Html>
       )}
       <mesh

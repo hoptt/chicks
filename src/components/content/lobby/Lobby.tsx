@@ -47,13 +47,13 @@ export default function Lobby() {
         }
       );
 
-      const { data, status }: APIResponse<{ user: IUser; ip: string }> =
+      const { data, status }: APIResponse<{ user: IUser; uid: string }> =
         await response.json();
 
       if (status === 200) {
         socket.emit("initialize", {
           tempName: data.user.name,
-          ip: data.ip,
+          uid: data.uid,
         });
         setCharacterSelectedFinished(true);
       } else {

@@ -47,13 +47,13 @@ export default function Lobby() {
         }
       );
 
-      const { data, status }: APIResponse<{ user: IUser; uid: string }> =
+      const { data, status }: APIResponse<{ user: IUser }> =
         await response.json();
 
       if (status === 200) {
         socket.emit("initialize", {
           tempName: data.user.name,
-          uid: data.uid,
+          uid: data.user.uid,
         });
         setCharacterSelectedFinished(true);
       } else {
@@ -82,7 +82,6 @@ export default function Lobby() {
         </div>
       </UserCount>
       <Input
-        autoFocus
         placeholder="이름을 입력해주세요"
         onChange={(e) => {
           setTempNickname(e.currentTarget.value);

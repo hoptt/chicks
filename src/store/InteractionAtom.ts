@@ -12,6 +12,16 @@ export const IsInsideGuestbookAtom = atom({
   key: "IsInsideGuestbook",
   default: false,
 });
+// 집안 가벽 상호작용 포탈
+export const IsInsideHouseAtom = atom({
+  key: "IsInsideHouse",
+  default: false,
+});
+// 집 문 상호작용 포탈
+export const IsInsideHouseDoorAtom = atom({
+  key: "IsInsideHouseDoor",
+  default: false,
+});
 
 // 포탈 위치
 export const InteractionCriclePortalBoundingBoxAtom = atom<

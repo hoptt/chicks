@@ -1,12 +1,7 @@
-import CannonUtils from "@/utils/CannonUtils";
-import {
-  useBox,
-  useCompoundBody,
-  useConvexPolyhedron,
-} from "@react-three/cannon";
+import { useBox, useCompoundBody } from "@react-three/cannon";
 import { Merged, useTexture } from "@react-three/drei";
 import { useEffect, useMemo } from "react";
-import { ExtrudeGeometry, Shape } from "three";
+import { ExtrudeGeometry, RepeatWrapping, Shape } from "three";
 
 export function Wall({
   args,
@@ -14,12 +9,14 @@ export function Wall({
   position,
   rotation,
   castShadow = true,
+  isHidden = false,
 }: {
   args: [number, number, number];
   color: string;
   position: [number, number, number];
   rotation: [number, number, number];
   castShadow?: boolean;
+  isHidden?: boolean;
 }) {
   const [ref] = useBox(() => ({
     type: "Static",
@@ -30,10 +27,12 @@ export function Wall({
 
   return (
     <group ref={ref as any}>
-      <mesh receiveShadow castShadow={castShadow}>
-        <boxGeometry args={args} />
-        <meshStandardMaterial color={color} />
-      </mesh>
+      {!isHidden && (
+        <mesh receiveShadow castShadow={castShadow}>
+          <boxGeometry args={args} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+      )}
     </group>
   );
 }
@@ -45,6 +44,7 @@ export function WallTexture({
   color,
   map,
   castShadow = true,
+  isHidden = false,
 }: {
   args: [number, number, number];
   position: [number, number, number];
@@ -52,6 +52,7 @@ export function WallTexture({
   castShadow?: boolean;
   color?: string;
   map: string;
+  isHidden?: boolean;
 }) {
   const [ref] = useBox(() => ({
     type: "Static",
@@ -62,12 +63,18 @@ export function WallTexture({
 
   const vintageWoodTexture = useTexture(`/textures/floor/${map}.jpg`);
 
+  vintageWoodTexture.wrapS = RepeatWrapping;
+  vintageWoodTexture.wrapT = RepeatWrapping;
+  vintageWoodTexture.repeat.x = 2;
+  vintageWoodTexture.repeat.y = 2;
   return (
     <group ref={ref as any}>
-      <mesh receiveShadow castShadow={castShadow}>
-        <boxGeometry args={args} />
-        <meshStandardMaterial map={vintageWoodTexture} color={color} />
-      </mesh>
+      {!isHidden && (
+        <mesh receiveShadow castShadow={castShadow}>
+          <boxGeometry args={args} />
+          <meshStandardMaterial map={vintageWoodTexture} color={color} />
+        </mesh>
+      )}
     </group>
   );
 }
@@ -106,17 +113,11 @@ export function WallWithHole({
     depth,
   });
 
-  const args: any = useMemo(
-    () => CannonUtils.toConvexPolyhedronProps(geometry),
-    []
-  );
-
-  const [ref, _] = useConvexPolyhedron(() => ({
+  const [ref, _] = useBox(() => ({
     type: "Static",
-    args,
+    args: [10, 10, 0.2],
     rotation,
     position,
-    mass: 1,
   }));
 
   return (
@@ -191,6 +192,30 @@ export function ShojiWall() {
               </group>
               <group
                 scale={[200, 200, 100]}
+                rotation={[0, Math.PI / 2, 0]}
+                position={[-7, 0, -29]}
+              >
+                <mesh.Wall_Shojia material={materials.Atlas} />
+                <mesh.Wall_Shojib material={materials.Light} />
+              </group>
+              <group
+                scale={[200, 200, 100]}
+                rotation={[0, Math.PI / 2, 0]}
+                position={[-7, 0, -37]}
+              >
+                <mesh.Wall_Shojia material={materials.Atlas} />
+                <mesh.Wall_Shojib material={materials.Light} />
+              </group>
+              <group
+                scale={[200, 200, 100]}
+                rotation={[0, Math.PI / 2, 0]}
+                position={[-7, 0, -45]}
+              >
+                <mesh.Wall_Shojia material={materials.Atlas} />
+                <mesh.Wall_Shojib material={materials.Light} />
+              </group>
+              <group
+                scale={[200, 200, 100]}
                 rotation={[0, Math.PI / 1.3, 0]}
                 position={[-5, 0, 8]}
               >
@@ -237,7 +262,7 @@ export function TransparentWalls() {
     shapes: [
       {
         type: "Box",
-        args: [1, 15, 25],
+        args: [1, 15, 70],
         position: [-9.3, 0, -13],
         rotation: [0, 0, 0],
       },

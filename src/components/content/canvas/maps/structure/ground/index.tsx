@@ -2,12 +2,14 @@ import { PlayersAtom } from "@/store/PlayersAtom";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
+import ModernRoom from "../room/ModernRoom";
 import HowToPlay from "../tutorial/HowToPlay";
 import { BatsignalThingy } from "./elements/BatsignalThingy";
 import Bridge from "./elements/Bridge";
 import {
   Floor2nd,
   FloorGround,
+  FloorStonePebble,
   FloorStoneWalkway,
   FloorWhiteStone,
 } from "./elements/floor";
@@ -62,6 +64,9 @@ export default function GroundElements() {
       {/* 2nd Floor*/}
       <Floor2nd />
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
+
+      <FloorStonePebble />
+      <ModernRoom />
     </group>
   );
 }

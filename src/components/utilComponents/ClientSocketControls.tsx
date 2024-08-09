@@ -1,13 +1,15 @@
 // 서버측에서 emit 한 이벤트를 이 클라이언트에서 on 메서드로 처리해주는 부분
 import { socket } from "@/sockets/clientSocket";
+import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom, PlayersAtom } from "@/store/PlayersAtom";
-import { IPlayer } from "@/types";
+import { IObjects, IPlayer } from "@/types";
 import { useEffect } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 export const ClientSocketControls = () => {
   const [me, setMe] = useRecoilState(MeAtom);
   const setPlayers = useSetRecoilState(PlayersAtom);
+  const setObjects = useSetRecoilState(ObjectsAtom);
   const handleConnect = () => {
     console.info("클라이언트- 연결됨");
   };
@@ -32,6 +34,9 @@ export const ClientSocketControls = () => {
     );
     if (newMe) setMe(newMe);
   };
+  const handleObjects = (value: IObjects[]) => {
+    setObjects(value);
+  };
 
   useEffect(() => {
     socket.on("connect", handleConnect);
@@ -40,6 +45,7 @@ export const ClientSocketControls = () => {
     socket.on("enter", handleEnter);
     socket.on("exit", handleExit);
     socket.on("players", handlePlayers);
+    socket.on("objects", handleObjects);
 
     return () => {
       socket.off("connect", handleConnect);
@@ -48,6 +54,7 @@ export const ClientSocketControls = () => {
       socket.off("enter", handleEnter);
       socket.off("exit", handleExit);
       socket.off("players", handlePlayers);
+      socket.off("objects", handleObjects);
     };
   }, []);
 

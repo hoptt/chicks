@@ -88,6 +88,7 @@ export default function Lobby() {
         }}
         value={tempNickname}
         onKeyUp={(e) => {
+          if (isLoading) return setError(0);
           if (!cfsc) return setError(4);
           if (!isValidText(tempNickname)) return setError(1);
           if (isDuplicate) return setError(2);
@@ -108,7 +109,13 @@ export default function Lobby() {
       {!isDev && <CFsecret handleCf={handleCf} />}
 
       <NextBtn
-        disabled={!isValidText(tempNickname) || isDuplicate || isFull || !cfsc}
+        disabled={
+          !isValidText(tempNickname) ||
+          isDuplicate ||
+          isFull ||
+          !cfsc ||
+          isLoading
+        }
         onClick={handleEnter}
       >
         {cfsc ? (isLoading ? "로딩중" : "입장하기") : "입장제한"}

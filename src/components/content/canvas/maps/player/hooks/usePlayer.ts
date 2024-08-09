@@ -3,12 +3,14 @@ import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
   IsInsideGuestbookAtom,
+  IsInsideHouseAtom,
+  IsInsideHouseDoorAtom,
   IsInsideLightPortalAtom,
 } from "@/store/InteractionAtom";
 import { MeAtom } from "@/store/PlayersAtom";
 import { IPlayer } from "@/types";
 import LayingEggsUtils from "@/utils/LayingEggsUtils";
-import { Triplet, useBox } from "@react-three/cannon";
+import { Triplet, useSphere } from "@react-three/cannon";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -48,6 +50,10 @@ export function usePlayer(player: IPlayer) {
 
   // 방명록 상호작용
   const setIsInsideGuestbook = useSetRecoilState(IsInsideGuestbookAtom);
+  // 집안 가벽 상호작용
+  const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
+  // 집 문 상호작용
+  const setIsInsideHouseDoor = useSetRecoilState(IsInsideHouseDoorAtom);
 
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const isLayingEgg = useRef(false);
@@ -60,13 +66,13 @@ export function usePlayer(player: IPlayer) {
 
   const memoizedPosition = useMemo(() => new Vector3(0, -0.5, 0), []);
 
-  const [cylinderRef, cylinderApi] = useBox(() => ({
+  const [cylinderRef, cylinderApi] = useSphere(() => ({
     type: "Dynamic",
     mass: 10,
-    position: [position[0], 1, position[2]],
+    position: [position[0], 3, position[2]],
     linearDamping: 0.98,
     angularDamping: 0.98,
-    args: [0.75, 1, 0.75],
+    args: [0.5],
     // 지면에 닿아있을때 방향이 물리엔진 영향을 받지않도록
     fixedRotation: true,
     allowSleep: false,
@@ -422,6 +428,48 @@ export function usePlayer(player: IPlayer) {
         setIsInsideGuestbook(true);
       } else {
         setIsInsideGuestbook(false);
+      }
+    }
+    /* 상호작용 이벤트(3) - 집안 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return getInRangeX && getInRangeZ && structure.name === "innerHouse";
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideHouse(true);
+      } else {
+        setIsInsideHouse(false);
+      }
+    }
+    /* 상호작용 이벤트(4) - 집문 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return getInRangeX && getInRangeZ && structure.name === "door";
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideHouseDoor(true);
+      } else {
+        setIsInsideHouseDoor(false);
       }
     }
 

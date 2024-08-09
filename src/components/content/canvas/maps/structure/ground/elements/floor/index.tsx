@@ -231,3 +231,35 @@ export function FloorStoneWalkway({ count, height, y, z, z2 }: Props) {
   );
 }
 useGLTF.preload("/models/StoneWalkway.glb");
+
+/*
+https://poly.pizza/m/Mm4RMgwNO8
+Pebble Square by Quaternius
+*/
+
+export function FloorStonePebble() {
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/PebbleSquare.glb"
+  );
+
+  const [ref] = useBox(() => ({
+    type: "Static",
+    material: "ground",
+    position: [0.3, 1, -33.1],
+    args: [10, 1, 5],
+  }));
+
+  return (
+    <group ref={ref as any} scale={[30, 3, 20]}>
+      <mesh
+        receiveShadow
+        rotation={[0, 0, 0]}
+        position={[-0.01, 0, -0.01]}
+        geometry={nodes.Pebble_Square_2.geometry}
+        material={materials.PathRocks}
+      />
+    </group>
+  );
+}
+
+useGLTF.preload("/models/PebbleSquare.glb");

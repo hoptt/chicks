@@ -35,6 +35,12 @@ export interface IPlayer {
   chick: IChick[];
 }
 
+export interface IObjects {
+  id: number;
+  name: string;
+  value: boolean;
+}
+
 export interface IChick {
   id: string;
   isEgg: boolean;

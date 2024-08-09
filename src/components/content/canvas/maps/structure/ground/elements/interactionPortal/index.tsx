@@ -39,7 +39,6 @@ export function CircleInteractionPortal({ name, position }: Props) {
       boundingBox.getCenter(center);
       const scaledMin = new Vector3().lerpVectors(center, boundingBox.min, 1.2);
       const scaledMax = new Vector3().lerpVectors(center, boundingBox.max, 1.2);
-
       setInteractionCriclePortalBoundingBox((prev) =>
         uniqBy(
           [

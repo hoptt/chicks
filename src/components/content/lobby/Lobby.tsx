@@ -11,7 +11,7 @@ import styled from "styled-components";
 import { APIResponse, IUser } from "@/types";
 import CFsecret from "../security/CFsecret";
 
-const maximumPlayers = 6;
+const maximumPlayers = 8;
 export default function Lobby() {
   const players = useRecoilValue(PlayersAtom);
   const [error, setError] = useState(0);

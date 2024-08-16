@@ -1,13 +1,15 @@
 import { useBox, useCompoundBody } from "@react-three/cannon";
 import { Merged, useTexture } from "@react-three/drei";
-import { useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { ExtrudeGeometry, RepeatWrapping, Shape } from "three";
 
-export function Wall({
+export const Wall = memo(function Wall({
   args,
   color,
   position,
   rotation,
+  transparent = false,
+  opacity = 1,
   castShadow = true,
   isHidden = false,
 }: {
@@ -15,6 +17,8 @@ export function Wall({
   color: string;
   position: [number, number, number];
   rotation: [number, number, number];
+  transparent?: boolean;
+  opacity?: number;
   castShadow?: boolean;
   isHidden?: boolean;
 }) {
@@ -24,20 +28,23 @@ export function Wall({
     args,
     position,
   }));
-
   return (
     <group ref={ref as any}>
       {!isHidden && (
         <mesh receiveShadow castShadow={castShadow}>
           <boxGeometry args={args} />
-          <meshStandardMaterial color={color} />
+          <meshStandardMaterial
+            color={color}
+            transparent={transparent}
+            opacity={opacity}
+          />
         </mesh>
       )}
     </group>
   );
-}
+});
 
-export function WallTexture({
+export const WallTexture = memo(function WallTexture({
   args,
   position,
   rotation,
@@ -45,6 +52,7 @@ export function WallTexture({
   map,
   castShadow = true,
   isHidden = false,
+  repeat = 2,
 }: {
   args: [number, number, number];
   position: [number, number, number];
@@ -53,6 +61,7 @@ export function WallTexture({
   color?: string;
   map: string;
   isHidden?: boolean;
+  repeat?: number;
 }) {
   const [ref] = useBox(() => ({
     type: "Static",
@@ -61,12 +70,12 @@ export function WallTexture({
     position,
   }));
 
-  const vintageWoodTexture = useTexture(`/textures/floor/${map}.jpg`);
+  const vintageWoodTexture = useTexture(`/textures/floor/${map}.jpg`).clone();
 
   vintageWoodTexture.wrapS = RepeatWrapping;
   vintageWoodTexture.wrapT = RepeatWrapping;
-  vintageWoodTexture.repeat.x = 2;
-  vintageWoodTexture.repeat.y = 2;
+  vintageWoodTexture.repeat.x = repeat;
+  vintageWoodTexture.repeat.y = repeat;
   return (
     <group ref={ref as any}>
       {!isHidden && (
@@ -77,9 +86,9 @@ export function WallTexture({
       )}
     </group>
   );
-}
+});
 
-export function WallWithHole({
+export const WallWithHole = memo(function WallWithHole({
   depth = 0.2,
   color,
   position,
@@ -127,7 +136,7 @@ export function WallWithHole({
       </mesh>
     </group>
   );
-}
+});
 
 /*
 https://poly.pizza/m/YQu7UD8YIS
@@ -286,30 +295,40 @@ export function TransparentWalls() {
       },
       {
         type: "Box",
-        args: [1, 15, 25],
-        position: [5.5, 0, -15],
+        args: [1, 15, 30],
+        position: [5.5, 0, -18],
         rotation: [0, 0, 0],
       },
-      // {
-      //   type: "Box",
-      //   args: [1, 15, 5],
-      //   position: [5.5, 0, -10.5],
-      //   rotation: [0, 0, 0],
-      // },
-      // {
-      //   type: "Box",
-      //   args: [1, 15, 5],
-      //   position: [5.5, 0, -15.5],
-      //   rotation: [0, 0, 0],
-      // },
-      // {
-      //   type: "Box",
-      //   args: [1, 15, 5],
-      //   position: [5.5, 0, -20.5],
-      //   rotation: [0, 0, 0],
-      // },
     ],
   }));
 
   return null;
 }
+
+/*
+https://poly.pizza/m/fMW51aYE5Hp
+Brick wall by Poly by Google [CC-BY] via Poly Pizza
+*/
+
+type Props = {
+  position: [number, number, number];
+};
+export const BrickWall = memo(function BrickWall({ position }: Props) {
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/BrickWall.glb"
+  );
+  useEffect(() => {
+    materials.blinn3SG.color.set("#959595");
+  }, []);
+  return (
+    <group
+      position={position}
+      scale={[0.0225, 0.01, 0.02]}
+      rotation-x={-Math.PI / 2}
+    >
+      <mesh geometry={nodes.pCube102.geometry} material={materials.blinn3SG} />
+    </group>
+  );
+});
+
+useGLTF.preload("/models/BrickWall.glb");

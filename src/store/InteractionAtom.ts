@@ -17,9 +17,30 @@ export const IsInsideHouseAtom = atom({
   key: "IsInsideHouse",
   default: false,
 });
+// 현관문 앞 방 상호작용 포탈
+export const IsInsideFoyerAtom = atom({
+  key: "IsInsideFoyer",
+  default: false,
+});
+
 // 집 문 상호작용 포탈
 export const IsInsideHouseDoorAtom = atom({
   key: "IsInsideHouseDoor",
+  default: false,
+});
+// 엘레베이터 문(실내) 상호작용 포탈
+export const IsInsideElevatorIndoorDoorAtom = atom({
+  key: "IsInsideElevatorIndoorDoor",
+  default: false,
+});
+// 엘레베이터 문(옥상) 상호작용 포탈
+export const IsInsideElevatorRooftopDoorAtom = atom({
+  key: "IsInsideElevatorRooftopDoor",
+  default: false,
+});
+// 엘레베이터 상호작용 포탈
+export const IsInsideElevatorAtom = atom({
+  key: "IsInsideElevator",
   default: false,
 });
 
@@ -42,36 +63,44 @@ export const InteractionCriclePortalBoundingBoxSelector = selector({
           ? [
               {
                 x: item.box.max.x,
+                y: item.box.max.y,
                 z: item.box.max.z,
               },
               {
                 x: item.box.max.x,
+                y: item.box.min.y,
                 z: item.box.min.z,
               },
               {
                 x: item.box.min.x,
+                y: item.box.min.y,
                 z: item.box.min.z,
               },
               {
                 x: item.box.min.x,
+                y: item.box.max.y,
                 z: item.box.max.z,
               },
             ]
           : [
               {
                 x: item.box.max.x + item.position[0],
+                y: item.box.max.y + item.position[1],
                 z: item.box.max.z + item.position[2],
               },
               {
                 x: item.box.max.x + item.position[0],
+                y: item.box.min.y + item.position[1],
                 z: item.box.min.z + item.position[2],
               },
               {
                 x: item.box.min.x + item.position[0],
+                y: item.box.min.y + item.position[1],
                 z: item.box.min.z + item.position[2],
               },
               {
                 x: item.box.min.x + item.position[0],
+                y: item.box.max.y + item.position[1],
                 z: item.box.max.z + item.position[2],
               },
             ],

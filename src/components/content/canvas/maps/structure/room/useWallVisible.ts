@@ -15,7 +15,14 @@ export function useWallVisible() {
 
   useEffect(() => {
     const scaledMin = new Vector3(-5, 0, -43);
-    const scaledMax = new Vector3(17, 0, -33);
+    const scaledMax = new Vector3(17, 9.5, -33);
+
+    const scaledMin2 = new Vector3(-4.5, 3, -42.5);
+    const scaledMax2 = new Vector3(4.5, 7, -33);
+
+    const scaledMin3 = new Vector3(-4.5, 8, -34.5);
+    const scaledMax3 = new Vector3(4.5, 9.5, -33);
+
     setInteractionCriclePortalBoundingBox((prev) =>
       uniqBy(
         [
@@ -26,7 +33,25 @@ export function useWallVisible() {
               max: scaledMax,
               min: scaledMin,
             },
-            position: [0, 2, -38],
+            position: [0, 0, 0],
+            isMatrixUpdated: true,
+          },
+          {
+            name: "innerFoyer",
+            box: {
+              max: scaledMax2,
+              min: scaledMin2,
+            },
+            position: [0, 0, 0],
+            isMatrixUpdated: true,
+          },
+          {
+            name: "innerAtticSide",
+            box: {
+              max: scaledMax3,
+              min: scaledMin3,
+            },
+            position: [0, 0, 0],
             isMatrixUpdated: true,
           },
         ],

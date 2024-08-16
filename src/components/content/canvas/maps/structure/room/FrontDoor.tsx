@@ -1,13 +1,15 @@
 import { socket } from "@/sockets/clientSocket";
 import { IsInsideHouseAtom } from "@/store/InteractionAtom";
 import { FrontdoorAtom } from "@/store/ObjectsAtom";
+import { useStableArray } from "@/utils";
 import { useBox } from "@react-three/cannon";
 import { Html, useCursor } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
+import { CircleInteractionPortalWithoutBoundingBox } from "../ground/elements/interactionPortal";
 import { MetalDoor } from "../ground/elements/MetalDoor";
-import { Wall } from "../ground/elements/wall";
+import { Wall, WallTexture } from "../ground/elements/wall";
 import { usePortal } from "./usePortal";
 
 export default function FrontDoor() {
@@ -96,46 +98,76 @@ export default function FrontDoor() {
               />
             </Html>
           )}
-          {/* <mesh receiveShadow castShadow>
-            <boxGeometry args={doorArgs} />
-            <meshStandardMaterial color="brown" />
-          </mesh> */}
+
           <MetalDoor
-            doorknobPosition={[0.015, 0, 0]}
-            position={[0, -0.85, -0.5]}
+            doorknobPosition={useStableArray([0.015, 0, 0])}
+            position={useStableArray([0, -0.85, -0.5])}
+            isHidden={isInsideHouse && !isInsideHouseDoor}
           />
         </group>
         <group ref={rightdoorRef as any}>
-          {/* <mesh receiveShadow castShadow>
-            <boxGeometry args={doorArgs} />
-            <meshStandardMaterial color="brown" />
-          </mesh> */}
-          <MetalDoor doorknobPosition={[0, 0, 0]} position={[0, -0.85, -0.5]} />
+          <MetalDoor
+            doorknobPosition={useStableArray([0, 0, 0])}
+            position={useStableArray([0, -0.85, -0.5])}
+            isHidden={isInsideHouse && !isInsideHouseDoor}
+          />
         </group>
       </group>
+      <CircleInteractionPortalWithoutBoundingBox
+        position={useStableArray([0.35, 2.8, -33.7])}
+        radius={0.5}
+        isTouchDown={isInsideHouseDoor}
+      />
+      <CircleInteractionPortalWithoutBoundingBox
+        position={useStableArray([0.35, 1.5, -32.3])}
+        radius={0.5}
+        isTouchDown={isInsideHouseDoor}
+      />
+
+      {/* <BrickWall position={useStableArray([9.15, 4.5, -32.8])} />
+      <BrickWall position={useStableArray([14.15, 4.5, -32.8])} /> */}
+
+      {/* 가벽 2 */}
+
       <Wall
-        rotation={[-Math.PI / 2, 0, 0]}
-        args={[10.07, 0.2, 5]}
-        position={[-0.065, 7, -33]}
-        color={"#969696"}
+        rotation={useStableArray([-Math.PI / 2, 0, 0])}
+        args={useStableArray([10.2, 0.2, 1.85])}
+        position={useStableArray([0, 8.65, -32.99])}
+        color={"#787878"}
         castShadow={false}
         isHidden={isInsideHouse}
+        transparent
+        opacity={0.8}
       />
-      <Wall
-        rotation={[-Math.PI / 2, 0, 0]}
-        args={[4.5, 0.2, 1.8]}
-        position={[-2.8, 3.7, -32.95]}
+      <WallTexture
+        map={"marble"}
+        rotation={useStableArray([-Math.PI / 2, 0, 0])}
+        args={useStableArray([10.2, 0.2, 3.25])}
+        position={useStableArray([0, 6.1, -32.8])}
         color={"#e4e4e4"}
         castShadow={false}
         isHidden={isInsideHouse}
+        repeat={1}
       />
-      <Wall
-        rotation={[-Math.PI / 2, 0, 0]}
-        args={[3.51, 0.2, 1.8]}
-        position={[3.22, 3.65, -32.95]}
+      <WallTexture
+        map={"marble"}
+        rotation={useStableArray([-Math.PI / 2, 0, 0])}
+        args={useStableArray([4.5, 0.2, 1.8])}
+        position={useStableArray([-2.8, 3.65, -32.99])}
         color={"#e4e4e4"}
         castShadow={false}
         isHidden={isInsideHouse}
+        repeat={1}
+      />
+      <WallTexture
+        map={"marble"}
+        rotation={useStableArray([-Math.PI / 2, 0, 0])}
+        args={useStableArray([3.65, 0.2, 1.8])}
+        position={useStableArray([3.28, 3.65, -32.99])}
+        color={"#e4e4e4"}
+        castShadow={false}
+        isHidden={isInsideHouse}
+        repeat={1}
       />
     </>
   );

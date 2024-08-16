@@ -8,11 +8,12 @@ import {
   IsInsideGuestbookAtom,
 } from "@/store/InteractionAtom";
 import { MeAtom } from "@/store/PlayersAtom";
+import { useStableArray } from "@/utils";
 import { Html, useCursor, useGLTF } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Vector3 } from "three";
-
+import { CircleInteractionPortalWithoutBoundingBox } from "./interactionPortal";
 const position: [number, number, number] = [-4.5, 1.7, -4.5];
 export function ParkInfoBoard() {
   const groupRef = useRef<any>();
@@ -104,64 +105,75 @@ export function ParkInfoBoard() {
   }, [isOpenGuestbook]);
 
   return (
-    <group
-      ref={groupRef}
-      position={position}
-      rotation={[-Math.PI / 2, 0, Math.PI / 4]}
-      scale={[150, 100, 100]}
-      onClick={(e) => {
-        if (!IsInsideGuestbook) return;
-        e.stopPropagation();
+    <>
+      <group
+        ref={groupRef}
+        position={position}
+        rotation={[-Math.PI / 2, 0, Math.PI / 4]}
+        scale={[150, 100, 100]}
+        onClick={(e) => {
+          if (!IsInsideGuestbook) return;
+          e.stopPropagation();
 
-        setIsOpenGuestbook(true);
-      }}
-      onPointerEnter={() => {
-        if (!IsInsideGuestbook) return;
-        setIsHover(true);
-      }}
-      onPointerOut={() => {
-        if (!IsInsideGuestbook) return;
-        setIsHover(false);
-      }}
-    >
-      {IsInsideGuestbook && (
-        <Html
-          style={{ cursor: "pointer", pointerEvents: "none", width: "25px" }}
-        >
-          <img
-            alt="클릭"
-            src="/images/mouse_click.webp"
-            style={{ transform: "translate(-50%,-10px)" }}
-          />
-        </Html>
-      )}
-      {isOpenGuestbook && (
-        <Html
-          wrapperClass="wrapper__initial"
-          className="sub__initial"
-          transform={false}
-          portal={{ current: portalRef.current as HTMLElement }}
-        >
-          <Guestbook closeModal={handleCloseGuestbook} player={me!} />
-        </Html>
-      )}
-      <mesh
-        geometry={nodes.ParkInfoBoard_1.geometry}
-        material={materials.wood_shade1}
-        castShadow
-      />
+          setIsOpenGuestbook(true);
+        }}
+        onPointerEnter={() => {
+          if (!IsInsideGuestbook) return;
+          setIsHover(true);
+        }}
+        onPointerOut={() => {
+          if (!IsInsideGuestbook) return;
+          setIsHover(false);
+        }}
+      >
+        {IsInsideGuestbook && (
+          <Html
+            style={{ cursor: "pointer", pointerEvents: "none", width: "25px" }}
+          >
+            <img
+              alt="클릭"
+              src="/images/mouse_click.webp"
+              style={{ transform: "translate(-50%,-10px)" }}
+            />
+          </Html>
+        )}
+        {isOpenGuestbook && (
+          <Html
+            wrapperClass="wrapper__initial"
+            className="sub__initial"
+            transform={false}
+            portal={{ current: portalRef.current as HTMLElement }}
+          >
+            <Guestbook closeModal={handleCloseGuestbook} player={me!} />
+          </Html>
+        )}
+        <mesh
+          geometry={nodes.ParkInfoBoard_1.geometry}
+          material={materials.wood_shade1}
+          castShadow
+        />
 
-      <mesh
-        geometry={nodes.ParkInfoBoard_2.geometry}
-        material={materials.board}
-        castShadow
+        <mesh
+          geometry={nodes.ParkInfoBoard_2.geometry}
+          material={materials.board}
+          castShadow
+        />
+        <mesh
+          geometry={nodes.ParkInfoBoard_3.geometry}
+          material={materials.wood_shade2}
+          castShadow
+        />
+      </group>
+      <CircleInteractionPortalWithoutBoundingBox
+        position={useStableArray([
+          position[0] + 1,
+          position[1] - 1.5,
+          position[2] + 1,
+        ])}
+        radius={0.5}
+        isTouchDown={IsInsideGuestbook}
       />
-      <mesh
-        geometry={nodes.ParkInfoBoard_3.geometry}
-        material={materials.wood_shade2}
-        castShadow
-      />
-    </group>
+    </>
   );
 }
 

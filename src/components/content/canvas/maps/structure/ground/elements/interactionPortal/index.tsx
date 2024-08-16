@@ -4,7 +4,7 @@ import {
 } from "@/store/InteractionAtom";
 import { motion } from "framer-motion-3d";
 import { uniqBy } from "lodash";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Vector3 } from "three";
 type Props = {
@@ -37,8 +37,18 @@ export function CircleInteractionPortal({ name, position }: Props) {
       // boundingBox 의 중심점을 기준으로 스케일링 1.2 배 되도록
       const center = new Vector3();
       boundingBox.getCenter(center);
-      const scaledMin = new Vector3().lerpVectors(center, boundingBox.min, 1.2);
-      const scaledMax = new Vector3().lerpVectors(center, boundingBox.max, 1.2);
+      const scaledMinXYZ = new Vector3().lerpVectors(
+        center,
+        boundingBox.min,
+        1.2
+      );
+      const scaledMaxXYZ = new Vector3().lerpVectors(
+        center,
+        boundingBox.max,
+        1.2
+      );
+      const scaledMin = new Vector3(scaledMinXYZ.x, 0, scaledMinXYZ.z);
+      const scaledMax = new Vector3(scaledMaxXYZ.x, 2, scaledMaxXYZ.z);
       setInteractionCriclePortalBoundingBox((prev) =>
         uniqBy(
           [
@@ -90,3 +100,52 @@ export function CircleInteractionPortal({ name, position }: Props) {
     </group>
   );
 }
+
+type CProps = {
+  radius: number;
+  position: [number, number, number];
+  isTouchDown: boolean;
+  isHidden?: boolean;
+};
+export const CircleInteractionPortalWithoutBoundingBox = memo(
+  function CircleInteractionPortalWithoutBoundingBox({
+    isTouchDown,
+    isHidden = false,
+    position,
+    radius,
+  }: CProps) {
+    if (isHidden) return null;
+    return (
+      <group position={position}>
+        <mesh rotation-x={-Math.PI / 2}>
+          <circleGeometry args={[radius, 32]} />
+          <meshBasicMaterial color="white" transparent opacity={0.2} />
+        </mesh>
+        <motion.mesh
+          scale={0.85}
+          rotation-x={-Math.PI / 2}
+          animate={
+            !isTouchDown
+              ? {
+                  opacity: [0.3, 0.5],
+                  y: [0.01, 0.07, 0.01],
+                  transition: {
+                    duration: 2,
+                    ease: "easeInOut",
+                    delay: 0.3,
+                    repeat: Infinity,
+                  },
+                }
+              : {
+                  y: 0.01,
+                  transition: { duration: 0.5, ease: "easeInOut" },
+                }
+          }
+        >
+          <circleGeometry args={[radius, 32]} />
+          <meshBasicMaterial color="white" transparent opacity={0.2} />
+        </motion.mesh>
+      </group>
+    );
+  }
+);

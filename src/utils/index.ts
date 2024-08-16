@@ -1,10 +1,9 @@
+import { useEffect, useMemo } from "react";
 export const isValidText = (text: string) => {
   return Boolean(text && text.trim() !== "" && text.length <= 6);
 };
 
 export const isDev = import.meta.env.VITE_RUN === "dev";
-
-import { useEffect } from "react";
 
 export const useBodyClass = (isHover: boolean, className: string) => {
   useEffect(() => {
@@ -20,3 +19,6 @@ export const useBodyClass = (isHover: boolean, className: string) => {
     };
   }, [isHover, className]);
 };
+
+export const useStableArray = (array: [number, number, number]) =>
+  useMemo(() => array, []);

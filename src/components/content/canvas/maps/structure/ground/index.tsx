@@ -2,14 +2,12 @@ import { PlayersAtom } from "@/store/PlayersAtom";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
+import { DirtFloorTile } from "../room/DirtFloorTile";
 import ModernRoom from "../room/ModernRoom";
-import HowToPlay from "../tutorial/HowToPlay";
-import { BatsignalThingy } from "./elements/BatsignalThingy";
 import Bridge from "./elements/Bridge";
 import {
   Floor2nd,
   FloorGround,
-  FloorStonePebble,
   FloorStoneWalkway,
   FloorWhiteStone,
 } from "./elements/floor";
@@ -19,9 +17,9 @@ import { Lilypad } from "./elements/Lilypad";
 import { ParkInfoBoard } from "./elements/ParkInfoBoard";
 import { Ponds } from "./elements/Ponds";
 import { Rock } from "./elements/Rock";
-import { RubberDuck } from "./elements/RubberDuck";
 import Stair from "./elements/Stair";
 import { ShojiWall, TransparentWalls } from "./elements/wall";
+import { ChicksFlyNaming } from "../text";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
@@ -35,11 +33,11 @@ export default function GroundElements() {
 
       <CircleInteractionPortal name="lightPortal" position={[0, 0.2, -5]} />
 
+      <ChicksFlyNaming />
+
       {/* Toutorial */}
-      <HowToPlay />
       <FakePlayer />
       <PostLantern />
-
       <ParkInfoBoard />
 
       {/* 1st Floor */}
@@ -48,7 +46,7 @@ export default function GroundElements() {
       <FloorGround />
 
       {/* SideLantern */}
-      <BatsignalThingy />
+      {/* <BatsignalThingy /> */}
       <LampSquareTable />
 
       {/* Bridge */}
@@ -57,7 +55,6 @@ export default function GroundElements() {
       <FloorStoneWalkway count={2} height={3.5} y={1.01} z={-12.4} z2={-13.2} />
       <Ponds />
       <Rock />
-      <RubberDuck />
       <Lilypad />
       <Bridge />
 
@@ -65,7 +62,7 @@ export default function GroundElements() {
       <Floor2nd />
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
 
-      <FloorStonePebble />
+      <DirtFloorTile />
       <ModernRoom />
     </group>
   );

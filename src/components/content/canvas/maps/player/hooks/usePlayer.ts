@@ -2,6 +2,10 @@ import { ALLOW_KEYS } from "@/consts";
 import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
+  IsInsideElevatorAtom,
+  IsInsideElevatorIndoorDoorAtom,
+  IsInsideElevatorRooftopDoorAtom,
+  IsInsideFoyerAtom,
   IsInsideGuestbookAtom,
   IsInsideHouseAtom,
   IsInsideHouseDoorAtom,
@@ -54,6 +58,18 @@ export function usePlayer(player: IPlayer) {
   const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
   // 집 문 상호작용
   const setIsInsideHouseDoor = useSetRecoilState(IsInsideHouseDoorAtom);
+  // 현관문 앞 상호작용
+  const setIsInsideFoyerDoor = useSetRecoilState(IsInsideFoyerAtom);
+  // 엘레베이터 문 상호작용
+  const setIsInsideElevatorIndoorDoor = useSetRecoilState(
+    IsInsideElevatorIndoorDoorAtom
+  );
+  // 엘레베이터 문 상호작용
+  const setIsInsideElevatorRooftopDoor = useSetRecoilState(
+    IsInsideElevatorRooftopDoorAtom
+  );
+  // 엘레베이터 상호작용
+  const setIsInsideElevator = useSetRecoilState(IsInsideElevatorAtom);
 
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const isLayingEgg = useRef(false);
@@ -69,7 +85,7 @@ export function usePlayer(player: IPlayer) {
   const [cylinderRef, cylinderApi] = useSphere(() => ({
     type: "Dynamic",
     mass: 10,
-    position: [position[0], 3, position[2]],
+    position: [position[0], 1, position[2]],
     linearDamping: 0.98,
     angularDamping: 0.98,
     args: [0.5],
@@ -344,10 +360,26 @@ export function usePlayer(player: IPlayer) {
     };
   }, [actions, animation]);
 
+  const jumpRef = useRef([false, false, false]);
+
   // 점프
+  // 최대 3번 점프 가능 (2초 간격 충전)
   useEffect(() => {
     if (keyEvt.Control) {
-      cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
+      if (jumpRef.current.some((a) => !a)) {
+        cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
+      }
+      for (let i = 0; i < jumpRef.current.length; i++) {
+        if (!jumpRef.current[i]) {
+          jumpRef.current[i] = true;
+          if (jumpRef.current[i]) {
+            setTimeout(() => {
+              jumpRef.current[i] = false;
+            }, 2000);
+          }
+          break;
+        }
+      }
     }
   }, [keyEvt.Control]);
 
@@ -394,11 +426,19 @@ export function usePlayer(player: IPlayer) {
           const getInRangeX =
             cylinderPositionRef.current.x < structure.corners[0].x &&
             cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
           const getInRangeZ =
             cylinderPositionRef.current.z < structure.corners[0].z &&
             cylinderPositionRef.current.z > structure.corners[2].z;
 
-          return getInRangeX && getInRangeZ && structure.name === "lightPortal";
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "lightPortal"
+          );
         }
       );
 
@@ -414,12 +454,18 @@ export function usePlayer(player: IPlayer) {
           const getInRangeX =
             cylinderPositionRef.current.x < structure.corners[0].x &&
             cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
           const getInRangeZ =
             cylinderPositionRef.current.z < structure.corners[0].z &&
             cylinderPositionRef.current.z > structure.corners[2].z;
 
           return (
-            getInRangeX && getInRangeZ && structure.name === "ParkInfoBoard"
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "ParkInfoBoard"
           );
         }
       );
@@ -437,11 +483,19 @@ export function usePlayer(player: IPlayer) {
           const getInRangeX =
             cylinderPositionRef.current.x < structure.corners[0].x &&
             cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
           const getInRangeZ =
             cylinderPositionRef.current.z < structure.corners[0].z &&
             cylinderPositionRef.current.z > structure.corners[2].z;
 
-          return getInRangeX && getInRangeZ && structure.name === "innerHouse";
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerHouse"
+          );
         }
       );
 
@@ -458,11 +512,19 @@ export function usePlayer(player: IPlayer) {
           const getInRangeX =
             cylinderPositionRef.current.x < structure.corners[0].x &&
             cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
           const getInRangeZ =
             cylinderPositionRef.current.z < structure.corners[0].z &&
             cylinderPositionRef.current.z > structure.corners[2].z;
 
-          return getInRangeX && getInRangeZ && structure.name === "door";
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "frontdoor"
+          );
         }
       );
 
@@ -470,6 +532,154 @@ export function usePlayer(player: IPlayer) {
         setIsInsideHouseDoor(true);
       } else {
         setIsInsideHouseDoor(false);
+      }
+    }
+
+    /* 상호작용 이벤트(5) - 엘레베이터 문 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "elevatorIndoordoor"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideElevatorIndoorDoor(true);
+      } else {
+        setIsInsideElevatorIndoorDoor(false);
+      }
+    }
+
+    /* 상호작용 이벤트(6) - 엘레베이터 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "elevatorRooftopdoor"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideElevatorRooftopDoor(true);
+      } else {
+        setIsInsideElevatorRooftopDoor(false);
+      }
+    }
+
+    /* 상호작용 이벤트(7) - 엘레베이터 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "elevator"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideElevator(true);
+      } else {
+        setIsInsideElevator(false);
+      }
+    }
+
+    /* 상호작용 이벤트(8) - 현관문 방 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerFoyer"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideFoyerDoor(true);
+      } else {
+        setIsInsideFoyerDoor(false);
+      }
+    }
+
+    /* 상호작용 이벤트(9) - 다락방 사이드 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerAtticSide"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideHouse(false);
       }
     }
 

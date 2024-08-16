@@ -38,7 +38,7 @@ export interface IPlayer {
 export interface IObjects {
   id: number;
   name: string;
-  value: boolean;
+  value: boolean | number | number[];
 }
 
 export interface IChick {

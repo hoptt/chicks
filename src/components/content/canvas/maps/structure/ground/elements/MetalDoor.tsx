@@ -4,15 +4,22 @@ Metal Door by Quaternius
 */
 
 import { useGLTF } from "@react-three/drei";
+import { memo } from "react";
 
 type Props = {
   doorknobPosition: [number, number, number];
   position: [number, number, number];
+  isHidden?: boolean;
 };
-export function MetalDoor({ doorknobPosition, position }: Props) {
+export const MetalDoor = memo(function MetalDoor({
+  doorknobPosition,
+  position,
+  isHidden = false,
+}: Props) {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/MetalDoor.glb"
   );
+  if (isHidden) return null;
   return (
     <group scale={[50, 41.5, 50]} position={position}>
       <mesh
@@ -26,6 +33,6 @@ export function MetalDoor({ doorknobPosition, position }: Props) {
       />
     </group>
   );
-}
+});
 
 useGLTF.preload("/models/MetalDoor.glb");

@@ -3,11 +3,14 @@ https://poly.pizza/m/ZSQ65S4lEu
 Public Domain
 */
 
-import { IsInsideLightPortalAtom } from "@/store/InteractionAtom";
+import {
+  IsInsideHouseAtom,
+  IsInsideLightPortalAtom,
+} from "@/store/InteractionAtom";
 import { Merged, useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion-3d";
-import { Fragment, useMemo, useRef, useState } from "react";
+import { Fragment, memo, useMemo, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 
 export function PostLantern() {
@@ -153,3 +156,53 @@ export function LampSquareTable() {
 }
 
 useGLTF.preload("/models/LampSquareTable.glb");
+
+/*
+https://poly.pizza/m/PSoamNnBPO
+Light Square by Quaternius
+*/
+
+type LightSquareProps = {
+  position: [number, number, number];
+};
+function LightSquare({ position }: LightSquareProps) {
+  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+    "/models/LightSquare.glb"
+  );
+  const isInnerHouse = useRecoilValue(IsInsideHouseAtom);
+  return (
+    <group position={position}>
+      <group rotation={[-Math.PI / 2, 0, 0]} scale={100}>
+        {!isInnerHouse && (
+          <>
+            <mesh
+              geometry={nodes.Light_Square_1.geometry}
+              material={materials.DarkGrey}
+              receiveShadow
+              castShadow
+            />
+            <mesh
+              geometry={nodes.Light_Square_2.geometry}
+              material={materials.Grey}
+              receiveShadow
+              castShadow
+            />
+            <mesh
+              geometry={nodes.Light_Square_3.geometry}
+              material={materials.Light}
+              receiveShadow
+              castShadow
+            />
+          </>
+        )}
+      </group>
+      <rectAreaLight
+        args={[0xb5e7ff, 1, 1, 1]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.08, 0]}
+      />
+    </group>
+  );
+}
+export default memo(LightSquare);
+useGLTF.preload("/models/LightSquare.glb");

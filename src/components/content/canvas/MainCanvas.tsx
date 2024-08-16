@@ -1,5 +1,7 @@
+import DrawCallCounter from "@/components/DrawCallCounter";
 import { isDev } from "@/utils";
 import { Debug, Physics } from "@react-three/cannon";
+import { StatsGl } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
 import RootMap from "./maps/RootMap";
@@ -31,7 +33,8 @@ export default function MainCanvas() {
           <RootMap />
         )}
       </Physics>
-      {/* <DrawCallCounter /> */}
+      {isDev && <DrawCallCounter />}
+      {isDev && <StatsGl />}
     </Canvas>
   );
 }

@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
 import { DirtFloorTile } from "../room/DirtFloorTile";
-import ModernRoom from "../room/ModernRoom";
+import { ChicksFlyNaming } from "../text";
 import Bridge from "./elements/Bridge";
 import {
   Floor2nd,
@@ -19,7 +19,6 @@ import { Ponds } from "./elements/Ponds";
 import { Rock } from "./elements/Rock";
 import Stair from "./elements/Stair";
 import { ShojiWall, TransparentWalls } from "./elements/wall";
-import { ChicksFlyNaming } from "../text";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
@@ -63,7 +62,7 @@ export default function GroundElements() {
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
 
       <DirtFloorTile />
-      <ModernRoom />
+      {/* <ModernRoom /> */}
     </group>
   );
 }

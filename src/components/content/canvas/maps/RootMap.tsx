@@ -1,9 +1,8 @@
+import { InteractionCriclePortalBoundingBoxSelector } from "@/store/InteractionAtom";
+import { isDev } from "@/utils";
+import { Line } from "@react-three/drei";
 import { useRecoilValue } from "recoil";
 import GroundElements from "./structure/ground";
-import { InteractionCriclePortalBoundingBoxSelector } from "@/store/InteractionAtom";
-import { Line } from "@react-three/drei";
-import { isDev } from "@/utils";
-import { Effects } from "./structure/ground/elements/effects";
 
 export default function RootMap() {
   const InteractionCriclePortalBoundingBox = useRecoilValue(
@@ -25,7 +24,7 @@ export default function RootMap() {
           })}
         </>
       )}
-      <Effects />
+      {/* <Effects /> */}
       <GroundElements />
     </group>
   );

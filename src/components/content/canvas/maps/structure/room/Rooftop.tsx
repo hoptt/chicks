@@ -2,7 +2,7 @@ import { useStableArray } from "@/utils";
 import { useMemo } from "react";
 import LightSquare from "../ground/elements/lantern";
 import { WallTexture } from "../ground/elements/wall";
-import { BeachChair } from "./BeachChair";
+import { BeachChair } from "./rooftop/BeachChair";
 import { Bucket } from "./Bucket";
 import { Campfire } from "./Campfire";
 import { Constellation } from "./Constellation";
@@ -15,6 +15,9 @@ import {
   IsInsideRooftopAtom,
 } from "@/store/InteractionAtom";
 import { useRecoilValue } from "recoil";
+import { Pipe } from "./Pipe";
+import { AirConditionerUp } from "./rooftop/AirConditionerUp";
+import Grass from "./rooftop/Grass";
 
 export default function Rooftop() {
   const isInnerHouse = useRecoilValue(IsInsideHouseAtom);
@@ -341,18 +344,11 @@ export default function Rooftop() {
           <BeachChair position={pos8} type={4} />
           <Bucket />
           <Campfire />
+          <Pipe />
+          <AirConditionerUp />
+          <Grass />
         </>
       )}
-      <WallTexture
-        map={"grass"}
-        rotation={useStableArray([0, 0, 0])}
-        args={useStableArray([7, 0.1, 8])}
-        position={useStableArray([1, 10.1, -37.8])}
-        color={"#51b756"}
-        repeat={1}
-        castShadow={true}
-        isHidden={isInnerHouse}
-      />
 
       <GFence position={useStableArray([3.7, 9.8, -32.9])} />
       <GFence position={useStableArray([1.2, 9.8, -32.9])} />

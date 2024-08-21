@@ -19,7 +19,7 @@ export function Railing() {
     []
   );
   useEffect(() => {
-    materials.Wood_Light.color.set("#fed29b");
+    materials.Wood_Light.color.set("#c6c6c5");
     materials.Wood.color.set("#cecab9");
   }, []);
   useBox(() => ({

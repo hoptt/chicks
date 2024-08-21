@@ -33,7 +33,6 @@ export const Constellation = memo(function Constellation({
         Math.floor(Math.random() * (max * 200 - min * 100)) + min * 50;
       setComplete(true); // 모든 점이 연결
       const timeout = setTimeout(() => {
-        console.log(rdmTime.current);
         setComplete(false);
         setCurrentIndex(0);
       }, rdmTime.current);

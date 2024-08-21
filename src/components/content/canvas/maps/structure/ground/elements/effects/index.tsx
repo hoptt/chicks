@@ -7,11 +7,12 @@ export function Effects() {
   return (
     <>
       <Sparkles
-        count={80}
-        scale={5}
-        size={5}
+        count={30}
+        scale={2}
+        size={7}
         speed={0.5}
-        position={[-7, 1, -25]}
+        color={"#fede4e"}
+        position={[-6.5, 5, -28]}
       />
       <Stars
         radius={20}

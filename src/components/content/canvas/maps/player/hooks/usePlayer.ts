@@ -2,6 +2,7 @@ import { ALLOW_KEYS } from "@/consts";
 import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
+  IsInsideCouchAtom,
   IsInsideElevatorAtom,
   IsInsideElevatorIndoorDoorAtom,
   IsInsideElevatorRooftopDoorAtom,
@@ -11,6 +12,7 @@ import {
   IsInsideHouseDoorAtom,
   IsInsideLightPortalAtom,
   IsInsideRooftopAtom,
+  IsInsideRooftopRugAtom,
 } from "@/store/InteractionAtom";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom } from "@/store/PlayersAtom";
@@ -54,14 +56,31 @@ export function usePlayer(player: IPlayer) {
     position: [number, number, number];
   }[];
 
-  const sitDownInfo = useMemo(
+  const chairSitDownInfo = useMemo(
     () => chair.find((a) => a.player === playerId),
     [chair]
   );
+
   const chairPosition = useMemo(
     () => chair.find((a) => a.player === playerId)?.position,
     [chair]
   );
+
+  const couch = objects.find((o) => o.name === "couch")!.value as unknown as {
+    id: number;
+    player: string | undefined;
+    position: [number, number, number];
+  }[];
+
+  const couchSitDownInfo = useMemo(
+    () => couch.find((a) => a.player === playerId),
+    [couch]
+  );
+  const couchPosition = useMemo(
+    () => couch.find((a) => a.player === playerId)?.position,
+    [couch]
+  );
+
   // 엔터 꾹 누름 방지
   const enterPressed = useRef(false);
 
@@ -76,6 +95,10 @@ export function usePlayer(player: IPlayer) {
   const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
   // 루프탑 상호작용
   const setIsInsideRooftop = useSetRecoilState(IsInsideRooftopAtom);
+  // 루프탑 상호작용
+  const setIsInsideRooftopRug = useSetRecoilState(IsInsideRooftopRugAtom);
+  // 소파 상호작용
+  const setIsInsideCouch = useSetRecoilState(IsInsideCouchAtom);
   // 집 문 상호작용
   const setIsInsideHouseDoor = useSetRecoilState(IsInsideHouseDoorAtom);
   // 현관문 앞 상호작용
@@ -314,8 +337,8 @@ export function usePlayer(player: IPlayer) {
 
   useEffect(() => {
     const unsubscribe = cylinderApi.position.subscribe((a) => {
-      // 의자에 앉는 이벤트에는 동작하지 않도록
-      if (sitDownInfo) return;
+      // 앉는 이벤트에는 동작하지 않도록
+      if (chairSitDownInfo || couchSitDownInfo) return;
       const [x1, y1, z1] = a;
 
       currentPosXZ.current = new Vector3(x1, 0, z1);
@@ -361,7 +384,7 @@ export function usePlayer(player: IPlayer) {
     });
 
     return () => unsubscribe();
-  }, [position, sitDownInfo]);
+  }, [position, chairSitDownInfo, couchSitDownInfo]);
 
   // cylinder 의 rotation
   useEffect(() => {
@@ -407,14 +430,14 @@ export function usePlayer(player: IPlayer) {
 
   useEffect(() => {
     // 의자 앉기
-    if (sitDownInfo) {
-      if (sitDownInfo.id === 1) {
+    if (chairSitDownInfo) {
+      if (chairSitDownInfo.id === 1) {
         cylinderApi.rotation.set(-0.8, Math.PI / 5, 1.2);
-      } else if (sitDownInfo.id === 2) {
+      } else if (chairSitDownInfo.id === 2) {
         cylinderApi.rotation.set(-0.8, 0.5, 1.1);
-      } else if (sitDownInfo.id === 3) {
+      } else if (chairSitDownInfo.id === 3) {
         cylinderApi.rotation.set(-0.5, -Math.PI / 4, 0.2);
-      } else if (sitDownInfo.id === 4) {
+      } else if (chairSitDownInfo.id === 4) {
         cylinderApi.rotation.set(-Math.PI / 3.5, -Math.PI / 4, 0);
       }
 
@@ -432,10 +455,10 @@ export function usePlayer(player: IPlayer) {
         chairPosition![2]
       );
     }
-  }, [sitDownInfo]);
+  }, [chairSitDownInfo]);
   useEffect(() => {
     // 의자 일어서기
-    if (sitDownInfo) {
+    if (chairSitDownInfo) {
       if (
         keyEvt.ArrowDown ||
         keyEvt.ArrowUp ||
@@ -444,15 +467,61 @@ export function usePlayer(player: IPlayer) {
       ) {
         // type Dynamic
         cylinderApi.mass.set(10);
-
-        socket.emit("chair", {
-          ...sitDownInfo,
-          type: sitDownInfo.id,
-          player: undefined,
-        });
+        if (isPlayerMe)
+          socket.emit("chair", {
+            ...chairSitDownInfo,
+            type: chairSitDownInfo.id,
+            player: undefined,
+          });
       }
     }
-  }, [sitDownInfo, keyEvt]);
+  }, [chairSitDownInfo, keyEvt, isPlayerMe]);
+
+  useEffect(() => {
+    // 소파 앉기
+    if (couchSitDownInfo) {
+      if (couchSitDownInfo.id === 1) {
+        cylinderApi.rotation.set(-0.8, Math.PI / 5, 1.2);
+      } else {
+        cylinderApi.rotation.set(0, -(Math.PI + Math.PI / 4), 0);
+      }
+
+      // type Static
+      cylinderApi.mass.set(0);
+
+      cylinderApi.position.set(
+        couchPosition![0],
+        couchPosition![1] + (couchSitDownInfo.id === 1 ? 1 : 0.9),
+        couchPosition![2]
+      );
+      cylinderPositionRef.current = new Vector3(
+        couchPosition![0],
+        couchPosition![1] + (couchSitDownInfo.id === 1 ? 1 : 0.9),
+        couchPosition![2]
+      );
+    }
+  }, [couchSitDownInfo]);
+
+  useEffect(() => {
+    // 소파 일어서기
+    if (couchSitDownInfo) {
+      if (
+        keyEvt.ArrowDown ||
+        keyEvt.ArrowUp ||
+        keyEvt.ArrowLeft ||
+        keyEvt.ArrowRight
+      ) {
+        // type Dynamic
+        cylinderApi.mass.set(10);
+        if (isPlayerMe)
+          socket.emit("couch", {
+            ...couchSitDownInfo,
+            type: couchSitDownInfo.id,
+            player: undefined,
+          });
+      }
+    }
+  }, [couchSitDownInfo, keyEvt, isPlayerMe]);
 
   useFrame(() => {
     /* 알 */
@@ -781,6 +850,66 @@ export function usePlayer(player: IPlayer) {
         setIsInsideRooftop(true);
       } else {
         setIsInsideRooftop(false);
+      }
+    }
+
+    /* 상호작용 이벤트(10) - 루프탑 의자 앉기 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerRooftopRug"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideRooftopRug(true);
+      } else {
+        setIsInsideRooftopRug(false);
+      }
+    }
+
+    /* 상호작용 이벤트(11) - 소파 앉기 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerCouch"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideCouch(true);
+      } else {
+        setIsInsideCouch(false);
       }
     }
 

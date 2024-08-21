@@ -105,6 +105,15 @@ export default function FrontDoor() {
             isHidden={isInsideHouse && !isInsideHouseDoor}
           />
         </group>
+        {!isInsideHouse && (
+          <group position={[0.5, 3.45, -33.1]}>
+            <mesh>
+              <boxGeometry args={[2, 2, 0.1]} />
+              <meshStandardMaterial color="#3d9300" transparent opacity={0.5} />
+            </mesh>
+          </group>
+        )}
+
         <group ref={rightdoorRef as any}>
           <MetalDoor
             doorknobPosition={useStableArray([0, 0, 0])}

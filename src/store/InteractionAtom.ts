@@ -22,6 +22,16 @@ export const IsInsideRooftopAtom = atom({
   key: "IsInsideRooftopAtom",
   default: false,
 });
+// 루프탑 의자
+export const IsInsideRooftopRugAtom = atom({
+  key: "IsInsideRooftopRugAtom",
+  default: false,
+});
+// 소파
+export const IsInsideCouchAtom = atom({
+  key: "IsInsideCouchAtom",
+  default: false,
+});
 // 현관문 앞 방 상호작용 포탈
 export const IsInsideFoyerAtom = atom({
   key: "IsInsideFoyer",

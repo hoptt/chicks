@@ -26,6 +26,12 @@ export function useWallVisible() {
     const scaledMin4 = new Vector3(-5, 10, -43);
     const scaledMax4 = new Vector3(17, 13, -33);
 
+    const scaledMin5 = new Vector3(-2.5, 10, -42);
+    const scaledMax5 = new Vector3(4.5, 13, -34);
+
+    const scaledMin6 = new Vector3(9.5, 4.5, -37);
+    const scaledMax6 = new Vector3(15, 6.5, -33);
+
     setInteractionCriclePortalBoundingBox((prev) =>
       uniqBy(
         [
@@ -62,6 +68,24 @@ export function useWallVisible() {
             box: {
               max: scaledMax4,
               min: scaledMin4,
+            },
+            position: [0, 0, 0],
+            isMatrixUpdated: true,
+          },
+          {
+            name: "innerRooftopRug",
+            box: {
+              max: scaledMax5,
+              min: scaledMin5,
+            },
+            position: [0, 0, 0],
+            isMatrixUpdated: true,
+          },
+          {
+            name: "innerCouch",
+            box: {
+              max: scaledMax6,
+              min: scaledMin6,
             },
             position: [0, 0, 0],
             isMatrixUpdated: true,

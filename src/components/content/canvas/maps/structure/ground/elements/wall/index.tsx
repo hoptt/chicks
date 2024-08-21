@@ -81,7 +81,13 @@ export const WallTexture = memo(function WallTexture({
       {!isHidden && (
         <mesh receiveShadow castShadow={castShadow}>
           <boxGeometry args={args} />
-          <meshStandardMaterial map={vintageWoodTexture} color={color} />
+          <meshPhongMaterial
+            map={vintageWoodTexture}
+            color={color}
+            emissive={"#151515"}
+            shininess={0}
+            specular={"#ffffff"}
+          />
         </mesh>
       )}
     </group>

@@ -11,7 +11,7 @@ export function Curtain2() {
   );
   const scale = new Vector3(0.2, 0.1, 0.15);
   return (
-    <group scale={scale} position={[-4.8, 6.5, 0.1]}>
+    <group scale={scale} position={[-4.8, 8.8, -38]}>
       <mesh
         geometry={nodes.p000075268.geometry}
         material={materials["0.ReflectiveMaterial"]}

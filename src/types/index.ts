@@ -38,7 +38,15 @@ export interface IPlayer {
 export interface IObjects {
   id: number;
   name: string;
-  value: boolean | number | number[];
+  value:
+    | boolean
+    | number
+    | number[]
+    | {
+        id: number;
+        player: string | undefined;
+        position: [number, number, number];
+      }[];
 }
 
 export interface IChick {

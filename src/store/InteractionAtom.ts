@@ -17,6 +17,11 @@ export const IsInsideHouseAtom = atom({
   key: "IsInsideHouse",
   default: false,
 });
+// 루프탑 상호작용 포탈
+export const IsInsideRooftopAtom = atom({
+  key: "IsInsideRooftopAtom",
+  default: false,
+});
 // 현관문 앞 방 상호작용 포탈
 export const IsInsideFoyerAtom = atom({
   key: "IsInsideFoyer",

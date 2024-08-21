@@ -217,14 +217,6 @@ export function ShojiWall() {
               </group>
               <group
                 scale={[200, 200, 100]}
-                rotation={[0, Math.PI / 2, 0]}
-                position={[-7, 0, -45]}
-              >
-                <mesh.Wall_Shojia material={materials.Atlas} />
-                <mesh.Wall_Shojib material={materials.Light} />
-              </group>
-              <group
-                scale={[200, 200, 100]}
                 rotation={[0, Math.PI / 1.3, 0]}
                 position={[-5, 0, 8]}
               >
@@ -312,21 +304,33 @@ Brick wall by Poly by Google [CC-BY] via Poly Pizza
 
 type Props = {
   position: [number, number, number];
+  scale: [number, number, number];
+  rotation: [number, number, number];
+  castShadow?: boolean;
+  receiveShadow?: boolean;
 };
-export const BrickWall = memo(function BrickWall({ position }: Props) {
+export const BrickWall = memo(function BrickWall({
+  position,
+  scale,
+  rotation,
+  castShadow = true,
+  receiveShadow = false,
+}: Props) {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/BrickWall.glb"
   );
+
   useEffect(() => {
-    materials.blinn3SG.color.set("#959595");
+    materials.blinn3SG.color.set("#9a9898");
   }, []);
   return (
-    <group
-      position={position}
-      scale={[0.0225, 0.01, 0.02]}
-      rotation-x={-Math.PI / 2}
-    >
-      <mesh geometry={nodes.pCube102.geometry} material={materials.blinn3SG} />
+    <group position={position} scale={scale} rotation={rotation}>
+      <mesh
+        geometry={nodes.pCube102.geometry}
+        material={materials.blinn3SG}
+        castShadow={castShadow}
+        receiveShadow={receiveShadow}
+      />
     </group>
   );
 });

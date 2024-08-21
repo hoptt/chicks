@@ -21,3 +21,4 @@ export function ChicksFlyNaming() {
     </Text3D>
   );
 }
+useTexture.preload(`/textures/floor/grass.jpg`);

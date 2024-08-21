@@ -8,7 +8,7 @@ export function WindowLarge() {
 
   const [ref, _] = useBox(() => ({
     type: "Static",
-    position: [-4.93, 4.5, 0],
+    position: [-4.93, 7, -38],
     rotation: [0, -Math.PI / 2, 0],
     args: [4, 4, 0.2],
   }));

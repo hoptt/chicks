@@ -86,6 +86,7 @@ export function PostLantern() {
   );
 }
 
+useTexture.preload("https://threejs.org/examples/textures/sprites/disc.png");
 useGLTF.preload("/models/PostLantern.glb");
 
 /*

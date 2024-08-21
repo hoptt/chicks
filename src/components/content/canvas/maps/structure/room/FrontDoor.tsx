@@ -124,9 +124,6 @@ export default function FrontDoor() {
         isTouchDown={isInsideHouseDoor}
       />
 
-      {/* <BrickWall position={useStableArray([9.15, 4.5, -32.8])} />
-      <BrickWall position={useStableArray([14.15, 4.5, -32.8])} /> */}
-
       {/* 가벽 2 */}
 
       <Wall

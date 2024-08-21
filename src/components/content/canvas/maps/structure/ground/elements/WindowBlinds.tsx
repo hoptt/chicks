@@ -5,7 +5,7 @@ export function WindowBlinds() {
     "/models/WindowBlinds.glb"
   );
   return (
-    <group position={[-4.5, 4.7, 2]} rotation-y={[Math.PI / 2]}>
+    <group position={[-4.8, 7, -38]} rotation-y={[Math.PI / 2]}>
       <mesh
         geometry={nodes.Node.geometry}
         material={materials.mat21}

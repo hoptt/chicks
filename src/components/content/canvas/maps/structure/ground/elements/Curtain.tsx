@@ -7,7 +7,7 @@ export function Curtain() {
   );
   const scale = new Vector3(0.043, 0.035, 0.01);
   return (
-    <group scale={scale} position={[-4.3, 2.7, 0.3]} rotation-y={[Math.PI / 2]}>
+    <group scale={scale} position={[-4.5, 5, -38]} rotation-y={[Math.PI / 2]}>
       <mesh
         castShadow
         geometry={nodes.Curtains.geometry}

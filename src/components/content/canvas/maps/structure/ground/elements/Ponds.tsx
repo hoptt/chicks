@@ -9,7 +9,7 @@ export function Ponds() {
   const gl: any = useThree((state) => state.gl);
   const waterNormals = useTexture("/textures/floor/water.jpg");
   waterNormals.wrapS = waterNormals.wrapT = RepeatWrapping;
-  const geom = useMemo(() => new PlaneGeometry(50, 7), []);
+  const geom = useMemo(() => new PlaneGeometry(35, 7), []);
   const config = useMemo(
     () => ({
       textureWidth: 1024,
@@ -35,3 +35,5 @@ export function Ponds() {
     </group>
   );
 }
+
+useTexture.preload("/textures/floor/water.jpg");

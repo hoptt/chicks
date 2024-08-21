@@ -1,6 +1,6 @@
 import DrawCallCounter from "@/components/DrawCallCounter";
 import { isDev } from "@/utils";
-import { Debug, Physics } from "@react-three/cannon";
+import { Physics } from "@react-three/cannon";
 import { StatsGl } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
@@ -26,10 +26,10 @@ export default function MainCanvas() {
       <Light />
       <Physics allowSleep gravity={[0, -9, 0]}>
         {isDev ? (
-          <Debug>
-            <RootMap />
-          </Debug>
+          // <Debug>
+          <RootMap />
         ) : (
+          // </Debug>
           <RootMap />
         )}
       </Physics>

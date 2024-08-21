@@ -20,13 +20,14 @@ export function FloorVintage() {
     </mesh>
   );
 }
+useTexture.preload("/textures/floor/VintageWood.jpg");
 
 export function FloorGround() {
   const GreenTexture = useTexture("/textures/floor/green.jpg");
-  const x = 0;
+  const x = 7.5;
   const z = 0;
-  const width = 50;
-  const height = 50;
+  const width = 35;
+  const height = 35;
   const [ref] = usePlane(() => ({
     type: "Static",
     material: "ground",
@@ -65,10 +66,10 @@ export function FloorGround() {
         </mesh>
       </group>
       <group>
-        <Grass1 count={10} x={[startX, endX]} y={0} z={[startZ, endZ]} />
-        <Grass2 count={10} x={[startX, endX]} y={0} z={[startZ, endZ]} />
-        <Grass3 count={10} x={[startX, endX]} y={0} z={[startZ, endZ]} />
-        <Grass4 count={10} x={[startX, endX]} y={0} z={[startZ, endZ]} />
+        <Grass1 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
+        <Grass2 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
+        <Grass3 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
+        <Grass4 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
         <Bush />
 
         <Dandelions count={10} x={[startX, endX]} y={0.5} z={[startZ, endZ]} />
@@ -85,10 +86,10 @@ export function FloorGround() {
 
 export function Floor2nd() {
   const GreenTexture = useTexture("/textures/floor/green.jpg");
-  const x = 0;
-  const z = -45;
-  const width = 50;
-  const height = 50;
+  const x = 7.5;
+  const z = -35;
+  const width = 35;
+  const height = 30;
 
   const [ref] = useBox(() => ({
     type: "Static",
@@ -136,22 +137,23 @@ export function Floor2nd() {
         </mesh>
       </group> */}
       <group>
-        <Grass1 count={10} x={[startX, endX]} y={1} z={[startZ, endZ]} />
-        <Grass2 count={10} x={[startX, endX]} y={1} z={[startZ, endZ]} />
-        <Grass3 count={10} x={[startX, endX]} y={1} z={[startZ, endZ]} />
-        <Grass4 count={10} x={[startX, endX]} y={1} z={[startZ, endZ]} />
+        <Grass1 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
+        <Grass2 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
+        <Grass3 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
+        <Grass4 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
 
-        <Dandelions count={10} x={[startX, endX]} y={1.5} z={[startZ, endZ]} />
+        <Dandelions count={5} x={[startX, endX]} y={1.5} z={[startZ, endZ]} />
       </group>
     </>
   );
 }
+useTexture.preload("/textures/floor/green.jpg");
 
 export function FloorWhiteStone() {
   const StoneTexture = useTexture("/textures/floor/Stone.jpg");
-  const x = 0;
+  const x = 7.5;
   const z = -13;
-  const width = 50;
+  const width = 35;
   const height = 3;
 
   const [ref] = useBox(() => ({
@@ -178,6 +180,7 @@ export function FloorWhiteStone() {
     </>
   );
 }
+useTexture.preload("/textures/floor/Stone.jpg");
 
 /*
 https://poly.pizza/m/Im0kSO5tiJ

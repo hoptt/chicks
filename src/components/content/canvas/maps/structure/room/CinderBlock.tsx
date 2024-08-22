@@ -1,5 +1,5 @@
 /*
-https://poly.pizza/m/78wlnTXRp50
+https://poly.pizza/m/d69NgO3BXv1
 Cinder block by Poly by Google [CC-BY] via Poly Pizza
 */
 
@@ -18,11 +18,8 @@ export const CinderBlock = memo(function CinderBlock({
     "/models/CinderBlock.glb"
   );
   return (
-    <group position={position} rotation={rotation} scale={0.000002}>
-      <mesh
-        geometry={nodes.Box001.geometry}
-        material={materials["02___Default"]}
-      />
+    <group position={position} rotation={rotation} scale={1.3}>
+      <mesh geometry={nodes.Node.geometry} material={materials.lambert2SG} />
     </group>
   );
 });

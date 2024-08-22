@@ -30,7 +30,7 @@ export default function ModernRoom() {
   return (
     <group>
       <rectAreaLight
-        args={["white", 15, 1, 5]}
+        args={["white", 10, 1, 5]}
         position-z={-38}
         rotation-x={-Math.PI / 2}
         rotation-z={-Math.PI / 2}

@@ -20,5 +20,5 @@ export const useBodyClass = (isHover: boolean, className: string) => {
   }, [isHover, className]);
 };
 
-export const useStableArray = (array: [number, number, number]) =>
+export const useStableArray = (array: [number, number, number] | any) =>
   useMemo(() => array, []);

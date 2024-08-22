@@ -27,7 +27,7 @@ export function FloorGround() {
   const x = 7.5;
   const z = 0;
   const width = 35;
-  const height = 35;
+  const height = 40;
   const [ref] = usePlane(() => ({
     type: "Static",
     material: "ground",

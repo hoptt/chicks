@@ -3,14 +3,10 @@ https://poly.pizza/m/ZSQ65S4lEu
 Post Lantern by Kay Lousberg
 */
 
-import {
-  IsInsideHouseAtom,
-  IsInsideLightPortalAtom,
-} from "@/store/InteractionAtom";
-import { Merged, useGLTF, useTexture } from "@react-three/drei";
+import { IsInsideHouseAtom } from "@/store/InteractionAtom";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { motion } from "framer-motion-3d";
-import { Fragment, memo, useMemo, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 
 export function PostLantern() {
@@ -88,75 +84,6 @@ export function PostLantern() {
 
 useTexture.preload("https://threejs.org/examples/textures/sprites/disc.png");
 useGLTF.preload("/models/PostLantern.glb");
-
-/*
-https://poly.pizza/m/OjxFIIVnp6
-Public domain
-*/
-
-export function LampSquareTable() {
-  const IsInsideLightPortal = useRecoilValue(IsInsideLightPortalAtom);
-  const { nodes, materials } = useGLTF("/models/LampSquareTable.glb");
-  const meshes = useMemo(
-    () => ({
-      LampNode3: nodes.lampSquareTable_3,
-      LampNode4: nodes.lampSquareTable_3_1,
-    }),
-    []
-  );
-  const position: [number, number, number][] = [
-    [-2.2, 0, -7],
-    [2.5, 0, -7],
-    [-2.2, 0, -10],
-    [2.5, 0, -10],
-    [-2.2, 1, -13],
-    [2.5, 1, -13],
-    [-2.2, 1, -21],
-    [2.5, 1, -21],
-  ];
-  return (
-    <Merged castShadow receiveShadow meshes={meshes}>
-      {(mesh: any) => (
-        <>
-          {Array.from({ length: 8 }).map((_, idx) => (
-            <Fragment key={idx}>
-              <group position={position[idx]}>
-                <motion.group
-                  initial={{ scale: -1 }}
-                  animate={{
-                    scale: IsInsideLightPortal ? 1 : -1,
-                    transition: {
-                      delay: [0, 1].includes(idx)
-                        ? 0
-                        : [2, 3].includes(idx)
-                        ? 0.15
-                        : [4, 5].includes(idx)
-                        ? 0.3
-                        : 1,
-                    },
-                  }}
-                >
-                  <pointLight
-                    args={["yellow", 5, 3, 1.5]}
-                    position-z={0.2}
-                    position-y={0.8}
-                  />
-                </motion.group>
-
-                <group scale={2.5}>
-                  <mesh.LampNode3 material={materials.metal} />
-                  <mesh.LampNode4 material={materials.lamp} />
-                </group>
-              </group>
-            </Fragment>
-          ))}
-        </>
-      )}
-    </Merged>
-  );
-}
-
-useGLTF.preload("/models/LampSquareTable.glb");
 
 /*
 https://poly.pizza/m/PSoamNnBPO

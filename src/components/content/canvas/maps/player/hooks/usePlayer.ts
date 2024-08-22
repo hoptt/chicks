@@ -10,7 +10,6 @@ import {
   IsInsideGuestbookAtom,
   IsInsideHouseAtom,
   IsInsideHouseDoorAtom,
-  IsInsideLightPortalAtom,
   IsInsideRooftopAtom,
   IsInsideRooftopRugAtom,
   IsInsideShowHouseAtom,
@@ -84,11 +83,6 @@ export function usePlayer(player: IPlayer) {
 
   // 엔터 꾹 누름 방지
   const enterPressed = useRef(false);
-
-  // 불빛 상호작용
-  const [isInsideLightPortal, setIsInsideLightPortal] = useRecoilState(
-    IsInsideLightPortalAtom
-  );
 
   // 방명록 상호작용
   const setIsInsideGuestbook = useSetRecoilState(IsInsideGuestbookAtom);
@@ -564,33 +558,8 @@ export function usePlayer(player: IPlayer) {
 
     /* 모든 상호작용 이벤트 */
 
-    /* 상호작용 이벤트(1) - 등불 */
-    if (!isInsideLightPortal && isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "lightPortal"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideLightPortal(true);
-      }
-    }
+    /* 상호작용 이벤트(1) - 불빛 */
+    // 지움
 
     /* 상호작용 이벤트(2) - 방명록 */
     if (isPlayerMe) {

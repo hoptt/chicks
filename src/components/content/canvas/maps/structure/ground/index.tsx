@@ -1,5 +1,8 @@
+import Loader from "@/components/content/html/Loader";
+import { IsInsideShowHouseAtom } from "@/store/InteractionAtom";
 import { PlayersAtom } from "@/store/PlayersAtom";
 import { useStableArray } from "@/utils";
+import { Suspense } from "react";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
@@ -9,6 +12,7 @@ import { CinderBlock } from "../room/CinderBlock";
 import { DingusTheCat } from "../room/DingusTheCat";
 import { DirtFloorTile } from "../room/DirtFloorTile";
 import { Mailbox } from "../room/Mailbox";
+import ModernRoom from "../room/ModernRoom";
 import { ChicksFlyNaming } from "../text";
 import Bridge from "./elements/Bridge";
 import {
@@ -17,7 +21,6 @@ import {
   FloorStoneWalkway,
   FloorWhiteStone,
 } from "./elements/floor";
-import { CircleInteractionPortal } from "./elements/interactionPortal";
 import { PostLantern } from "./elements/lantern";
 import { Lilypad } from "./elements/Lilypad";
 import { Parasol } from "./elements/Parasol";
@@ -28,11 +31,7 @@ import { Rock } from "./elements/Rock";
 import Stair from "./elements/Stair";
 import { StreetLight } from "./elements/StreetLight";
 import { BrickWall, ShojiWall, TransparentWalls } from "./elements/wall";
-import ModernRoom from "../room/ModernRoom";
-import { IsInsideShowHouseAtom } from "@/store/InteractionAtom";
 import { useInteractionGround } from "./useInteractionGround";
-import { Suspense } from "react";
-import Loader from "@/components/content/html/Loader";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
@@ -45,8 +44,6 @@ export default function GroundElements() {
       ))}
       <TransparentWalls />
 
-      <CircleInteractionPortal name="lightPortal" position={[0, 0.2, -5]} />
-
       <ChicksFlyNaming />
 
       {/* Toutorial */}
@@ -58,10 +55,6 @@ export default function GroundElements() {
       <FloorStoneWalkway count={7} height={10.5} y={0} z={0} z2={-8} />
       <ShojiWall />
       <FloorGround />
-
-      {/* SideLantern */}
-      {/* <BatsignalThingy /> */}
-      {/* <LampSquareTable /> */}
 
       {/* Bridge */}
       <Stair />
@@ -84,8 +77,8 @@ export default function GroundElements() {
       <DirtFloorTile />
 
       <BrickWall
-        args={useStableArray([0.5, 3.45, 7.5])}
-        position={useStableArray([-7.8, 2.63, -39])}
+        args={useStableArray([0.5, 3.45, 8.5])}
+        position={useStableArray([-7.8, 2.63, -39.5])}
         side={useStableArray([1])}
         color="#dfdfdf"
       />
@@ -144,8 +137,26 @@ export default function GroundElements() {
         color="#dfdfdf"
       />
       <BrickWall
+        args={useStableArray([6.5, 4.5, 0.5])}
+        position={useStableArray([18.05, 3.25, -44.3])}
+        side={useStableArray([0])}
+        color="#dfdfdf"
+      />
+      <BrickWall
+        args={useStableArray([8, 4.5, 0.5])}
+        position={useStableArray([10.8, 3.25, -44.3])}
+        side={useStableArray([0])}
+        color="#dfdfdf"
+      />
+      <BrickWall
         args={useStableArray([7.9, 4.5, 0.5])}
-        position={useStableArray([17.23, 3.25, -44.5])}
+        position={useStableArray([2.85, 3.25, -44.3])}
+        side={useStableArray([0])}
+        color="#dfdfdf"
+      />
+      <BrickWall
+        args={useStableArray([6.8, 4.2, 0.5])}
+        position={useStableArray([-4.5, 2.1, -44.1])}
         side={useStableArray([0])}
         color="#dfdfdf"
       />

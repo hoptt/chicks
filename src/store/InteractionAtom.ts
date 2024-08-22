@@ -1,12 +1,6 @@
 import { InteractionCriclePortal } from "@/types";
 import { atom, selector } from "recoil";
 
-// 불빛 상호작용 포탈
-export const IsInsideLightPortalAtom = atom({
-  key: "IsInsideLightPortal",
-  default: false,
-});
-
 // 방명록 상호작용 포탈
 export const IsInsideGuestbookAtom = atom({
   key: "IsInsideGuestbook",

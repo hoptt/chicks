@@ -3,7 +3,6 @@ import { useStableArray } from "@/utils";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
-import { Bicycle } from "../room/Bicycle";
 import { BrickTransparentWall } from "../room/BrickTransparentWall";
 import { CinderBlock } from "../room/CinderBlock";
 import { DirtFloorTile } from "../room/DirtFloorTile";
@@ -127,7 +126,7 @@ export default function GroundElements() {
       />
       {/* <Mailbox /> */}
       {/* <CardboardBoxes /> */}
-      <Bicycle />
+      {/* <Bicycle /> */}
       {/* <DingusTheCat /> */}
     </group>
   );

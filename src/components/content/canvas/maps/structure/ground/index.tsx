@@ -26,7 +26,7 @@ import { BrickWall, ShojiWall, TransparentWalls } from "./elements/wall";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
-
+  console.log("hi");
   return (
     <group>
       {players.map((player) => (

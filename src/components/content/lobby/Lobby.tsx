@@ -103,7 +103,7 @@ export default function Lobby() {
         {error === 1 && <>6글자 이하로 입력해주세요</>}
         {error === 2 && <>이미 사용중인 이름이에요</>}
         {error === 3 && <>앗! 인원이 가득 찼어요</>}
-        {error === 4 && <>입장이 제한되었습니다</>}
+        {/* {error === 4 && <>입장이 제한되었습니다</>} */}
         {error === 5 && <>서버 통신 중 오류가 발생하였습니다</>}
       </WarningMessage>
       {!isDev && <CFsecret handleCf={handleCf} />}

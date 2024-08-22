@@ -3,6 +3,7 @@ import { useStableArray } from "@/utils";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
+import { Bicycle } from "../room/Bicycle";
 import { BrickTransparentWall } from "../room/BrickTransparentWall";
 import { CinderBlock } from "../room/CinderBlock";
 import { DirtFloorTile } from "../room/DirtFloorTile";
@@ -124,10 +125,10 @@ export default function GroundElements() {
         position={useStableArray([8.5, 1.8, -30.2])}
         rotation={useStableArray([Math.PI / 2, -Math.PI / 8, 0])}
       />
-      {/* <Mailbox />
-      <CardboardBoxes />
+      {/* <Mailbox /> */}
+      {/* <CardboardBoxes /> */}
       <Bicycle />
-      <DingusTheCat /> */}
+      {/* <DingusTheCat /> */}
     </group>
   );
 }

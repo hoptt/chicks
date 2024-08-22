@@ -1,40 +1,29 @@
 import { useStableArray } from "@/utils";
 import { Curtain } from "../ground/elements/Curtain";
-import {
-  BrickWall,
-  Wall,
-  WallTexture,
-  WallWithHole,
-} from "../ground/elements/wall";
+import { RubberDuck } from "../ground/elements/RubberDuck";
+import { Wall, WallTexture, WallWithHole } from "../ground/elements/wall";
 import { WindowBlinds } from "../ground/elements/WindowBlinds";
 import { WindowLarge } from "../ground/elements/WindowLarge";
+import { AirConditioner } from "./AirConditioner";
 import Attic from "./attic/Attic";
-import { Bicycle } from "./Bicycle";
-import { BrickTransparentWall } from "./BrickTransparentWall";
+import { BlankPictureFrame } from "./BlankPictureFrame";
 import { Cabinet } from "./Cabinet";
-import { CardboardBoxes } from "./CardboardBoxes";
-import { CinderBlock } from "./CinderBlock";
-import { DingusTheCat } from "./DingusTheCat";
+import { CircleTable } from "./CircleTable";
+import { CoffeeTable } from "./CoffeeTable";
 import { DvD } from "./DvD";
 import Elevator from "./Elevator";
 import FrontDoor from "./FrontDoor";
 import { Globe } from "./Globe";
 import { LCouch } from "./LCouch";
-import { Mailbox } from "./Mailbox";
+import { PictureFrame } from "./PictureFrame";
+import { Plant } from "./Plant";
+import { RemoteControl } from "./RemoteControl";
 import Rooftop from "./Rooftop";
 import { RugRound } from "./RugRound";
 import { ShelfSmall } from "./ShelfSmall";
 import { TV } from "./TV";
 import { useWallVisible } from "./useFieldInteraction";
 import { WallDeskSpeaker } from "./WallDeskSpeaker";
-import { RubberDuck } from "../ground/elements/RubberDuck";
-import { CircleTable } from "./CircleTable";
-import { RemoteControl } from "./RemoteControl";
-import { AirConditioner } from "./AirConditioner";
-import { PictureFrame } from "./PictureFrame";
-import { CoffeeTable } from "./CoffeeTable";
-import { BlankPictureFrame } from "./BlankPictureFrame";
-import { Plant } from "./Plant";
 
 export default function ModernRoom() {
   const { isInnerHouse } = useWallVisible();
@@ -49,65 +38,7 @@ export default function ModernRoom() {
         position-y={10.5}
       />
       {/* 돌담 */}
-      <BrickWall
-        position={useStableArray([8.7, 0.4, -28.8])}
-        scale={useStableArray([0.027, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-        receiveShadow
-      />
-      <BrickWall
-        position={useStableArray([13, 0.4, -28.8])}
-        scale={useStableArray([0.0175, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([26, 0.4, -30.8])}
-        scale={useStableArray([0.033, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([35.95, 0.4, -30.8])}
-        scale={useStableArray([0.037, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([36, 0.4, -44.5])}
-        scale={useStableArray([0.037, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([21, 0.5, -5.95])}
-        scale={useStableArray([0.062, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-        receiveShadow
-      />
-      <BrickWall
-        position={useStableArray([-8, 0.5, -2.8])}
-        scale={useStableArray([0.065, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-      />
-      <BrickWall
-        position={useStableArray([5.5, 0.5, -24.8])}
-        scale={useStableArray([0.01, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-      />
-      <BrickTransparentWall />
-      <CinderBlock
-        position={useStableArray([4.8, 4.2, -29.2])}
-        rotation={useStableArray([0, Math.PI / 2, -Math.PI / 1.3])}
-      />
-      <CinderBlock
-        position={useStableArray([7.8, 2.1, -30.2])}
-        rotation={useStableArray([Math.PI / 2, 0, 0])}
-      />
-      <CinderBlock
-        position={useStableArray([8.5, 1.8, -30.2])}
-        rotation={useStableArray([Math.PI / 2, -Math.PI / 8, 0])}
-      />
-      <Mailbox />
-      <CardboardBoxes />
-      <Bicycle />
-      <DingusTheCat />
+
       {/* 받침 */}
       <WallTexture
         map={"marble"}

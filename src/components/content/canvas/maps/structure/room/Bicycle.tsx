@@ -7,7 +7,7 @@ import { useGLTF } from "@react-three/drei";
 
 export function Bicycle() {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
-    "/models/Bicycle.glb"
+    "/models/Bicycle-processed.glb"
   );
 
   return (
@@ -21,4 +21,4 @@ export function Bicycle() {
   );
 }
 
-useGLTF.preload("/models/Bicycle.glb");
+useGLTF.preload("/models/Bicycle-processed.glb");

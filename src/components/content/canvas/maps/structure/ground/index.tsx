@@ -3,13 +3,9 @@ import { useStableArray } from "@/utils";
 import { useRecoilValue } from "recoil";
 import FakePlayer from "../../player/FakePlayer";
 import Player from "../../player/Player";
-import { Bicycle } from "../room/Bicycle";
 import { BrickTransparentWall } from "../room/BrickTransparentWall";
-import { CardboardBoxes } from "../room/CardboardBoxes";
 import { CinderBlock } from "../room/CinderBlock";
-import { DingusTheCat } from "../room/DingusTheCat";
 import { DirtFloorTile } from "../room/DirtFloorTile";
-import { Mailbox } from "../room/Mailbox";
 import { ChicksFlyNaming } from "../text";
 import Bridge from "./elements/Bridge";
 import {
@@ -21,13 +17,10 @@ import {
 import { CircleInteractionPortal } from "./elements/interactionPortal";
 import { LampSquareTable, PostLantern } from "./elements/lantern";
 import { Lilypad } from "./elements/Lilypad";
-import { Parasol } from "./elements/Parasol";
 import { ParkInfoBoard } from "./elements/ParkInfoBoard";
-import { PicnicTable } from "./elements/PicnicTable";
 import { Ponds } from "./elements/Ponds";
 import { Rock } from "./elements/Rock";
 import Stair from "./elements/Stair";
-import { StreetLight } from "./elements/StreetLight";
 import { BrickWall, ShojiWall, TransparentWalls } from "./elements/wall";
 
 export default function GroundElements() {
@@ -70,9 +63,9 @@ export default function GroundElements() {
       {/* 2nd Floor*/}
       <Floor2nd />
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
-      <PicnicTable />
+      {/* <PicnicTable />
       <Parasol />
-      <StreetLight />
+      <StreetLight /> */}
       <DirtFloorTile />
       {/* <ModernRoom /> */}
 
@@ -131,10 +124,10 @@ export default function GroundElements() {
         position={useStableArray([8.5, 1.8, -30.2])}
         rotation={useStableArray([Math.PI / 2, -Math.PI / 8, 0])}
       />
-      <Mailbox />
+      {/* <Mailbox />
       <CardboardBoxes />
       <Bicycle />
-      <DingusTheCat />
+      <DingusTheCat /> */}
     </group>
   );
 }

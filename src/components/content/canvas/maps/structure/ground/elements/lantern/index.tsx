@@ -1,6 +1,6 @@
 /*
 https://poly.pizza/m/ZSQ65S4lEu
-Public Domain
+Post Lantern by Kay Lousberg
 */
 
 import {

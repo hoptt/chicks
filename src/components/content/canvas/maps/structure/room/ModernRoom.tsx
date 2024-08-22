@@ -24,9 +24,20 @@ import { ShelfSmall } from "./ShelfSmall";
 import { TV } from "./TV";
 import { useWallVisible } from "./useFieldInteraction";
 import { WallDeskSpeaker } from "./WallDeskSpeaker";
+import { IsInsideHouseAtom } from "@/store/InteractionAtom";
+import { useRecoilValue } from "recoil";
+import { useEffect } from "react";
 
 export default function ModernRoom() {
-  const { isInnerHouse } = useWallVisible();
+  const isInnerHouse = useRecoilValue(IsInsideHouseAtom);
+  useWallVisible();
+  useEffect(() => {
+    new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("need loading");
+      }, 1000); // 최소 1초의 로딩 부여
+    });
+  }, []);
   return (
     <group>
       <rectAreaLight

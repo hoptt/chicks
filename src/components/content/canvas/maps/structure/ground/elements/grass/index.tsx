@@ -155,8 +155,8 @@ export function Grass2({
 useGLTF.preload("/models/Grass2.glb");
 
 /*
-https://poly.pizza/m/3tyh15Fbmsx
-Tuft of grass by Poly by Google [CC-BY] via Poly Pizza
+https://poly.pizza/m/9-z6UG6rQ67
+Grass #2 by Tomáš Bayer [CC-BY] via Poly Pizza
 */
 
 export function Grass3({
@@ -172,98 +172,6 @@ export function Grass3({
 }) {
   const { nodes, materials }: { nodes: any; materials: any } =
     useGLTF("/models/Grass3.glb");
-  const [startX, endX] = x;
-  const [startZ, endZ] = z;
-  const mergedGeometry = useRef<any>();
-  const meshRef = useRef<any>();
-  const [isGeometryReady, setIsGeometryReady] = useState(false);
-  const dummy = useMemo(() => new Object3D(), []);
-
-  // (1)
-  useEffect(() => {
-    const geometries = [
-      nodes.Plane002.geometry,
-      nodes.Plane003.geometry,
-      nodes.Plane004.geometry,
-      nodes.Plane005.geometry,
-      nodes.Plane006.geometry,
-      nodes.Plane007.geometry,
-      nodes.Plane008.geometry,
-      nodes.Plane009.geometry,
-      nodes.Plane010.geometry,
-      nodes.Plane011.geometry,
-      nodes.Plane012.geometry,
-      nodes.Plane013.geometry,
-      nodes.Plane014.geometry,
-      nodes.Plane015.geometry,
-      nodes.Plane016.geometry,
-      nodes.Plane017.geometry,
-      nodes.Plane018.geometry,
-      nodes.Plane019.geometry,
-      nodes.Plane020.geometry,
-      nodes.Plane021.geometry,
-      nodes.Plane022.geometry,
-      nodes.Plane023.geometry,
-      nodes.Plane024.geometry,
-      nodes.Plane025.geometry,
-      nodes.Plane026.geometry,
-      nodes.Plane027.geometry,
-      nodes.Plane028.geometry,
-      nodes.Plane029.geometry,
-    ];
-
-    mergedGeometry.current = mergeBufferGeometries(geometries);
-    setIsGeometryReady(true);
-  }, [nodes]);
-
-  // (2)
-  useEffect(() => {
-    if (isGeometryReady && meshRef.current) {
-      for (let i = 0; i < count; i++) {
-        dummy.scale.set(0.0025, 0.0025, 0.0025);
-        const x = Math.random() * (endX - startX) + startX;
-        const z = Math.random() * (endZ - startZ) + startZ;
-        dummy.position.set(x, y, z); // 각 인스턴스의 위치 설정
-        dummy.updateMatrix();
-        meshRef.current.setMatrixAt(i, dummy.matrix);
-      }
-      meshRef.current.instanceMatrix.needsUpdate = true;
-    }
-  }, [dummy, isGeometryReady]);
-
-  return (
-    <group>
-      {mergedGeometry.current && (
-        <instancedMesh
-          ref={meshRef}
-          args={[mergedGeometry.current, materials._crayfishdiffuse, count]}
-          castShadow
-        />
-      )}
-    </group>
-  );
-}
-
-useGLTF.preload("/models/Grass3.glb");
-
-/*
-https://poly.pizza/m/9-z6UG6rQ67
-Grass #2 by Tomáš Bayer [CC-BY] via Poly Pizza
-*/
-
-export function Grass4({
-  count,
-  x,
-  y,
-  z,
-}: {
-  count: number;
-  x: [number, number];
-  y: number;
-  z: [number, number];
-}) {
-  const { nodes, materials }: { nodes: any; materials: any } =
-    useGLTF("/models/Grass4.glb");
   const [startX, endX] = x;
   const [startZ, endZ] = z;
   const mergedGeometry = useRef<any>();
@@ -295,7 +203,7 @@ export function Grass4({
   useEffect(() => {
     if (isGeometryReady && meshRef.current) {
       for (let i = 0; i < count; i++) {
-        dummy.scale.set(0.05, 0.05, 0.05);
+        dummy.scale.set(0.03, 0.03, 0.03);
         const x = Math.random() * (endX - startX) + startX;
         const z = Math.random() * (endZ - startZ) + startZ;
         dummy.position.set(x, y, z); // 각 인스턴스의 위치 설정
@@ -318,4 +226,4 @@ export function Grass4({
   );
 }
 
-useGLTF.preload("/models/Grass4.glb");
+useGLTF.preload("/models/Grass3.glb");

@@ -146,7 +146,7 @@ export const WallWithHole = memo(function WallWithHole({
 
 /*
 https://poly.pizza/m/YQu7UD8YIS
-Public domain
+Shoji Wall by Quaternius
 */
 
 import { useGLTF } from "@react-three/drei";

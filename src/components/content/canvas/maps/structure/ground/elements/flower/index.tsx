@@ -46,7 +46,11 @@ export function Dandelions({ count, x, y, z }: Props) {
             <>
               {Array.from({ length: count }).map((_, idx) => (
                 <Fragment key={idx}>
-                  <group position={position[idx]} scale={5}>
+                  <group
+                    position={position[idx]}
+                    scale={4}
+                    rotation-y={idx / 5}
+                  >
                     <mesh.Dandelions1 material={materials.mat21} />
                     <mesh.Dandelions2 material={materials.mat9} />
                   </group>

@@ -28,10 +28,16 @@ import { Rock } from "./elements/Rock";
 import Stair from "./elements/Stair";
 import { StreetLight } from "./elements/StreetLight";
 import { BrickWall, ShojiWall, TransparentWalls } from "./elements/wall";
+import ModernRoom from "../room/ModernRoom";
+import { IsInsideShowHouseAtom } from "@/store/InteractionAtom";
+import { useInteractionGround } from "./useInteractionGround";
+import { Suspense } from "react";
+import Loader from "@/components/content/html/Loader";
 
 export default function GroundElements() {
   const players = useRecoilValue(PlayersAtom);
-
+  const isInsideShowHouse = useRecoilValue(IsInsideShowHouseAtom);
+  useInteractionGround();
   return (
     <group>
       {players.map((player) => (
@@ -71,9 +77,11 @@ export default function GroundElements() {
       <FloorStoneWalkway count={7} height={10.5} y={1.01} z={-20.8} z2={-25} />
       <PicnicTable />
       <Parasol />
+      <Mailbox />
+      <CardboardBoxes />
+      <DingusTheCat />
       <StreetLight />
       <DirtFloorTile />
-      {/* <ModernRoom /> */}
 
       <BrickWall
         args={useStableArray([0.5, 3.45, 7.5])}
@@ -156,78 +164,11 @@ export default function GroundElements() {
         rotation={useStableArray([-0.3, 0, -Math.PI / 8])}
       />
 
-      {/*
-      
-     
-      
-      
-     
-      <WallTexture
-        map={"brick"}
-        rotation={useStableArray([0, 0, 0])}
-        args={useStableArray([7.9, 4.5, 0.5])}
-        position={useStableArray([17.23, 3.25, -44.5])}
-        color="#ffffff"
-        castShadow={true}
-        repeat={1}
-      /> */}
-      {/* <WallTexture
-        map={"brick"}
-        rotation={useStableArray([0, 0, 0])}
-        args={useStableArray([5, 3.2, 0.5])}
-        position={useStableArray([-10, 2.7, -36.2])}
-        color="#ffffff"
-        castShadow={true}
-        repeat={2}
-      /> */}
-      {/* <BrickWall
-        position={useStableArray([8.7, 0.4, -28.8])}
-        scale={useStableArray([0.027, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-        receiveShadow
-      />
-      <BrickWall
-        position={useStableArray([13, 0.4, -28.8])}
-        scale={useStableArray([0.0175, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([26, 0.4, -30.8])}
-        scale={useStableArray([0.033, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([35.95, 0.4, -30.8])}
-        scale={useStableArray([0.037, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([36, 0.4, -44.5])}
-        scale={useStableArray([0.037, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, 0])}
-      />
-      <BrickWall
-        position={useStableArray([21, 0.5, -5.95])}
-        scale={useStableArray([0.062, 0.03, 0.02])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-        receiveShadow
-      />
-      <BrickWall
-        position={useStableArray([-8, 0.5, -2.8])}
-        scale={useStableArray([0.065, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-      />
-      <BrickWall
-        position={useStableArray([5.5, 0.5, -24.8])}
-        scale={useStableArray([0.01, 0.03, 0.015])}
-        rotation={useStableArray([-Math.PI / 2, 0, -Math.PI / 2])}
-      />
-      <BrickTransparentWall /> */}
-
-      <Mailbox />
-      <CardboardBoxes />
-      {/* <Bicycle /> */}
-      <DingusTheCat />
+      {isInsideShowHouse && (
+        <Suspense fallback={<Loader />}>
+          <ModernRoom />
+        </Suspense>
+      )}
     </group>
   );
 }

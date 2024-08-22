@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Object3D, RepeatWrapping } from "three";
 import { Bush } from "../Bush";
 import { Dandelions } from "../flower";
-import { Grass1, Grass2, Grass3, Grass4 } from "../grass";
+import { Grass1, Grass2, Grass3 } from "../grass";
 export function FloorVintage() {
   const vintageWoodTexture = useTexture("/textures/floor/VintageWood.jpg");
 
@@ -69,7 +69,6 @@ export function FloorGround() {
         <Grass1 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
         <Grass2 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
         <Grass3 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
-        <Grass4 count={5} x={[startX, endX]} y={0} z={[startZ, endZ]} />
         <Bush />
 
         <Dandelions count={10} x={[startX, endX]} y={0.5} z={[startZ, endZ]} />
@@ -140,7 +139,6 @@ export function Floor2nd() {
         <Grass1 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
         <Grass2 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
         <Grass3 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
-        <Grass4 count={5} x={[startX, endX]} y={1} z={[startZ, endZ]} />
 
         <Dandelions count={5} x={[startX, endX]} y={1.5} z={[startZ, endZ]} />
       </group>

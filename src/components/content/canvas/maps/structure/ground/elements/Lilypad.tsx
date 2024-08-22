@@ -13,9 +13,10 @@ export function Lilypad() {
     y = 0.55,
     width = 3,
     height = 3;
-  const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
+  const { nodes }: { nodes: any; materials: any } = useGLTF(
     "/models/Lilypad.glb"
   );
+
   const ref = useRef<any>();
   const startX = width / 2 + x;
   const endX = -width + startX;
@@ -49,14 +50,10 @@ export function Lilypad() {
   });
 
   return (
-    <group ref={ref} position={[x, y, z]}>
-      <mesh
-        geometry={nodes.Lilypad_mesh.geometry}
-        material={materials.blinn1SG}
-        scale={0.075}
-        castShadow
-        receiveShadow
-      />
+    <group ref={ref} position={[x, y, z]} scale={0.45}>
+      <mesh geometry={nodes.lily_pad.geometry}>
+        <meshStandardMaterial color="#7ca531" />
+      </mesh>
     </group>
   );
 }

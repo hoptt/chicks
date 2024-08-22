@@ -12,6 +12,11 @@ export const IsInsideGuestbookAtom = atom({
   key: "IsInsideGuestbook",
   default: false,
 });
+// 집 보여주기 (로드 최적화)
+export const IsInsideShowHouseAtom = atom({
+  key: "IsInsideShowHouse",
+  default: false,
+});
 // 집안 가벽 상호작용 포탈
 export const IsInsideHouseAtom = atom({
   key: "IsInsideHouse",

@@ -13,6 +13,7 @@ import {
   IsInsideLightPortalAtom,
   IsInsideRooftopAtom,
   IsInsideRooftopRugAtom,
+  IsInsideShowHouseAtom,
 } from "@/store/InteractionAtom";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom } from "@/store/PlayersAtom";
@@ -91,6 +92,10 @@ export function usePlayer(player: IPlayer) {
 
   // 방명록 상호작용
   const setIsInsideGuestbook = useSetRecoilState(IsInsideGuestbookAtom);
+  // 집 보여주기 (로드 최적화)
+  const [isInsideShowHouse, setIsInsideShowHouse] = useRecoilState(
+    IsInsideShowHouseAtom
+  );
   // 집안 가벽 상호작용
   const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
   // 루프탑 상호작용
@@ -853,7 +858,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(10) - 루프탑 의자 앉기 */
+    /* 상호작용 이벤트(11) - 루프탑 의자 앉기 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -883,7 +888,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(11) - 소파 앉기 */
+    /* 상호작용 이벤트(12) - 소파 앉기 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -910,6 +915,34 @@ export function usePlayer(player: IPlayer) {
         setIsInsideCouch(true);
       } else {
         setIsInsideCouch(false);
+      }
+    }
+
+    /* 상호작용 이벤트(13) - 집 보이기 */
+    if (!isInsideShowHouse && isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerShowHouse"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideShowHouse(true);
       }
     }
 

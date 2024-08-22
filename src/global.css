@@ -59,6 +59,90 @@ body.pointer {
   width: 100%;
   height: 100%;
 }
+.ring__loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6rem;
+  height: 6rem;
+  background: rgb(129, 129, 129);
+  border: 0.2rem solid rgb(74, 73, 73);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  opacity: 0.8;
+}
+.ring__loader::before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  border: 0.2rem solid transparent;
+  border-right: 0.2rem solid rgba(255, 255, 255, 0.5);
+
+  border-radius: 50%;
+  animation: tail 2s linear infinite;
+}
+
+.ring__loader div {
+  position: absolute;
+  top: 0.6rem;
+  border-radius: 50%;
+  left: 0.6rem;
+  width: 80%;
+  height: 80%;
+  background-size: cover;
+}
+.ring__loader span {
+  display: block;
+  position: absolute;
+  top: calc(50% - 2px);
+  left: 50%;
+  width: 50%;
+  height: 4px;
+  transform-origin: left;
+  animation: head 2s linear infinite;
+}
+.ring__loader span::before {
+  content: "";
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  top: 0;
+  right: -0.15rem;
+}
+.ring__loader p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(248, 244, 244);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: pre-wrap;
+  text-shadow: 0 0 10px rgba(100, 170, 250, 0.5);
+}
+
+@keyframes tail {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes head {
+  0% {
+    transform: rotate(45deg);
+  }
+  100% {
+    transform: rotate(405deg);
+  }
+}
 
 @tailwind base;
 @tailwind components;

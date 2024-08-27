@@ -455,20 +455,20 @@ export function usePlayer(player: IPlayer) {
   // 최대 3번 점프 가능 (2초 간격 충전)
   useEffect(() => {
     if (keyEvt.Control) {
-      // if (jumpRef.current.some((a) => !a)) {
-      cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
-      // }
-      // for (let i = 0; i < jumpRef.current.length; i++) {
-      //   if (!jumpRef.current[i]) {
-      //     jumpRef.current[i] = true;
-      //     if (jumpRef.current[i]) {
-      //       setTimeout(() => {
-      //         jumpRef.current[i] = false;
-      //       }, 2000);
-      //     }
-      //     break;
-      //   }
-      // }
+      if (jumpRef.current.some((a) => !a)) {
+        cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
+      }
+      for (let i = 0; i < jumpRef.current.length; i++) {
+        if (!jumpRef.current[i]) {
+          jumpRef.current[i] = true;
+          if (jumpRef.current[i]) {
+            setTimeout(() => {
+              jumpRef.current[i] = false;
+            }, 2000);
+          }
+          break;
+        }
+      }
     }
   }, [keyEvt.Control]);
 

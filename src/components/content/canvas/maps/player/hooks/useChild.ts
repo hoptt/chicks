@@ -64,7 +64,7 @@ export function useChild(
         .clone()
         .sub(henPosition)
         .normalize()
-        .multiplyScalar(0.05);
+        .multiplyScalar(0.04);
 
       childRef.current.position.sub(distance);
 

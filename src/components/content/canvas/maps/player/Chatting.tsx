@@ -33,67 +33,122 @@ function Chatting({ chat, chatMessage, isPlayerMe, keyEvt }: Props) {
       >
         <AnimatePresence>
           {chat.map(({ id, message }, idx) => (
-            <SpeechBox
+            <ChatLog
               key={id}
-              style={{
-                top: `${keyEvt.Enter ? idx * dms - dms : idx * dms}px`,
-              }}
-              initial={{ opacity: 0, scale: 0.5, x: "-50%" }}
-              animate={{
-                opacity: [0, 1],
-                scale: [0.5, 1],
-                transition: {
-                  duration: 0.25,
-                  type: "spring",
-                },
-              }}
-              exit={{
-                opacity: 0,
-
-                y: [-dms, -dms - 2.5],
-                transition: {
-                  duration: 0.25,
-                  ease: "easeInOut",
-                },
-              }}
-            >
-              {message}
-            </SpeechBox>
+              Enter={keyEvt.Enter}
+              idx={idx}
+              message={message}
+            />
           ))}
           {keyEvt.Enter && (
             <>
               <ChatBox
-                $top={(chat.length - 1) * dms}
-                initial={{ scale: 0 }}
-                animate={{
-                  scale: [0, 1],
-                  transition: { duration: 0.25, type: "spring" },
-                }}
-              >
-                {isPlayerMe ? (
-                  <ChatInput
-                    ref={chatInputRef}
-                    autoFocus
-                    spellCheck={false}
-                    onChange={(e) => {
-                      chatMessage.current = e.target.value;
-                      setLocalmsg(e.target.value);
-                    }}
-                  />
-                ) : (
-                  <ChatWaitting />
-                )}
-              </ChatBox>
+                chat={chat}
+                chatInputRef={chatInputRef}
+                chatMessage={chatMessage}
+                isPlayerMe={isPlayerMe}
+                setLocalmsg={setLocalmsg}
+              />
             </>
           )}
         </AnimatePresence>
       </div>
-      <ChatWidthHelper ref={chatWidthHelperRef}>{localMsg}</ChatWidthHelper>
+
+      <ChatWidthHelper
+        chatWidthHelperRef={chatWidthHelperRef}
+        localMsg={localMsg}
+      />
     </>
   );
 }
 
 export default memo(Chatting);
+
+type ChatLogProps = {
+  message: string;
+  Enter: boolean;
+  idx: number;
+};
+const ChatLog = memo(function ChatLog({ Enter, idx, message }: ChatLogProps) {
+  return (
+    <SpeechBox
+      style={{
+        top: `${Enter ? idx * dms - dms : idx * dms}px`,
+      }}
+      initial={{ opacity: 0, scale: 0.5, x: "-50%" }}
+      animate={{
+        opacity: [0, 1],
+        scale: [0.5, 1],
+        transition: {
+          duration: 0.25,
+          type: "spring",
+        },
+      }}
+      exit={{
+        opacity: 0,
+
+        y: [-dms, -dms - 2.5],
+        transition: {
+          duration: 0.25,
+          ease: "easeInOut",
+        },
+      }}
+    >
+      {message}
+    </SpeechBox>
+  );
+});
+
+type ChatBoxProps = {
+  chat: IPlayer["chat"];
+  isPlayerMe: boolean;
+  chatInputRef: React.RefObject<HTMLInputElement>;
+  chatMessage: React.MutableRefObject<string>;
+  setLocalmsg: React.Dispatch<React.SetStateAction<string>>;
+};
+const ChatBox = memo(function ChatBox({
+  chat,
+  chatInputRef,
+  chatMessage,
+  isPlayerMe,
+  setLocalmsg,
+}: ChatBoxProps) {
+  return (
+    <Container
+      $top={(chat.length - 1) * dms}
+      initial={{ scale: 0 }}
+      animate={{
+        scale: [0, 1],
+        transition: { duration: 0.25, type: "spring" },
+      }}
+    >
+      {isPlayerMe ? (
+        <ChatInput
+          ref={chatInputRef}
+          autoFocus
+          spellCheck={false}
+          onChange={(e) => {
+            chatMessage.current = e.target.value;
+            setLocalmsg(e.target.value);
+          }}
+        />
+      ) : (
+        <ChatWaitting />
+      )}
+    </Container>
+  );
+});
+
+type ChatWidthHelperProps = {
+  chatWidthHelperRef: React.RefObject<HTMLSpanElement>;
+  localMsg: string;
+};
+const ChatWidthHelper = memo(function ChatWidthHelper({
+  chatWidthHelperRef,
+  localMsg,
+}: ChatWidthHelperProps) {
+  return <WidthHelper ref={chatWidthHelperRef}>{localMsg}</WidthHelper>;
+});
 
 const ChatInput = styled.input`
   position: absolute;
@@ -116,7 +171,7 @@ const ChatInput = styled.input`
 `;
 
 // input 의 크기를 동적으로 변경하기 위한 방법
-const ChatWidthHelper = styled.span`
+const WidthHelper = styled.span`
   position: absolute;
   visibility: hidden;
   padding: 0.35rem 0.75rem;
@@ -174,7 +229,7 @@ const SpeechBox = styled(motion.div)`
   text-align: center;
 `;
 
-const ChatBox = styled(motion.div)<{ $top: number }>`
+const Container = styled(motion.div)<{ $top: number }>`
   position: absolute;
   background-color: inherit;
   top: ${(props) => props.$top}px;

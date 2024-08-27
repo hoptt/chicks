@@ -10,7 +10,6 @@ export default function FakePlayer() {
         ref={cylinderRef}
         position={memoizedPosition}
         rotation-y={Math.PI / 4}
-        name="sibal"
       >
         <group name="Root_Scene">
           <group name="RootNode">

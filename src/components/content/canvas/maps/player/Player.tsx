@@ -5,6 +5,7 @@ import styled, { keyframes } from "styled-components";
 import Chatting from "./Chatting";
 import Child from "./Child";
 import Egg from "./Egg";
+import { FootPrints } from "./FootPrints";
 import { usePlayer } from "./hooks/usePlayer";
 
 export default function Player({ player }: { player: IPlayer }) {
@@ -19,6 +20,7 @@ export default function Player({ player }: { player: IPlayer }) {
     materials,
     memoizedPosition,
     cylinderPositionRef,
+    footprints,
   } = usePlayer(player);
 
   return (
@@ -48,6 +50,8 @@ export default function Player({ player }: { player: IPlayer }) {
           </Html>
         )}
       </group>
+
+      <FootPrints footPrints={footprints} />
 
       <group ref={chatRef}>
         <Html>

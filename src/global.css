@@ -34,13 +34,15 @@ body.pointer {
   cursor: pointer;
 }
 
-#guestbook .wrapper__initial {
+#guestbook .wrapper__initial,
+#source-list .wrapper__initial {
   transform: none !important;
   width: 100%;
   height: 100%;
   padding: 10rem;
 }
-#guestbook .sub__initial {
+#guestbook .sub__initial,
+#source-list .wrapper__initial {
   position: relative !important;
   width: 100%;
   height: 100%;

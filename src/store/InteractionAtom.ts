@@ -6,34 +6,22 @@ export const IsInsideGuestbookAtom = atom({
   key: "IsInsideGuestbook",
   default: false,
 });
-// 집 보여주기 (로드 최적화)
-export const IsInsideShowHouseAtom = atom({
-  key: "IsInsideShowHouse",
+
+// 출처 상호작용 포탈
+export const IsInsideSourceListAtom = atom({
+  key: "IsInsideSourceList",
   default: false,
 });
+
 // 집안 가벽 상호작용 포탈
 export const IsInsideHouseAtom = atom({
   key: "IsInsideHouse",
   default: false,
 });
-// 루프탑 상호작용 포탈
-export const IsInsideRooftopAtom = atom({
-  key: "IsInsideRooftopAtom",
-  default: false,
-});
-// 루프탑 의자
-export const IsInsideRooftopRugAtom = atom({
-  key: "IsInsideRooftopRugAtom",
-  default: false,
-});
+
 // 소파
 export const IsInsideCouchAtom = atom({
   key: "IsInsideCouchAtom",
-  default: false,
-});
-// 현관문 앞 방 상호작용 포탈
-export const IsInsideFoyerAtom = atom({
-  key: "IsInsideFoyer",
   default: false,
 });
 
@@ -42,12 +30,13 @@ export const IsInsideHouseDoorAtom = atom({
   key: "IsInsideHouseDoor",
   default: false,
 });
-// 엘레베이터 문(실내) 상호작용 포탈
+
+// 엘레베이터 문 상호작용 포탈
 export const IsInsideElevatorIndoorDoorAtom = atom({
   key: "IsInsideElevatorIndoorDoor",
   default: false,
 });
-// 엘레베이터 문(옥상) 상호작용 포탈
+// 엘레베이터 문 상호작용 포탈
 export const IsInsideElevatorRooftopDoorAtom = atom({
   key: "IsInsideElevatorRooftopDoor",
   default: false,
@@ -55,6 +44,11 @@ export const IsInsideElevatorRooftopDoorAtom = atom({
 // 엘레베이터 상호작용 포탈
 export const IsInsideElevatorAtom = atom({
   key: "IsInsideElevator",
+  default: false,
+});
+
+export const IsInsideBeachRugAtom = atom({
+  key: "IsInsideBeachRug",
   default: false,
 });
 

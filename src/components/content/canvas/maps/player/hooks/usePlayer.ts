@@ -2,27 +2,26 @@ import { ALLOW_KEYS } from "@/consts";
 import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
+  IsInsideBeachRugAtom,
   IsInsideCouchAtom,
   IsInsideElevatorAtom,
   IsInsideElevatorIndoorDoorAtom,
   IsInsideElevatorRooftopDoorAtom,
-  IsInsideFoyerAtom,
   IsInsideGuestbookAtom,
   IsInsideHouseAtom,
   IsInsideHouseDoorAtom,
-  IsInsideRooftopAtom,
-  IsInsideRooftopRugAtom,
-  IsInsideShowHouseAtom,
+  IsInsideSourceListAtom,
 } from "@/store/InteractionAtom";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom } from "@/store/PlayersAtom";
 import { IPlayer } from "@/types";
+import FootPrintUtils from "@/utils/FootPrintUtils";
 import LayingEggsUtils from "@/utils/LayingEggsUtils";
 import { Triplet, useSphere } from "@react-three/cannon";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useFrame, useGraph, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Object3D, Vector3 } from "three";
 import { SkeletonUtils } from "three-stdlib";
 import { v4 as uuidv4 } from "uuid";
@@ -86,22 +85,15 @@ export function usePlayer(player: IPlayer) {
 
   // 방명록 상호작용
   const setIsInsideGuestbook = useSetRecoilState(IsInsideGuestbookAtom);
-  // 집 보여주기 (로드 최적화)
-  const [isInsideShowHouse, setIsInsideShowHouse] = useRecoilState(
-    IsInsideShowHouseAtom
-  );
-  // 집안 가벽 상호작용
+  // 방명록 상호작용
+  const setIsInsideSourceList = useSetRecoilState(IsInsideSourceListAtom);
+
+  // 집 안 상호작용
   const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
-  // 루프탑 상호작용
-  const setIsInsideRooftop = useSetRecoilState(IsInsideRooftopAtom);
-  // 루프탑 상호작용
-  const setIsInsideRooftopRug = useSetRecoilState(IsInsideRooftopRugAtom);
   // 소파 상호작용
   const setIsInsideCouch = useSetRecoilState(IsInsideCouchAtom);
   // 집 문 상호작용
   const setIsInsideHouseDoor = useSetRecoilState(IsInsideHouseDoorAtom);
-  // 현관문 앞 상호작용
-  const setIsInsideFoyerDoor = useSetRecoilState(IsInsideFoyerAtom);
   // 엘레베이터 문 상호작용
   const setIsInsideElevatorIndoorDoor = useSetRecoilState(
     IsInsideElevatorIndoorDoorAtom
@@ -112,6 +104,18 @@ export function usePlayer(player: IPlayer) {
   );
   // 엘레베이터 상호작용
   const setIsInsideElevator = useSetRecoilState(IsInsideElevatorAtom);
+
+  // 해변 의자
+  const setIsInsideBeachRug = useSetRecoilState(IsInsideBeachRugAtom);
+
+  const [footprints, setFootprints] = useState<
+    {
+      key: number;
+      position: [number, number, number];
+      rotationZ: number;
+      type: number;
+    }[]
+  >([]);
 
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const isLayingEgg = useRef(false);
@@ -334,10 +338,12 @@ export function usePlayer(player: IPlayer) {
     }
   }, [keyEvt]);
 
+  const currentFoot = useRef(0);
   useEffect(() => {
     const unsubscribe = cylinderApi.position.subscribe((a) => {
       // 앉는 이벤트에는 동작하지 않도록
       if (chairSitDownInfo || couchSitDownInfo) return;
+
       const [x1, y1, z1] = a;
 
       currentPosXZ.current = new Vector3(x1, 0, z1);
@@ -350,6 +356,10 @@ export function usePlayer(player: IPlayer) {
        */
 
       if (currentPosXZ.current.distanceTo(playerPosXZ.current) > 0.05) {
+        currentFoot.current = Math.floor(
+          currentPosXZ.current.distanceTo(playerPosXZ.current)
+        );
+
         const distance = currentPosXZ.current
           .clone()
           .sub(playerPosXZ.current)
@@ -368,7 +378,42 @@ export function usePlayer(player: IPlayer) {
         cylinderPositionRef.current = new Vector3(x2, y2, z2);
 
         cylinderApi.position.set(x2, y2, z2);
+        /* 발자국 로직 */
+        if (
+          currentFoot.current >
+          Math.floor(currentPosXZ.current.distanceTo(playerPosXZ.current))
+        ) {
+          if (jumpRef.current.some((a) => a)) return;
+          setFootprints((prev) => {
+            const a = [...prev];
+            let b = undefined;
+            if (a.length > 1) {
+              b = a.find((_, idx) => idx === 0)!.key;
+              a.splice(0, 1);
+            }
+            const { z, type } = new FootPrintUtils().FootPrintDirection(
+              cylinderRotationRef.current!
+            );
+
+            return [
+              ...a,
+              {
+                key: b ?? a.length,
+                rotationZ: z,
+                type,
+                position: [
+                  cylinderPositionRef.current!.x,
+                  cylinderPositionRef.current!.y - 0.5,
+                  cylinderPositionRef.current!.z,
+                ],
+              },
+            ];
+          });
+        }
       } else {
+        /* 발자국 로직 */
+        setFootprints([]);
+
         /**
          * 이동중일때만 currentPosXZ.current.distanceTo(playerPosXZ.current) > 0.05 조건이 활성화됨
          * 제자리 점프시에는 여기서 y 축 업데이트되도록
@@ -410,20 +455,20 @@ export function usePlayer(player: IPlayer) {
   // 최대 3번 점프 가능 (2초 간격 충전)
   useEffect(() => {
     if (keyEvt.Control) {
-      if (jumpRef.current.some((a) => !a)) {
-        cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
-      }
-      for (let i = 0; i < jumpRef.current.length; i++) {
-        if (!jumpRef.current[i]) {
-          jumpRef.current[i] = true;
-          if (jumpRef.current[i]) {
-            setTimeout(() => {
-              jumpRef.current[i] = false;
-            }, 2000);
-          }
-          break;
-        }
-      }
+      // if (jumpRef.current.some((a) => !a)) {
+      cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
+      // }
+      // for (let i = 0; i < jumpRef.current.length; i++) {
+      //   if (!jumpRef.current[i]) {
+      //     jumpRef.current[i] = true;
+      //     if (jumpRef.current[i]) {
+      //       setTimeout(() => {
+      //         jumpRef.current[i] = false;
+      //       }, 2000);
+      //     }
+      //     break;
+      //   }
+      // }
     }
   }, [keyEvt.Control]);
 
@@ -431,13 +476,13 @@ export function usePlayer(player: IPlayer) {
     // 의자 앉기
     if (chairSitDownInfo) {
       if (chairSitDownInfo.id === 1) {
-        cylinderApi.rotation.set(-0.8, Math.PI / 5, 1.2);
+        cylinderApi.rotation.set(0.9, 2.3, 0);
       } else if (chairSitDownInfo.id === 2) {
-        cylinderApi.rotation.set(-0.8, 0.5, 1.1);
+        cylinderApi.rotation.set(0.9, 2.3, 0);
       } else if (chairSitDownInfo.id === 3) {
-        cylinderApi.rotation.set(-0.5, -Math.PI / 4, 0.2);
+        cylinderApi.rotation.set(0.3, -2.7, 0.8);
       } else if (chairSitDownInfo.id === 4) {
-        cylinderApi.rotation.set(-Math.PI / 3.5, -Math.PI / 4, 0);
+        cylinderApi.rotation.set(0.3, -2.7, 0.8);
       }
 
       // type Static
@@ -558,10 +603,7 @@ export function usePlayer(player: IPlayer) {
 
     /* 모든 상호작용 이벤트 */
 
-    /* 상호작용 이벤트(1) - 불빛 */
-    // 지움
-
-    /* 상호작용 이벤트(2) - 방명록 */
+    /* 상호작용 이벤트(1) - 방명록 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -590,7 +632,8 @@ export function usePlayer(player: IPlayer) {
         setIsInsideGuestbook(false);
       }
     }
-    /* 상호작용 이벤트(3) - 집안 */
+
+    /* 상호작용 이벤트(2) - 출처 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -608,18 +651,49 @@ export function usePlayer(player: IPlayer) {
             getInRangeX &&
             getInRangeY &&
             getInRangeZ &&
-            structure.name === "innerHouse"
+            structure.name === "innerSourceList"
           );
         }
       );
 
       if (currentCloseStructure) {
-        setIsInsideHouse(true);
+        setIsInsideSourceList(true);
       } else {
-        setIsInsideHouse(false);
+        setIsInsideSourceList(false);
       }
     }
-    /* 상호작용 이벤트(4) - 집문 */
+
+    /* 상호작용 이벤트(3) - 해변 의자 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerBeachRug"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideBeachRug(true);
+      } else {
+        setIsInsideBeachRug(false);
+      }
+    }
+
+    /* 상호작용 이벤트(4) - 집 문 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -649,7 +723,37 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(5) - 엘레베이터 문 */
+    /* 상호작용 이벤트(5) - 집 안 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerHouse"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideHouse(true);
+      } else {
+        setIsInsideHouse(false);
+      }
+    }
+
+    /* 상호작용 이벤트(6) - 엘레베이터 문 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -679,7 +783,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(6) - 엘레베이터 */
+    /* 상호작용 이벤트(7) - 엘레베이터 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -709,7 +813,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(7) - 엘레베이터 */
+    /* 상호작용 이벤트(8) - 엘레베이터 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -739,125 +843,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(8) - 현관문 방 */
-    if (isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "innerFoyer"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideFoyerDoor(true);
-      } else {
-        setIsInsideFoyerDoor(false);
-      }
-    }
-
-    /* 상호작용 이벤트(9) - 다락방 사이드 */
-    if (isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "innerAtticSide"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideHouse(false);
-      }
-    }
-
-    /* 상호작용 이벤트(10) - 루프탑 */
-    if (isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "innerRooftop"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideRooftop(true);
-      } else {
-        setIsInsideRooftop(false);
-      }
-    }
-
-    /* 상호작용 이벤트(11) - 루프탑 의자 앉기 */
-    if (isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "innerRooftopRug"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideRooftopRug(true);
-      } else {
-        setIsInsideRooftopRug(false);
-      }
-    }
-
-    /* 상호작용 이벤트(12) - 소파 앉기 */
+    /* 상호작용 이벤트(9) - 소파 앉기 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -884,34 +870,6 @@ export function usePlayer(player: IPlayer) {
         setIsInsideCouch(true);
       } else {
         setIsInsideCouch(false);
-      }
-    }
-
-    /* 상호작용 이벤트(13) - 집 보이기 */
-    if (!isInsideShowHouse && isPlayerMe) {
-      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
-        (structure) => {
-          const getInRangeX =
-            cylinderPositionRef.current.x < structure.corners[0].x &&
-            cylinderPositionRef.current.x > structure.corners[2].x;
-          const getInRangeY =
-            cylinderPositionRef.current.y < structure.corners[0].y &&
-            cylinderPositionRef.current.y > structure.corners[2].y;
-          const getInRangeZ =
-            cylinderPositionRef.current.z < structure.corners[0].z &&
-            cylinderPositionRef.current.z > structure.corners[2].z;
-
-          return (
-            getInRangeX &&
-            getInRangeY &&
-            getInRangeZ &&
-            structure.name === "innerShowHouse"
-          );
-        }
-      );
-
-      if (currentCloseStructure) {
-        setIsInsideShowHouse(true);
       }
     }
 
@@ -1146,6 +1104,7 @@ export function usePlayer(player: IPlayer) {
   return {
     isPlayerMe,
     chat,
+    footprints,
     chatRef,
     chatMessage,
     cylinderRef,

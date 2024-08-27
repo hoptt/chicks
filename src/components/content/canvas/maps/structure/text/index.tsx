@@ -2,7 +2,7 @@ import { Text3D, useTexture } from "@react-three/drei";
 import { RepeatWrapping } from "three";
 const fontUrl = "/fonts/Pretendard.json";
 export function ChicksFlyNaming() {
-  const vintageWoodTexture = useTexture(`/textures/floor/grass.jpg`).clone();
+  const vintageWoodTexture = useTexture(`/textures/floor/sand.jpg`).clone();
 
   vintageWoodTexture.wrapS = RepeatWrapping;
   vintageWoodTexture.wrapT = RepeatWrapping;
@@ -11,9 +11,9 @@ export function ChicksFlyNaming() {
   return (
     <Text3D
       font={fontUrl}
-      rotation={[-Math.PI / 2, 0, Math.PI / 4]}
-      position={[1, -0.1, 8]}
+      position={[-2, 2.8, 12]}
       size={1.5}
+      rotation-x={-Math.PI / 2}
       castShadow
     >
       Chick's Fly

@@ -20,5 +20,6 @@ export const useBodyClass = (isHover: boolean, className: string) => {
   }, [isHover, className]);
 };
 
+// 모델 리렌더 방지
 export const useStableArray = (array: [number, number, number] | any) =>
   useMemo(() => array, []);

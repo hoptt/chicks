@@ -41,6 +41,7 @@ export interface IObjects {
   value:
     | boolean
     | number
+    | string[]
     | number[]
     | {
         id: number;

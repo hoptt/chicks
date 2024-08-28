@@ -4,6 +4,7 @@ import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom, PlayersAtom } from "@/store/PlayersAtom";
 import { IObjects, IPlayer } from "@/types";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 export const ClientSocketControls = () => {
@@ -20,10 +21,26 @@ export const ClientSocketControls = () => {
     setMe(value);
     console.info("클라이언트- 초기화됨");
   };
-  const handleEnter = () => {
+  const handleEnter = (value: any) => {
+    if (value?.name) {
+      toast.success(
+        <>
+          <span className="font-bold me-2">{value.name}</span> 님이 들어왔어요!
+        </>
+      );
+    }
+
     console.info("클라이언트- 입장함");
   };
-  const handleExit = () => {
+  const handleExit = (value: any) => {
+    if (value?.name) {
+      toast.error(
+        <>
+          <span className="font-bold me-2">{value.name}</span> 님이
+          퇴장하셨습니다.
+        </>
+      );
+    }
     console.info("클라이언트- 퇴장함");
   };
   const handlePlayers = (value: IPlayer[]) => {

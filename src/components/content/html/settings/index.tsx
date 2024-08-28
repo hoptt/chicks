@@ -1,7 +1,12 @@
+import { MAXIMUM_PLAYERS } from "@/consts";
+import { PlayersAtom } from "@/store/PlayersAtom";
 import { Html } from "@react-three/drei";
 import { useEffect, useRef } from "react";
+import { PiUsersFill } from "react-icons/pi";
+import { useRecoilValue } from "recoil";
 
 export default function Settings() {
+  const players = useRecoilValue(PlayersAtom);
   // portal
   const portalRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -24,7 +29,12 @@ export default function Settings() {
       }
     };
   }, []);
-
+  // display: flex;
+  // align-items: center;
+  // background-color: #7f7f7f;
+  // margin-left: auto;
+  // border-radius: 0.5rem;
+  // padding: 0.5rem 1rem;
   return (
     <Html
       wrapperClass="wrapper__initial"
@@ -33,6 +43,19 @@ export default function Settings() {
     >
       <div className="flex h-full justify-between items-end p-2">
         <span className="text-xs">© 2024 CHICKSFLY ALL RIGHTS RESERVED</span>
+        <div className="flex items-end">
+          <PiUsersFill size={20} />
+          <div
+            style={{
+              marginLeft: "1rem",
+              fontSize: "15px",
+              letterSpacing: "2px",
+              fontWeight: 600,
+            }}
+          >
+            {players.length}/{MAXIMUM_PLAYERS}
+          </div>
+        </div>
       </div>
     </Html>
   );

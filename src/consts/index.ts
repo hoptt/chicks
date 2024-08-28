@@ -9,3 +9,5 @@ export const ALLOW_KEYS: AllowedKeys[] = [
   "Z",
   "Enter",
 ].map((key) => key.toUpperCase() as AllowedKeys);
+
+export const MAXIMUM_PLAYERS = 8;

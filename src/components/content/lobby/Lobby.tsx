@@ -10,8 +10,8 @@ import { PiUsersFill } from "react-icons/pi";
 import styled from "styled-components";
 import { APIResponse, IUser } from "@/types";
 import CFsecret from "../security/CFsecret";
+import { MAXIMUM_PLAYERS } from "@/consts";
 
-const maximumPlayers = 8;
 export default function Lobby() {
   const players = useRecoilValue(PlayersAtom);
   const [error, setError] = useState(0);
@@ -20,13 +20,13 @@ export default function Lobby() {
   const [tempNickname, setTempNickname] = useState("");
   const isDuplicate =
     players.findIndex((player) => player.name === tempNickname) !== -1;
-  const isFull = players.length >= maximumPlayers;
+  const isFull = players.length >= MAXIMUM_PLAYERS;
   const setCharacterSelectedFinished = useSetRecoilState(
     CharacterSelectedFinishedAtom
   );
 
   useEffect(() => {
-    setError(players.length >= maximumPlayers ? 3 : 0);
+    setError(players.length >= MAXIMUM_PLAYERS ? 3 : 0);
   }, [players.length]);
 
   const handleCf = (status: number) => {
@@ -78,7 +78,7 @@ export default function Lobby() {
             fontWeight: 600,
           }}
         >
-          {players.length}/{maximumPlayers}
+          {players.length}/{MAXIMUM_PLAYERS}
         </div>
       </UserCount>
       <Input

@@ -10,7 +10,7 @@ export function Billboard() {
   const { nodes, materials }: { nodes: any; materials: any } = useGLTF(
     "/models/Billboard.glb"
   );
-  const picture = useTexture("/images/picture2.jpg");
+  const picture = useTexture("/images/picture2.webp");
   useEffect(() => {
     materials.mat22.color.set("#5c4804");
   }, []);
@@ -49,5 +49,5 @@ export function Billboard() {
     </>
   );
 }
-useTexture.preload("/images/picture2.jpg");
+useTexture.preload("/images/picture2.webp");
 useGLTF.preload("/models/Billboard.glb");

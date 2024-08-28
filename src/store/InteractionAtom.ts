@@ -13,6 +13,12 @@ export const IsInsideSourceListAtom = atom({
   default: false,
 });
 
+// 플레이방법 상호작용 포탈
+export const IsInsideHowToPlayAtom = atom({
+  key: "IsInsideHowToPlay",
+  default: false,
+});
+
 // 집안 가벽 상호작용 포탈
 export const IsInsideHouseAtom = atom({
   key: "IsInsideHouse",

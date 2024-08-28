@@ -168,7 +168,7 @@ export function ParkInfoBoard() {
         position={useStableArray([
           position[0] + 2,
           position[1] - 1,
-          position[2] + 1.2,
+          position[2] + 1,
         ])}
         radius={0.5}
         isTouchDown={IsInsideGuestbook}

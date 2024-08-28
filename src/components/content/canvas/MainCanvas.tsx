@@ -1,10 +1,11 @@
-import DrawCallCounter from "@/components/DrawCallCounter";
 import { isDev } from "@/utils";
 import { Physics } from "@react-three/cannon";
 import { StatsGl } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Light from "./maps/light/Light";
 import RootMap from "./maps/RootMap";
+import ResizeHandler from "./component/ResizeHandler";
+import DrawCallCounter from "@/components/DrawCallCounter";
 
 export default function MainCanvas() {
   const aspectRatio = window.innerWidth / window.innerHeight;
@@ -23,6 +24,7 @@ export default function MainCanvas() {
       }}
     >
       {/* <OrbitControls /> */}
+      <ResizeHandler />
       <Light />
       <Physics allowSleep gravity={[0, -9, 0]}>
         {isDev ? (
@@ -33,6 +35,7 @@ export default function MainCanvas() {
           <RootMap />
         )}
       </Physics>
+
       {isDev && <DrawCallCounter />}
       {isDev && <StatsGl />}
     </Canvas>

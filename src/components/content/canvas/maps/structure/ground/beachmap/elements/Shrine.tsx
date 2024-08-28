@@ -94,6 +94,7 @@ export function Shrine() {
             <SourceList closeModal={handleCloseSourceList} />
           </Html>
         )}
+
         <mesh
           geometry={nodes.shrine.geometry}
           material={materials.HalloweenBits}
@@ -103,7 +104,7 @@ export function Shrine() {
       <CircleInteractionPortalWithoutBoundingBox
         position={useStableArray([1.5, 0.25, 0])}
         radius={0.5}
-        isTouchDown={true}
+        isTouchDown={isInsideSourceList}
       />
     </group>
   );

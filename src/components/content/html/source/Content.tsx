@@ -270,6 +270,12 @@ export default function Content() {
   //   createdBy: "Quaternius",
   //   model: <WoodWall />,
   // },
+  // {
+  //   id: 46,
+  //   source: "https://poly.pizza/m/TzjiI94FC5",
+  //   createdBy: "iPoly3D",
+  //   model: <WoodenSign />,
+  // },
   // ];
 
   const images = [
@@ -542,6 +548,12 @@ export default function Content() {
       source: "https://poly.pizza/m/Jw4zM0TcVo",
       createdBy: "Quaternius",
       src: "woodwall",
+    },
+    {
+      id: 46,
+      source: "https://poly.pizza/m/TzjiI94FC5",
+      createdBy: "iPoly3D",
+      src: "woodensign",
     },
   ];
 

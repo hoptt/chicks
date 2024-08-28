@@ -10,6 +10,7 @@ import {
   IsInsideGuestbookAtom,
   IsInsideHouseAtom,
   IsInsideHouseDoorAtom,
+  IsInsideHowToPlayAtom,
   IsInsideSourceListAtom,
 } from "@/store/InteractionAtom";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
@@ -85,8 +86,10 @@ export function usePlayer(player: IPlayer) {
 
   // 방명록 상호작용
   const setIsInsideGuestbook = useSetRecoilState(IsInsideGuestbookAtom);
-  // 방명록 상호작용
+  // 출처 상호작용
   const setIsInsideSourceList = useSetRecoilState(IsInsideSourceListAtom);
+  // 플레이방법 상호작용
+  const setIsInsideHowToPlay = useSetRecoilState(IsInsideHowToPlayAtom);
 
   // 집 안 상호작용
   const setIsInsideHouse = useSetRecoilState(IsInsideHouseAtom);
@@ -663,7 +666,37 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(3) - 해변 의자 */
+    /* 상호작용 이벤트(3) - 플레이 방법 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerHowToPlay"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideHowToPlay(true);
+      } else {
+        setIsInsideHowToPlay(false);
+      }
+    }
+
+    /* 상호작용 이벤트(4) - 해변 의자 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -693,7 +726,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(4) - 집 문 */
+    /* 상호작용 이벤트(5) - 집 문 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -723,7 +756,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(5) - 집 안 */
+    /* 상호작용 이벤트(6) - 집 안 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -753,7 +786,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(6) - 엘레베이터 문 */
+    /* 상호작용 이벤트(7) - 엘레베이터 문 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -783,7 +816,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(7) - 엘레베이터 */
+    /* 상호작용 이벤트(8) - 엘레베이터 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -813,7 +846,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(8) - 엘레베이터 */
+    /* 상호작용 이벤트(9) - 엘레베이터 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {
@@ -843,7 +876,7 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
-    /* 상호작용 이벤트(9) - 소파 앉기 */
+    /* 상호작용 이벤트(10) - 소파 앉기 */
     if (isPlayerMe) {
       const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
         (structure) => {

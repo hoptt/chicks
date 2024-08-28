@@ -5,6 +5,7 @@ import { useRecoilValue } from "recoil";
 
 import { BeachMap } from "./structure/ground/beachmap";
 import { Effects } from "./structure/ground/beachmap/elements/effects";
+import Settings from "../../html/settings";
 
 export default function RootMap() {
   const InteractionCriclePortalBoundingBox = useRecoilValue(
@@ -27,6 +28,7 @@ export default function RootMap() {
         </>
       )}
       <Effects />
+      <Settings />
       <BeachMap />
     </group>
   );

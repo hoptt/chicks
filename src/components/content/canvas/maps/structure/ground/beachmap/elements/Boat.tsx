@@ -13,7 +13,7 @@ export function Boat() {
   useFrame((state) => {
     if (!ref.current) return;
     const time = state.clock.getElapsedTime();
-    ref.current.rotation.y = Math.sin(time) * 0.05;
+    ref.current.rotation.y = Math.sin(time) * 0.1;
     ref.current.rotation.z = Math.sin(time / 2) * 0.05;
   });
   return (

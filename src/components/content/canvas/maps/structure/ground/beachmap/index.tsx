@@ -24,6 +24,7 @@ import { Rock, Rock2 } from "./elements/rock";
 import { useInteractionGround } from "./useInteractionGround";
 import { Shrine } from "./elements/Shrine";
 import { useCompoundBody } from "@react-three/cannon";
+import { WoodenSign } from "./elements/WoodenSign";
 
 export function BeachMap() {
   const players = useRecoilValue(PlayersAtom);
@@ -55,6 +56,7 @@ const Elements = memo(function Elements() {
       <Shrine />
       <ChicksFlyNaming />
       <ParkInfoBoard />
+      <WoodenSign />
 
       <BeachChairs />
 

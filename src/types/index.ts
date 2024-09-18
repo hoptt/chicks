@@ -33,6 +33,7 @@ export interface IPlayer {
   };
   chat: Chat[];
   chick: IChick[];
+  cone: boolean;
 }
 
 export interface IObjects {

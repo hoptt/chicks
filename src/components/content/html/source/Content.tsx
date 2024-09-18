@@ -276,6 +276,24 @@ export default function Content() {
   //   createdBy: "iPoly3D",
   //   model: <WoodenSign />,
   // },
+  // {
+  //   id:47,
+  //   source:"https://poly.pizza/m/aH83BlSFxJu",
+  //   createdBy:"Poly by Google",
+  //   model:<Candle/>
+  // },
+  // {
+  //   id:48,
+  //   source:"https://poly.pizza/m/WoXpAJT0oD",
+  //   createdBy:"J-Toastie",
+  //   model:<Cone/>
+  // },
+  // {
+  //   id:49,
+  //   source:"https://poly.pizza/m/2WvdDP8C3a5",
+  //   createdBy:"Poly by Google",
+  //   model:<Cake/>
+  // },
   // ];
 
   const images = [
@@ -554,6 +572,24 @@ export default function Content() {
       source: "https://poly.pizza/m/TzjiI94FC5",
       createdBy: "iPoly3D",
       src: "woodensign",
+    },
+    {
+      id: 47,
+      source: "https://poly.pizza/m/aH83BlSFxJu",
+      createdBy: "Poly by Google",
+      src: "candle",
+    },
+    {
+      id: 48,
+      source: "https://poly.pizza/m/WoXpAJT0oD",
+      createdBy: "J-Toastie",
+      src: "cone",
+    },
+    {
+      id: 49,
+      source: "https://poly.pizza/m/2WvdDP8C3a5",
+      createdBy: "Poly by Google",
+      src: "cake",
     },
   ];
 

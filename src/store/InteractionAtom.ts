@@ -58,6 +58,11 @@ export const IsInsideBeachRugAtom = atom({
   default: false,
 });
 
+export const IsInsideConeAtom = atom({
+  key: "IsInsideCone",
+  default: false,
+});
+
 // 포탈 위치
 export const InteractionCriclePortalBoundingBoxAtom = atom<
   InteractionCriclePortal[]

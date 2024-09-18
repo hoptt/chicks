@@ -10,7 +10,6 @@ import { Globe } from "../house/Globe";
 import { LCouch } from "../house/LCouch";
 import { PictureFrame } from "../house/PictureFrame";
 import { Plant } from "../house/Plant";
-import { RemoteControl } from "../house/RemoteControl";
 import { RubberDuck } from "../house/RubberDuck";
 import { RugRound } from "../house/RugRound";
 import { ShelfSmall } from "../house/ShelfSmall";
@@ -19,6 +18,9 @@ import { TV } from "../house/TV";
 import { WallDesign } from "../house/WallDesign";
 import { WallDeskSpeaker } from "../house/WallDeskSpeaker";
 import { WindowBlinds } from "../house/WindowBlinds";
+import { Cake } from "../party/Cake";
+import { Candle } from "../party/Candle";
+import { Cone } from "../party/Cone";
 
 export const DockHouse = memo(function DockHouse() {
   return (
@@ -41,7 +43,10 @@ export const DockHouse = memo(function DockHouse() {
       <RugRound />
       <CircleTable />
 
-      <RemoteControl />
+      {/* <RemoteControl /> */}
+      <Cake />
+      <Candle />
+      <Cone />
       <AirConditioner />
       <PictureFrame />
       <CoffeeTable />

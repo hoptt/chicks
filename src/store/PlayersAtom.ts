@@ -18,3 +18,9 @@ export const PlayersAtom = atom<IPlayer[]>({
   key: "PlayersAtom",
   default: [],
 });
+
+// 이름표 토글
+export const nicknameToggleAtom = atom<boolean>({
+  key: "nicknameToggleAtom",
+  default: true,
+});

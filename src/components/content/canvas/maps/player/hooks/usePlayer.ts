@@ -3,6 +3,7 @@ import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
   IsInsideBeachRugAtom,
+  IsInsideConeAtom,
   IsInsideCouchAtom,
   IsInsideElevatorAtom,
   IsInsideElevatorIndoorDoorAtom,
@@ -14,7 +15,7 @@ import {
   IsInsideSourceListAtom,
 } from "@/store/InteractionAtom";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
-import { MeAtom } from "@/store/PlayersAtom";
+import { MeAtom, nicknameToggleAtom } from "@/store/PlayersAtom";
 import { IPlayer } from "@/types";
 import FootPrintUtils from "@/utils/FootPrintUtils";
 import LayingEggsUtils from "@/utils/LayingEggsUtils";
@@ -30,7 +31,7 @@ import { v4 as uuidv4 } from "uuid";
 export function usePlayer(player: IPlayer) {
   const { id: playerId, keyEvt, position, chat } = player;
   const { camera, scene } = useThree();
-
+  const nicknameToggle = useRecoilValue(nicknameToggleAtom);
   const pivot = useMemo(() => new Object3D(), []);
   const me = useRecoilValue(MeAtom);
   const isPlayerMe = me?.id === playerId;
@@ -45,6 +46,9 @@ export function usePlayer(player: IPlayer) {
   );
   // 유저 이름
   const nicknameRef = useRef<any>(null);
+
+  // 꼬깔 모자
+  const coneRef = useRef<any>(null);
   // 모든 상호작용 오브젝트 경계선
   const InteractionCriclePortalBoundingBox = useRecoilValue(
     InteractionCriclePortalBoundingBoxSelector
@@ -110,6 +114,9 @@ export function usePlayer(player: IPlayer) {
 
   // 해변 의자
   const setIsInsideBeachRug = useSetRecoilState(IsInsideBeachRugAtom);
+
+  // 꼬깔
+  const setIsInsideCone = useSetRecoilState(IsInsideConeAtom);
 
   const [footprints, setFootprints] = useState<
     {
@@ -570,7 +577,7 @@ export function usePlayer(player: IPlayer) {
     }
   }, [couchSitDownInfo, keyEvt, isPlayerMe]);
 
-  useFrame(() => {
+  useFrame((state) => {
     /* 알 */
     player.chick
       .filter((a) => a.isEgg)
@@ -602,6 +609,28 @@ export function usePlayer(player: IPlayer) {
         cylinderPositionRef.current.z
       );
       chatRef.current.lookAt(1000, 1000, 1000);
+    }
+
+    /* 꼬깔 모자 */
+    if (coneRef.current && cylinderPositionRef.current) {
+      coneRef.current.position.set(
+        cylinderPositionRef.current.x + 0.1,
+        cylinderPositionRef.current.y + 0.68,
+        cylinderPositionRef.current.z + 0.1
+      );
+      if (
+        isPlayerMe &&
+        (keyEvt.ArrowDown ||
+          keyEvt.ArrowUp ||
+          keyEvt.ArrowLeft ||
+          keyEvt.ArrowRight)
+      ) {
+        const time = state.clock.getElapsedTime();
+
+        coneRef.current.rotation.y = Math.sin(time) * 5;
+      } else {
+        coneRef.current.rotation.y = 1.55;
+      }
     }
 
     /* 모든 상호작용 이벤트 */
@@ -906,6 +935,36 @@ export function usePlayer(player: IPlayer) {
       }
     }
 
+    /* 상호작용 이벤트(11) - 꼬깔 모자 */
+    if (isPlayerMe) {
+      const currentCloseStructure = InteractionCriclePortalBoundingBox.find(
+        (structure) => {
+          const getInRangeX =
+            cylinderPositionRef.current.x < structure.corners[0].x &&
+            cylinderPositionRef.current.x > structure.corners[2].x;
+          const getInRangeY =
+            cylinderPositionRef.current.y < structure.corners[0].y &&
+            cylinderPositionRef.current.y > structure.corners[2].y;
+          const getInRangeZ =
+            cylinderPositionRef.current.z < structure.corners[0].z &&
+            cylinderPositionRef.current.z > structure.corners[2].z;
+
+          return (
+            getInRangeX &&
+            getInRangeY &&
+            getInRangeZ &&
+            structure.name === "innerCone"
+          );
+        }
+      );
+
+      if (currentCloseStructure) {
+        setIsInsideCone(true);
+      } else {
+        setIsInsideCone(false);
+      }
+    }
+
     /* 키 이벤트 */
     if (
       keyEvt.ArrowDown ||
@@ -1142,8 +1201,10 @@ export function usePlayer(player: IPlayer) {
     chatMessage,
     cylinderRef,
     nicknameRef,
+    coneRef,
     nodes,
     materials,
+    nicknameToggle,
     memoizedPosition,
     cylinderPositionRef,
   };

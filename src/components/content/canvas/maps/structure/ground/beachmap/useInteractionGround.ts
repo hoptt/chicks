@@ -37,6 +37,9 @@ export function useInteractionGround() {
     const scaledMin9 = new Vector3(-2.5, 2, 3);
     const scaledMax9 = new Vector3(0, 4, 4.5);
 
+    const scaledMin10 = new Vector3(12, 2, -26.7);
+    const scaledMax10 = new Vector3(13.3, 4, -25);
+
     setInteractionCriclePortalBoundingBox((prev) =>
       uniqBy(
         [
@@ -118,6 +121,15 @@ export function useInteractionGround() {
             box: {
               max: scaledMax9,
               min: scaledMin9,
+            },
+            position: [0, 0, 0],
+            isMatrixUpdated: true,
+          },
+          {
+            name: "innerCone",
+            box: {
+              max: scaledMax10,
+              min: scaledMin10,
             },
             position: [0, 0, 0],
             isMatrixUpdated: true,

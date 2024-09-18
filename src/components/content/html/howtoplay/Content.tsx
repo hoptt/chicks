@@ -1,6 +1,6 @@
 export default function Content() {
   return (
-    <div className="grid grid-cols-4 gap-5 py-4 px-3 border border-sky-100 rounded-md relative">
+    <div className="grid grid-cols-4 gap-5 py-4 px-3 border border-sky-100 rounded-md">
       <div className="flex flex-col gap-5 ">
         <div className="min-h-[70px] flex justify-center">
           <img
@@ -35,9 +35,6 @@ export default function Content() {
         </div>
         <p>다른 유저들과 대화하며 즐거운 시간을 보내세요!</p>
       </div>
-      <div className="border-r-2 absolute h-[70%] w-1 top-7 left-[250px]" />
-      <div className="border-r-2 absolute h-[70%] w-1 top-7 left-[520px]" />
-      <div className="border-r-2 absolute h-[70%] w-1 top-7 left-[760px]" />
     </div>
   );
 }

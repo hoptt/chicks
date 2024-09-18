@@ -1,12 +1,14 @@
 import { MAXIMUM_PLAYERS } from "@/consts";
-import { PlayersAtom } from "@/store/PlayersAtom";
+import { nicknameToggleAtom, PlayersAtom } from "@/store/PlayersAtom";
 import { Html } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import { PiUsersFill } from "react-icons/pi";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function Settings() {
   const players = useRecoilValue(PlayersAtom);
+  const [nicknameToggle, setNicknameToggle] =
+    useRecoilState(nicknameToggleAtom);
   // portal
   const portalRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -43,17 +45,26 @@ export default function Settings() {
     >
       <div className="flex h-full justify-between items-end p-2">
         <span className="text-xs">© 2024 CHICKSFLY ALL RIGHTS RESERVED</span>
-        <div className="flex items-end">
-          <PiUsersFill size={20} />
-          <div
-            style={{
-              marginLeft: "1rem",
-              fontSize: "15px",
-              letterSpacing: "2px",
-              fontWeight: 600,
-            }}
+        <div className="flex items-center">
+          <span
+            className="text-xs cursor-pointer me-3"
+            onClick={() => setNicknameToggle((prev) => !prev)}
           >
-            {players.length}/{MAXIMUM_PLAYERS}
+            닉네임 {nicknameToggle ? "ON" : "OFF"}
+          </span>
+          <div className="flex items-end">
+            <PiUsersFill size={20} />
+
+            <div
+              style={{
+                marginLeft: "1rem",
+                fontSize: "15px",
+                letterSpacing: "2px",
+                fontWeight: 600,
+              }}
+            >
+              {players.length}/{MAXIMUM_PLAYERS}
+            </div>
           </div>
         </div>
       </div>

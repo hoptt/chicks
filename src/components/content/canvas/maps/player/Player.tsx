@@ -7,6 +7,7 @@ import Child from "./Child";
 import Egg from "./Egg";
 import { FootPrints } from "./FootPrints";
 import { usePlayer } from "./hooks/usePlayer";
+import { PlayerCone } from "../structure/ground/beachmap/elements/party/PlayerCone";
 
 export default function Player({ player }: { player: IPlayer }) {
   const {
@@ -15,41 +16,45 @@ export default function Player({ player }: { player: IPlayer }) {
     chat,
     chatMessage,
     nicknameRef,
+    coneRef,
     cylinderRef,
     nodes,
     materials,
     memoizedPosition,
     cylinderPositionRef,
+    nicknameToggle,
     footprints,
   } = usePlayer(player);
 
   return (
     <>
-      <group ref={nicknameRef}>
-        <Html>
-          <div
-            style={{
-              transform: "translateX(-50%)",
-              fontSize: ".85rem",
-              whiteSpace: "pre",
-              fontWeight: "bold",
-              background: "#8e6300",
-              padding: ".15rem .35rem",
-              borderRadius: ".25rem",
-              lineHeight: "17px",
-              color: "white",
-            }}
-          >
-            {player.name}
-          </div>
-        </Html>
-
-        {player.keyEvt.Z && (
-          <Html style={{ transform: "translate(-15px,-17px)" }}>
-            <LayingAnimation />
+      {nicknameToggle && (
+        <group ref={nicknameRef}>
+          <Html>
+            <div
+              style={{
+                transform: "translateX(-50%)",
+                fontSize: ".85rem",
+                whiteSpace: "pre",
+                fontWeight: "bold",
+                background: "#8e6300",
+                padding: ".15rem .35rem",
+                borderRadius: ".25rem",
+                lineHeight: "17px",
+                color: "white",
+              }}
+            >
+              {player.name}
+            </div>
           </Html>
-        )}
-      </group>
+
+          {player.keyEvt.Z && (
+            <Html style={{ transform: "translate(-15px,-17px)" }}>
+              <LayingAnimation />
+            </Html>
+          )}
+        </group>
+      )}
 
       <FootPrints footPrints={footprints} />
 
@@ -63,6 +68,12 @@ export default function Player({ player }: { player: IPlayer }) {
           />
         </Html>
       </group>
+
+      {player.cone && (
+        <group ref={coneRef}>
+          <PlayerCone />
+        </group>
+      )}
 
       <group ref={cylinderRef as any}>
         <group position={memoizedPosition} rotation-y={Math.PI / 4}>

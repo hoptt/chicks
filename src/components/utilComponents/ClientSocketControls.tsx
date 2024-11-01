@@ -3,7 +3,7 @@ import { socket } from "@/sockets/clientSocket";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom, PlayersAtom } from "@/store/PlayersAtom";
 import { IObjects, IPlayer } from "@/types";
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import toast from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 

@@ -1,4 +1,5 @@
 import { ALLOW_KEYS } from "@/consts";
+import { getStoreKeyType, KEYTYPE_KEY } from "@/localstorage";
 import { socket } from "@/sockets/clientSocket";
 import {
   InteractionCriclePortalBoundingBoxSelector,
@@ -35,6 +36,10 @@ export function usePlayer(player: IPlayer) {
   const pivot = useMemo(() => new Object3D(), []);
   const me = useRecoilValue(MeAtom);
   const isPlayerMe = me?.id === playerId;
+
+  // 사용자 커스텀 키
+  const [keyType, setKeyType] = useState(getStoreKeyType());
+
   // 플레이어 rotation
   const cylinderRotationRef = useRef<Triplet>();
   const chatMessage = useRef("");
@@ -188,12 +193,53 @@ export function usePlayer(player: IPlayer) {
     pivot.position.lerp(cylinderPosition, 0.1);
   };
 
+  // 커스텀 키 및 점프 키 변환 로직
+  const getVirtualKey = (e: KeyboardEvent) => {
+    if (e.code == "Space" || e.key == " ") {
+      return "Spacebar";
+    }
+    if (keyType == "A") {
+      return e.key;
+    } else {
+      const upperCaseKey = e.key.toUpperCase();
+      if (upperCaseKey == "W") {
+        return "ArrowUp";
+      } else if (upperCaseKey == "A") {
+        return "ArrowLeft";
+      } else if (upperCaseKey == "S") {
+        return "ArrowDown";
+      } else if (upperCaseKey == "D") {
+        return "ArrowRight";
+      }
+    }
+    return e.key;
+  };
+
+  // 커스텀 키 곧바로 적용되도록
+  useEffect(() => {
+    const eventHandler = () => {
+      setKeyType(getStoreKeyType());
+    };
+    window.addEventListener(KEYTYPE_KEY, eventHandler);
+    return () => {
+      window.removeEventListener(KEYTYPE_KEY, eventHandler);
+    };
+  }, []);
+
   useEffect(() => {
     const keyDownPressHandler = (e: KeyboardEvent) => {
       e.stopPropagation();
       // 허용되는 키
       if (!ALLOW_KEYS.includes(e.key.toUpperCase() as keyof typeof keyEvt))
         return;
+
+      // 사용자 커스텀 키
+      if (keyType == "B") {
+        if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key))
+          return;
+      } else {
+        if (["W", "A", "S", "D"].includes(e.key.toUpperCase())) return;
+      }
 
       if (e.key.toUpperCase() === "ENTER") {
         if (!chatMessage.current) {
@@ -237,7 +283,7 @@ export function usePlayer(player: IPlayer) {
       if (keyEvt.Enter) return;
 
       // key 이벤트 반복 방지 (Enter 제외)
-      if (keyEvt[e.key as keyof typeof keyEvt]) return;
+      if (keyEvt[getVirtualKey(e) as keyof typeof keyEvt]) return;
 
       if (e.key.toUpperCase() === "Z" && !isLayingEgg.current) {
         isLayingEgg.current = true;
@@ -284,17 +330,27 @@ export function usePlayer(player: IPlayer) {
         return;
       }
 
-      if (!isLayingEgg.current)
+      if (!isLayingEgg.current) {
         socket.emit("keyPress", {
-          value: [e.key],
+          value: [getVirtualKey(e)],
           isPress: true,
         });
+      }
     };
     const keyUpPressHandler = (e: KeyboardEvent) => {
       e.stopPropagation();
+
       // 허용되는 키
       if (!ALLOW_KEYS.includes(e.key.toUpperCase() as keyof typeof keyEvt))
         return;
+
+      // 사용자 커스텀 키
+      if (keyType == "B") {
+        if (["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key))
+          return;
+      } else {
+        if (["W", "A", "S", "D"].includes(e.key.toUpperCase())) return;
+      }
 
       if (e.key.toUpperCase() === "ENTER") {
         enterPressed.current = false;
@@ -316,12 +372,14 @@ export function usePlayer(player: IPlayer) {
       socket.emit(
         "keyPress",
         {
-          value: [e.key],
+          value: [getVirtualKey(e)],
           isPress: false,
         },
         () => {
           if (
-            ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)
+            ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(
+              getVirtualKey(e)
+            )
           ) {
             isStartMoveDiagonal.current = false;
 
@@ -346,7 +404,7 @@ export function usePlayer(player: IPlayer) {
         window.removeEventListener("keyup", keyUpPressHandler);
       };
     }
-  }, [keyEvt]);
+  }, [keyEvt, keyType]);
 
   const currentFoot = useRef(0);
   useEffect(() => {
@@ -464,7 +522,7 @@ export function usePlayer(player: IPlayer) {
   // 점프
   // 최대 3번 점프 가능 (2초 간격 충전)
   useEffect(() => {
-    if (keyEvt.Control) {
+    if (keyEvt.Spacebar) {
       if (jumpRef.current.some((a) => !a)) {
         cylinderApi.applyImpulse([0, 50, 0], [0, 0, 0]);
       }
@@ -480,7 +538,7 @@ export function usePlayer(player: IPlayer) {
         }
       }
     }
-  }, [keyEvt.Control]);
+  }, [keyEvt.Spacebar]);
 
   useEffect(() => {
     // 의자 앉기
@@ -973,7 +1031,7 @@ export function usePlayer(player: IPlayer) {
       keyEvt.ArrowRight
     ) {
       setAnimation("AnimalArmature|AnimalArmature|AnimalArmature|Run");
-    } else if (keyEvt.Control || keyEvt.Z) {
+    } else if (keyEvt.Spacebar || keyEvt.Z) {
       setAnimation("AnimalArmature|AnimalArmature|AnimalArmature|Idle_Peck");
     } else {
       setAnimation("AnimalArmature|AnimalArmature|AnimalArmature|Idle");

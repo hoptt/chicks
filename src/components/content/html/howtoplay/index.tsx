@@ -1,6 +1,6 @@
-import { IoMdClose } from "react-icons/io";
 import styled from "styled-components";
 import Content from "./Content";
+import Header from "./Header";
 
 type Props = {
   closeModal: () => void;
@@ -13,18 +13,12 @@ export default function HowToPlay({ closeModal }: Props) {
     </Container>
   );
 }
-function Header({ closeModal }: { closeModal: () => void }) {
-  return (
-    <div className="flex justify-between mb-5">
-      <span className="text-2xl font-bold">플레이 방법</span>
-      <IoMdClose size={25} className="cursor-pointer" onClick={closeModal} />
-    </div>
-  );
-}
+
 const Container = styled.section`
   width: 100%;
   height: 100%;
   max-width: 1080px;
+  height: 500px;
   position: relative;
   display: flex;
   flex-direction: column;

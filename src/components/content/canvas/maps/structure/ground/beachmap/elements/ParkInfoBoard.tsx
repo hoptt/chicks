@@ -104,6 +104,22 @@ export function ParkInfoBoard() {
       portalRef.current!.style.zIndex = isOpenGuestbook ? "1" : "-1";
   }, [isOpenGuestbook]);
 
+  useEffect(() => {
+    if (!IsInsideGuestbook) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toUpperCase() === "F") {
+        setIsOpenGuestbook(true);
+        window.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [IsInsideGuestbook]);
+
   return (
     <>
       <group
@@ -135,6 +151,14 @@ export function ParkInfoBoard() {
               src="/images/mouse_click.webp"
               style={{ transform: "translate(-50%,-10px)" }}
             />
+            <span
+              className="shorten__key"
+              style={{
+                transform: "translate(-50%, -80px)",
+              }}
+            >
+              [ F ]
+            </span>
           </Html>
         )}
         {isOpenGuestbook && (

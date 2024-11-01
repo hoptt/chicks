@@ -63,6 +63,23 @@ export default function FrontDoor() {
       setIsHover(false);
     }
   }, [isInsideHouseDoor]);
+
+  useEffect(() => {
+    if (!isInsideHouseDoor) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toUpperCase() === "F") {
+        if (isInsideHouseDoor) {
+          socket.emit("frontdoor", !isOpen);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isInsideHouseDoor, isOpen]);
   return (
     <>
       <group
@@ -101,6 +118,14 @@ export default function FrontDoor() {
                 src="/images/mouse_click.webp"
                 style={{ transform: "translate(-50%,-10px)" }}
               />
+              <span
+                className="shorten__key"
+                style={{
+                  transform: "translate(-50%, -70px)",
+                }}
+              >
+                [ F ]
+              </span>
             </Html>
           )}
           <MetalDoor

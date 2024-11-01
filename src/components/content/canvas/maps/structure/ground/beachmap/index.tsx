@@ -1,4 +1,5 @@
 import { PlayersAtom } from "@/store/PlayersAtom";
+import { useCompoundBody } from "@react-three/cannon";
 import { memo } from "react";
 import { useRecoilValue } from "recoil";
 import Player from "../../../player/Player";
@@ -21,10 +22,9 @@ import { ParkInfoBoard } from "./elements/ParkInfoBoard";
 import { SandParticles } from "./elements/particles";
 import { Plate } from "./elements/Plate";
 import { Rock, Rock2 } from "./elements/rock";
-import { useInteractionGround } from "./useInteractionGround";
 import { Shrine } from "./elements/Shrine";
-import { useCompoundBody } from "@react-three/cannon";
 import { WoodenSign } from "./elements/WoodenSign";
+import { useInteractionGround } from "./useInteractionGround";
 
 export function BeachMap() {
   const players = useRecoilValue(PlayersAtom);

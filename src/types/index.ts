@@ -27,7 +27,7 @@ export interface IPlayer {
     ArrowDown: boolean;
     ArrowLeft: boolean;
     ArrowRight: boolean;
-    Control: boolean;
+    Spacebar: boolean;
     Z: boolean;
     Enter: boolean;
   };

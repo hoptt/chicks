@@ -3,15 +3,19 @@ import { isDev } from "@/utils";
 import { Line } from "@react-three/drei";
 import { useRecoilValue } from "recoil";
 
+import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { BeachMap } from "./structure/ground/beachmap";
 import { Effects } from "./structure/ground/beachmap/elements/effects";
-import Settings from "../../html/settings";
+import { getStoreKeyType } from "@/localstorage";
+import Guide from "../component/guide";
+import BottomInfo from "../../html/bottomInfo";
 
 export default function RootMap() {
   const InteractionCriclePortalBoundingBox = useRecoilValue(
     InteractionCriclePortalBoundingBoxSelector
   );
-
+  const isVisited = getStoreKeyType();
+  const objects = useRecoilValue(ObjectsAtom);
   return (
     <group>
       {isDev && (
@@ -27,9 +31,11 @@ export default function RootMap() {
           })}
         </>
       )}
+
+      {!isVisited && <Guide />}
       <Effects />
-      <Settings />
-      <BeachMap />
+      <BottomInfo />
+      {objects.length > 0 && <BeachMap />}
     </group>
   );
 }

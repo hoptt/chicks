@@ -1,40 +1,43 @@
+import styled from "styled-components";
+
 export default function Content() {
   return (
-    <div className="grid grid-cols-4 gap-5 py-4 px-3 border border-sky-100 rounded-md">
-      <div className="flex flex-col gap-5 ">
-        <div className="min-h-[70px] flex justify-center">
-          <img
-            alt="z"
-            src="/images/arrow.webp"
-            width={"80%"}
-            className="me-3"
-          />
+    <>
+      <div className="grid grid-cols-3 h-full gap-5 items-center">
+        <div className="col-span-1 flex flex-col items-center">
+          <Icon className="icon icon1 w-[70px] h-[75px]" />
+          <span className="text-gray-300 text-sm mt-3">알을 낳아보세요!</span>
         </div>
-
-        <div className="mx-auto ">
-          <p>방향키로 자유롭게</p>
-          <p>움직여보세요!</p>
+        <div className="col-span-1 flex flex-col items-center">
+          <Icon className="icon icon2 w-[210px] h-[75px]" />
+          <span className="text-gray-300 text-sm mt-3">
+            잠깐 동안 하늘을 날아보세요!
+          </span>
+        </div>
+        <div className="col-span-1 flex flex-col items-center">
+          <Icon className="icon icon3 w-[120px] h-[75px]" />
+          <span className="text-gray-300 text-sm mt-3">
+            다른 유저들과 대화해보세요!
+          </span>
         </div>
       </div>
-
-      <div className="flex flex-col gap-5  items-center">
-        <div className="min-h-[70px] flex items-end">
-          <img alt="z" src="/images/ctrl.webp" width={55} />
-        </div>
-        <p>잠깐 동안 하늘을 날아보세요!</p>
-      </div>
-      <div className="flex flex-col gap-5 items-center ">
-        <div className="min-h-[70px] flex items-end">
-          <img alt="z" src="/images/z.webp" width={55} />
-        </div>
-        <p>새로운 알을 낳아보세요!</p>
-      </div>
-      <div className="flex flex-col gap-5 items-center">
-        <div className="min-h-[70px] flex items-end">
-          <img alt="z" src="/images/enter.webp" />
-        </div>
-        <p>다른 유저들과 대화하며 즐거운 시간을 보내세요!</p>
-      </div>
-    </div>
+    </>
   );
 }
+
+const Icon = styled.div`
+  background-image: url("/images/sub.webp");
+  background-size: 400px 75px;
+  filter: brightness(0.7);
+
+  &.icon1 {
+    background-position: 0% top;
+  }
+
+  &.icon2 {
+    background-position: 36% top;
+  }
+  &.icon3 {
+    background-position: 100% top;
+  }
+`;

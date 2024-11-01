@@ -26,6 +26,13 @@ export function LCouch() {
     position: [number, number, number];
   }[];
   const isStanding = couch.findIndex((a) => a.player === me?.id) === -1;
+  const seatingAvailable = isStanding && isInsideCouch;
+  const emptyCouch = couch.filter((a) => !a.player)[0];
+  const positions = [
+    [8.5, 1.7, -19.6],
+    [10, 1.7, -19.6],
+    [11, 1.7, -19.6],
+  ];
   const onClick = (e: ThreeEvent<MouseEvent>) => {
     /**
      * 쇼파는 1,2,3번 자리가 있음
@@ -34,6 +41,7 @@ export function LCouch() {
      */
 
     e.stopPropagation();
+    if (!seatingAvailable || !emptyCouch) return;
 
     let availableNumbers = couch
       .map((a, idx) => {
@@ -46,15 +54,7 @@ export function LCouch() {
     const rdmNum = availableNumbers[randomIndex];
     availableNumbers.splice(randomIndex, 1);
 
-    const positions = [
-      [8.5, 1.7, -19.6],
-      [10, 1.7, -19.6],
-      [11, 1.7, -19.6],
-    ];
-
-    const isNotUse = couch.find((a) => a.id === rdmNum)?.player === undefined;
-    if (isStanding && isNotUse && isInsideCouch)
-      socket.emit("couch", { type: rdmNum, position: positions[rdmNum - 1] });
+    socket.emit("couch", { type: rdmNum, position: positions[rdmNum - 1] });
   };
   useCursor(isHover);
 
@@ -62,6 +62,28 @@ export function LCouch() {
     materials.Couch_BeigeDark.color.set("#c8c8c8");
     materials.Couch_Beige.color.set("#666c70");
   }, []);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key.toUpperCase() === "F") {
+      if (seatingAvailable && emptyCouch) {
+        socket.emit("couch", {
+          type: emptyCouch.id,
+          position: positions[emptyCouch.id - 1],
+        });
+        window.removeEventListener("keydown", handleKeyDown);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isInsideCouch) return;
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isInsideCouch, emptyCouch]);
   return (
     <group
       position={[9.5, 1.7, -19.6]}
@@ -69,14 +91,14 @@ export function LCouch() {
       scale={[80, 70, 70]}
       onClick={onClick}
       onPointerEnter={() => {
-        if (!isStanding || !isInsideCouch) return;
+        if (!seatingAvailable || !emptyCouch) return;
         setIsHover(true);
       }}
       onPointerOut={() => {
         setIsHover(false);
       }}
     >
-      {isInsideCouch && isStanding && (
+      {seatingAvailable && emptyCouch && (
         <Html
           style={{ cursor: "pointer", pointerEvents: "none", width: "25px" }}
         >
@@ -85,6 +107,14 @@ export function LCouch() {
             src="/images/mouse_click.webp"
             style={{ transform: "translate(-50%,-30px)" }}
           />
+          <span
+            className="shorten__key"
+            style={{
+              transform: "translate(-50%, -90px)",
+            }}
+          >
+            [ F ]
+          </span>
         </Html>
       )}
       <mesh

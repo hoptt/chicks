@@ -5,7 +5,11 @@ export const ALLOW_KEYS: AllowedKeys[] = [
   "ArrowDown",
   "ArrowLeft",
   "ArrowRight",
-  "Control",
+  "W",
+  "A",
+  "S",
+  "D",
+  " ", // Spacebar
   "Z",
   "Enter",
 ].map((key) => key.toUpperCase() as AllowedKeys);

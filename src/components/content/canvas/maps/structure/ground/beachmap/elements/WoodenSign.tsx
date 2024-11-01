@@ -20,7 +20,9 @@ export function WoodenSign() {
   const isInsideHowToPlay = useRecoilValue(IsInsideHowToPlayAtom);
   const [isHover, setIsHover] = useState(false);
   const [isOpenHowToPlay, setIsOpenHowToPlay] = useState(false);
+
   useCursor(isHover);
+
   const handleCloseHowToPlay = () => {
     setIsOpenHowToPlay(false);
   };
@@ -51,10 +53,27 @@ export function WoodenSign() {
       setIsOpenHowToPlay(false);
     }
   }, [isInsideHowToPlay]);
+
   useEffect(() => {
     if (portalRef.current)
       portalRef.current!.style.zIndex = isOpenHowToPlay ? "1" : "-1";
   }, [isOpenHowToPlay]);
+
+  useEffect(() => {
+    if (!isInsideHowToPlay) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toUpperCase() === "F") {
+        setIsOpenHowToPlay(true);
+        window.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isInsideHowToPlay]);
   return (
     <group
       position={[-1, 2.3, 5]}
@@ -81,8 +100,17 @@ export function WoodenSign() {
           <img
             alt="클릭"
             src="/images/mouse_click.webp"
-            style={{ transform: "translate(-50%,-70px)" }}
+            style={{ transform: "translate(-50%,-80px)" }}
           />
+
+          <span
+            className="shorten__key"
+            style={{
+              transform: "translate(-50%, -135px)",
+            }}
+          >
+            [ F ]
+          </span>
         </Html>
       )}
       {isOpenHowToPlay && (

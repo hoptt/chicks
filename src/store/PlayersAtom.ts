@@ -24,3 +24,9 @@ export const nicknameToggleAtom = atom<boolean>({
   key: "nicknameToggleAtom",
   default: true,
 });
+
+// 방향키 키 타입
+// export const controllerKeyTypeAtom = atom<KeyType>({
+//   key: "controllerKeyTypeAtom",
+//   default: "A",
+// });

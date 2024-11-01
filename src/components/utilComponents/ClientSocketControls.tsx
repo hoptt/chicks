@@ -3,7 +3,7 @@ import { socket } from "@/sockets/clientSocket";
 import { ObjectsAtom } from "@/store/ObjectsAtom";
 import { MeAtom, PlayersAtom } from "@/store/PlayersAtom";
 import { IObjects, IPlayer } from "@/types";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import toast from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -55,7 +55,7 @@ export const ClientSocketControls = () => {
     setObjects(value);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);
     socket.on("initialize", handleInitialize);

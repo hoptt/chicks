@@ -50,10 +50,27 @@ export function Shrine() {
       setIsOpenSourceList(false);
     }
   }, [isInsideSourceList]);
+
   useEffect(() => {
     if (portalRef.current)
       portalRef.current!.style.zIndex = isOpenSourceList ? "1" : "-1";
   }, [isOpenSourceList]);
+
+  useEffect(() => {
+    if (!isInsideSourceList) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toUpperCase() === "F") {
+        setIsOpenSourceList(true);
+        window.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isInsideSourceList]);
   return (
     <group position={[-9.5, 1.6, 2]}>
       <group
@@ -80,8 +97,16 @@ export function Shrine() {
             <img
               alt="클릭"
               src="/images/mouse_click.webp"
-              style={{ transform: "translate(-50%,-70px)" }}
+              style={{ transform: "translate(-50%,-80px)" }}
             />
+            <span
+              className="shorten__key"
+              style={{
+                transform: "translate(-50%, -135px)",
+              }}
+            >
+              [ F ]
+            </span>
           </Html>
         )}
         {isOpenSourceList && (

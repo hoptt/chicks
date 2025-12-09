@@ -17,7 +17,12 @@ export default function Lobby() {
   const [error, setError] = useState(0);
   const [cfsc, setCfsc] = useState(isDev ? true : false);
   const [isLoading, setIsLoading] = useState(false);
-  const [tempNickname, setTempNickname] = useState("");
+  const [tempNickname, setTempNickname] = useState(
+    () =>
+      `덕덕${Math.floor(Date.now() / 1000)
+        .toString()
+        .slice(-3)}`
+  );
   const isDuplicate =
     players.findIndex((player) => player.name === tempNickname) !== -1;
   const isFull = players.length >= MAXIMUM_PLAYERS;
